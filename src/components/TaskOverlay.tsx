@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
@@ -9,24 +8,72 @@ import { ColorSelector } from './ColorSelector';
 import { MaterialIcon } from './MaterialIcon';
 import { lightTheme, darkTheme } from '@/lib/colors';
 import { useTheme } from '@/hooks/useTheme';
+import { Task } from '@/types/Task';
 
 interface TaskOverlayProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  task?: Task | null;
+  onSave: (taskData: {
+    id?: string;
+    title: string;
+    description: string;
+    timeEstimate: string;
+    color: string;
+    isCompleted: boolean;
+  }) => void;
+  onDelete?: (taskId: string) => void;
 }
 
-export const TaskOverlay = ({ open, onOpenChange }: TaskOverlayProps) => {
+export const TaskOverlay = ({ open, onOpenChange, task, onSave, onDelete }: TaskOverlayProps) => {
   const { isDark } = useTheme();
   const colors = isDark ? darkTheme : lightTheme;
   
   const [isCompleted, setIsCompleted] = useState(false);
-  const [selectedTime, setSelectedTime] = useState('15m');
+  const [selectedTime, setSelectedTime] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
-  const [taskTitle, setTaskTitle] = useState('Если в тексте задачи две строки, карточка должна увеличиваться по высоте (hug по высоте, fill по ширине), а не обрезать текст или ломать layout.');
+  const [taskTitle, setTaskTitle] = useState('');
   const [description, setDescription] = useState('');
+
+  // Обновляем состояние при изменении задачи
+  useEffect(() => {
+    if (task) {
+      setIsCompleted(task.isCompleted);
+      setSelectedTime(task.timeEstimate || '');
+      setSelectedColor(task.color || '');
+      setTaskTitle(task.title);
+      setDescription(task.description || '');
+    } else {
+      // Сбрасываем состояние для новой задачи
+      setIsCompleted(false);
+      setSelectedTime('');
+      setSelectedColor('');
+      setTaskTitle('');
+      setDescription('');
+    }
+  }, [task]);
 
   const handleCheckboxChange = (checked: boolean | 'indeterminate') => {
     setIsCompleted(checked === true);
+  };
+
+  const handleSave = () => {
+    onSave({
+      id: task?.id,
+      title: taskTitle || 'New task',
+      description,
+      timeEstimate: selectedTime,
+      color: selectedColor,
+      isCompleted
+    });
+    onOpenChange(false);
+  };
+
+  const handleDelete = () => {
+    if (task && onDelete) {
+      onDelete(task.id);
+      onOpenChange(false);
+    }
   };
 
   return (
@@ -63,13 +110,16 @@ export const TaskOverlay = ({ open, onOpenChange }: TaskOverlayProps) => {
                 {isCompleted ? 'Completed' : 'Not completed'}
               </span>
             </div>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              style={{ color: colors.content.tertiary }}
-            >
-              <MaterialIcon name="delete" size={20} />
-            </Button>
+            {task && onDelete && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleDelete}
+                style={{ color: colors.content.tertiary }}
+              >
+                <MaterialIcon name="delete" size={20} />
+              </Button>
+            )}
           </div>
 
           {/* Date container */}
@@ -193,6 +243,25 @@ export const TaskOverlay = ({ open, onOpenChange }: TaskOverlayProps) => {
               onColorSelect={setSelectedColor}
               isDark={isDark}
             />
+          </div>
+
+          {/* Save Button */}
+          <div className="self-stretch">
+            <Button 
+              onClick={handleSave}
+              className="w-full"
+              style={{
+                backgroundColor: colors.content.primary,
+                color: colors.bg.primary,
+                height: '44px',
+                borderRadius: '12px',
+                fontFamily: '"SF Pro"',
+                fontSize: '16px',
+                fontWeight: 600
+              }}
+            >
+              {task ? 'Save Changes' : 'Create Task'}
+            </Button>
           </div>
         </div>
       </DialogContent>

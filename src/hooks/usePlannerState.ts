@@ -10,7 +10,6 @@ export const usePlannerState = () => {
   const [weekOffset, setWeekOffset] = useState(0);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  const [isNewTaskOverlayOpen, setIsNewTaskOverlayOpen] = useState(false);
   const [newTaskContext, setNewTaskContext] = useState<{ day?: string; section?: string }>({});
   
   // Загрузка всех данных из localStorage
@@ -89,7 +88,8 @@ export const usePlannerState = () => {
 
   const handleAddTask = (day?: string, section?: string) => {
     setNewTaskContext({ day, section });
-    setIsNewTaskOverlayOpen(true);
+    setSelectedTask(null);
+    setIsOverlayOpen(true);
   };
 
   const handleSaveNewTask = (taskData: {
@@ -104,7 +104,8 @@ export const usePlannerState = () => {
       title: taskData.title,
       isCompleted: taskData.isCompleted,
       timeEstimate: taskData.timeEstimate,
-      color: taskData.color
+      color: taskData.color,
+      description: taskData.description
     };
 
     const { day, section } = newTaskContext;
@@ -220,6 +221,71 @@ export const usePlannerState = () => {
     setIsOverlayOpen(true);
   };
 
+  const handleSaveTask = (taskId: string, taskData: {
+    title: string;
+    description: string;
+    timeEstimate: string;
+    color: string;
+    isCompleted: boolean;
+  }) => {
+    setWeeksData(prev => {
+      const newData = { ...prev };
+      const currentWeek = newData[weekOffset.toString()] || { ...weekData };
+      
+      Object.keys(currentWeek).forEach(day => {
+        ['morning', 'day', 'evening'].forEach(timeSection => {
+          const section = currentWeek[day][timeSection as keyof DayTasks];
+          const taskIndex = section.findIndex(task => task.id === taskId);
+          if (taskIndex !== -1) {
+            section[taskIndex] = { 
+              ...section[taskIndex],
+              title: taskData.title,
+              description: taskData.description,
+              timeEstimate: taskData.timeEstimate,
+              color: taskData.color,
+              isCompleted: taskData.isCompleted
+            };
+          }
+        });
+      });
+
+      newData[weekOffset.toString()] = currentWeek;
+      return newData;
+    });
+
+    setBacklogData(prev => 
+      prev.map(task => 
+        task.id === taskId ? {
+          ...task,
+          title: taskData.title,
+          description: taskData.description,
+          timeEstimate: taskData.timeEstimate,
+          color: taskData.color,
+          isCompleted: taskData.isCompleted
+        } : task
+      )
+    );
+  };
+
+  const handleDeleteTask = (taskId: string) => {
+    setWeeksData(prev => {
+      const newData = { ...prev };
+      const currentWeek = newData[weekOffset.toString()] || { ...weekData };
+      
+      Object.keys(currentWeek).forEach(day => {
+        ['morning', 'day', 'evening'].forEach(timeSection => {
+          currentWeek[day][timeSection as keyof DayTasks] = 
+            currentWeek[day][timeSection as keyof DayTasks].filter(task => task.id !== taskId);
+        });
+      });
+
+      newData[weekOffset.toString()] = currentWeek;
+      return newData;
+    });
+
+    setBacklogData(prev => prev.filter(task => task.id !== taskId));
+  };
+
   return {
     currentView,
     setCurrentView,
@@ -228,8 +294,6 @@ export const usePlannerState = () => {
     selectedTask,
     isOverlayOpen,
     setIsOverlayOpen,
-    isNewTaskOverlayOpen,
-    setIsNewTaskOverlayOpen,
     handleTaskClick,
     handleToggleComplete,
     handleAddTask,
@@ -237,6 +301,8 @@ export const usePlannerState = () => {
     handleMoveTask,
     weekOffset,
     handlePrevWeek,
-    handleNextWeek
+    handleNextWeek,
+    handleSaveTask,
+    handleDeleteTask
   };
 };

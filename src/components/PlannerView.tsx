@@ -5,7 +5,6 @@ import { PlannerHeader } from './PlannerHeader';
 import { DayColumn } from './DayColumn';
 import { BacklogSection } from './BacklogSection';
 import { TaskOverlay } from './TaskOverlay';
-import { NewTaskOverlay } from './NewTaskOverlay';
 import { lightTheme, darkTheme } from '@/lib/colors';
 import { usePlannerState } from '@/hooks/usePlannerState';
 import { useTheme } from '@/hooks/useTheme';
@@ -22,8 +21,6 @@ export const PlannerView = () => {
     backlogData,
     isOverlayOpen,
     setIsOverlayOpen,
-    isNewTaskOverlayOpen,
-    setIsNewTaskOverlayOpen,
     handleTaskClick,
     handleToggleComplete,
     handleAddTask,
@@ -31,11 +28,29 @@ export const PlannerView = () => {
     handleMoveTask,
     weekOffset,
     handlePrevWeek,
-    handleNextWeek
+    handleNextWeek,
+    selectedTask,
+    handleSaveTask,
+    handleDeleteTask
   } = usePlannerState();
 
   const weekDates = useMemo(() => getWeekDates(weekOffset), [weekOffset]);
   const currentDay = useMemo(() => getCurrentDay(), []);
+
+  const handleSaveTaskData = (taskData: {
+    id?: string;
+    title: string;
+    description: string;
+    timeEstimate: string;
+    color: string;
+    isCompleted: boolean;
+  }) => {
+    if (taskData.id) {
+      handleSaveTask(taskData.id, taskData);
+    } else {
+      handleSaveNewTask(taskData);
+    }
+  };
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -87,12 +102,9 @@ export const PlannerView = () => {
         <TaskOverlay 
           open={isOverlayOpen}
           onOpenChange={setIsOverlayOpen}
-        />
-
-        <NewTaskOverlay
-          open={isNewTaskOverlayOpen}
-          onOpenChange={setIsNewTaskOverlayOpen}
-          onSave={handleSaveNewTask}
+          task={selectedTask}
+          onSave={handleSaveTaskData}
+          onDelete={handleDeleteTask}
         />
       </div>
     </DndProvider>

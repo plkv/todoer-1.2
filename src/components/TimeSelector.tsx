@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -31,7 +30,7 @@ export const TimeSelector = ({ selectedTime, onTimeSelect, isDark = false }: Tim
         
         return (
           <Button
-            key={option.value || 'none'}
+            key={option.value || 'empty'}
             variant="ghost"
             size="sm"
             onClick={() => onTimeSelect(option.value)}
