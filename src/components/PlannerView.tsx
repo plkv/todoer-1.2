@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { PlannerHeader } from './PlannerHeader';
@@ -10,7 +9,7 @@ import { NewTaskOverlay } from './NewTaskOverlay';
 import { lightTheme, darkTheme } from '@/lib/colors';
 import { usePlannerState } from '@/hooks/usePlannerState';
 import { useTheme } from '@/hooks/useTheme';
-import { dates } from '@/data/mockData';
+import { getWeekDates, getCurrentDay } from '@/lib/utils';
 
 export const PlannerView = () => {
   const { isDark, toggleTheme } = useTheme();
@@ -29,8 +28,14 @@ export const PlannerView = () => {
     handleToggleComplete,
     handleAddTask,
     handleSaveNewTask,
-    handleMoveTask
+    handleMoveTask,
+    weekOffset,
+    handlePrevWeek,
+    handleNextWeek
   } = usePlannerState();
+
+  const weekDates = useMemo(() => getWeekDates(weekOffset), [weekOffset]);
+  const currentDay = useMemo(() => getCurrentDay(), []);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -40,6 +45,8 @@ export const PlannerView = () => {
           onViewChange={setCurrentView}
           isDark={isDark}
           onThemeToggle={toggleTheme}
+          onPrevWeek={handlePrevWeek}
+          onNextWeek={handleNextWeek}
         />
         
         {/* Week Grid */}
@@ -53,13 +60,13 @@ export const PlannerView = () => {
             gridTemplateRows: 'auto auto minmax(140px, auto) minmax(140px, auto) minmax(140px, auto)'
           }}
         >
-          {dates.map(({ day, date }) => (
+          {weekDates.map(({ day, date }) => (
             <DayColumn
               key={day}
               dayName={day}
               date={date}
               tasks={weekData[day]}
-              isActive={day === 'WED'}
+              isActive={weekOffset === 0 && day === currentDay}
               onTaskClick={handleTaskClick}
               onToggleComplete={handleToggleComplete}
               onAddTask={(dayName, section) => handleAddTask(dayName, section)}

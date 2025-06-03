@@ -1,4 +1,3 @@
-
 import { Task, WeekData } from '@/types/Task';
 
 export const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -54,14 +53,4 @@ export const initialWeekData: WeekData = {
 
 export const backlogTasks: Task[] = [
   { id: generateId(), title: 'чего надо сделать', isCompleted: false }
-];
-
-export const dates = [
-  { day: 'MON', date: 'May 26' },
-  { day: 'TUE', date: 'May 27' },
-  { day: 'WED', date: 'May 28' },
-  { day: 'THU', date: 'May 29' },
-  { day: 'FRI', date: 'May 30' },
-  { day: 'SAT', date: 'May 31' },
-  { day: 'SUN', date: 'Jun 1' }
 ];

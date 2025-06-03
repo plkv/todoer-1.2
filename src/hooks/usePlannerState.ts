@@ -1,34 +1,82 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Task, WeekData, DayTasks } from '@/types/Task';
 import { initialWeekData, backlogTasks, generateId } from '@/data/mockData';
 
+// Тип для хранения данных всех недель
+type WeeksData = Record<string, WeekData>;
+
 export const usePlannerState = () => {
   const [currentView, setCurrentView] = useState<'Week' | 'Day' | 'Month'>('Week');
-  const [weekData, setWeekData] = useState<WeekData>(initialWeekData);
-  const [backlogData, setBacklogData] = useState<Task[]>(backlogTasks);
+  const [weekOffset, setWeekOffset] = useState(0);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [isNewTaskOverlayOpen, setIsNewTaskOverlayOpen] = useState(false);
   const [newTaskContext, setNewTaskContext] = useState<{ day?: string; section?: string }>({});
+  
+  // Загрузка всех данных из localStorage
+  const loadWeeksData = (): WeeksData => {
+    try {
+      const data = localStorage.getItem('weeksData');
+      return data ? JSON.parse(data) : { '0': initialWeekData };
+    } catch {
+      return { '0': initialWeekData };
+    }
+  };
 
-  const handleTaskClick = (task: Task) => {
-    setSelectedTask(task);
-    setIsOverlayOpen(true);
+  const [weeksData, setWeeksData] = useState<WeeksData>(loadWeeksData);
+  const [backlogData, setBacklogData] = useState<Task[]>(() => {
+    try {
+      const data = localStorage.getItem('backlogData');
+      return data ? JSON.parse(data) : backlogTasks;
+    } catch {
+      return backlogTasks;
+    }
+  });
+
+  // Получаем данные текущей недели
+  const weekData = weeksData[weekOffset.toString()] || {
+    'MON': { morning: [], day: [], evening: [] },
+    'TUE': { morning: [], day: [], evening: [] },
+    'WED': { morning: [], day: [], evening: [] },
+    'THU': { morning: [], day: [], evening: [] },
+    'FRI': { morning: [], day: [], evening: [] },
+    'SAT': { morning: [], day: [], evening: [] },
+    'SUN': { morning: [], day: [], evening: [] }
+  };
+
+  // Сохраняем все данные при изменениях
+  useEffect(() => {
+    localStorage.setItem('weeksData', JSON.stringify(weeksData));
+  }, [weeksData]);
+
+  useEffect(() => {
+    localStorage.setItem('backlogData', JSON.stringify(backlogData));
+  }, [backlogData]);
+
+  const handlePrevWeek = () => {
+    setWeekOffset(prev => prev - 1);
+  };
+
+  const handleNextWeek = () => {
+    setWeekOffset(prev => prev + 1);
   };
 
   const handleToggleComplete = (taskId: string, completed: boolean) => {
-    setWeekData(prev => {
+    setWeeksData(prev => {
       const newData = { ...prev };
-      Object.keys(newData).forEach(day => {
+      const currentWeek = newData[weekOffset.toString()] || { ...weekData };
+      
+      Object.keys(currentWeek).forEach(day => {
         ['morning', 'day', 'evening'].forEach(timeSection => {
-          const section = newData[day][timeSection as keyof DayTasks];
+          const section = currentWeek[day][timeSection as keyof DayTasks];
           const taskIndex = section.findIndex(task => task.id === taskId);
           if (taskIndex !== -1) {
             section[taskIndex] = { ...section[taskIndex], isCompleted: completed };
           }
         });
       });
+
+      newData[weekOffset.toString()] = currentWeek;
       return newData;
     });
 
@@ -62,13 +110,18 @@ export const usePlannerState = () => {
     const { day, section } = newTaskContext;
 
     if (day && section) {
-      setWeekData(prev => ({
-        ...prev,
-        [day]: {
-          ...prev[day],
-          [section.toLowerCase()]: [...prev[day][section.toLowerCase() as keyof DayTasks], newTask]
-        }
-      }));
+      setWeeksData(prev => {
+        const newData = { ...prev };
+        const currentWeek = newData[weekOffset.toString()] || { ...weekData };
+        
+        currentWeek[day] = {
+          ...currentWeek[day],
+          [section.toLowerCase()]: [...currentWeek[day][section.toLowerCase() as keyof DayTasks], newTask]
+        };
+
+        newData[weekOffset.toString()] = currentWeek;
+        return newData;
+      });
     } else {
       setBacklogData(prev => [...prev, newTask]);
     }
@@ -81,89 +134,90 @@ export const usePlannerState = () => {
     sourceLocation: { day?: string; section?: string }, 
     targetLocation: { day?: string; section?: string }
   ) => {
-    console.log('Moving task:', { taskId, sourceLocation, targetLocation });
-    console.log('Source section:', sourceLocation.section, 'Target section:', targetLocation.section);
-    console.log('Same day?', sourceLocation.day === targetLocation.day);
-    console.log('Same section?', sourceLocation.section?.toUpperCase() === targetLocation.section?.toUpperCase());
-    
-    // Проверяем, перетягиваем ли мы в ту же секцию
     const isSameLocation = sourceLocation.day === targetLocation.day && 
                           sourceLocation.section?.toUpperCase() === targetLocation.section?.toUpperCase();
     
-    console.log('Is same location?', isSameLocation);
-    
-    // Найти задачу для перемещения/дублирования
     let taskToMove: Task | null = null;
     
-    // Найти задачу в исходном местоположении
     if (sourceLocation.day && sourceLocation.section) {
-      const sourceSection = weekData[sourceLocation.day][sourceLocation.section.toLowerCase() as keyof DayTasks];
+      const sourceWeek = weeksData[weekOffset.toString()] || weekData;
+      const sourceSection = sourceWeek[sourceLocation.day][sourceLocation.section.toLowerCase() as keyof DayTasks];
       taskToMove = sourceSection.find(task => task.id === taskId) || null;
     } else {
       taskToMove = backlogData.find(task => task.id === taskId) || null;
     }
     
-    if (!taskToMove) {
-      console.log('Task not found');
-      return;
-    }
+    if (!taskToMove) return;
     
     if (isSameLocation) {
-      // Если перетягиваем в ту же секцию - создаем дубликат
-      console.log('Same location, creating duplicate');
       const duplicatedTask: Task = {
         ...taskToMove,
         id: generateId()
       };
       
       if (targetLocation.day && targetLocation.section) {
-        setWeekData(prev => ({
-          ...prev,
-          [targetLocation.day!]: {
-            ...prev[targetLocation.day!],
+        setWeeksData(prev => {
+          const newData = { ...prev };
+          const currentWeek = newData[weekOffset.toString()] || { ...weekData };
+          
+          currentWeek[targetLocation.day!] = {
+            ...currentWeek[targetLocation.day!],
             [targetLocation.section!.toLowerCase()]: [
-              ...prev[targetLocation.day!][targetLocation.section!.toLowerCase() as keyof DayTasks],
+              ...currentWeek[targetLocation.day!][targetLocation.section!.toLowerCase() as keyof DayTasks],
               duplicatedTask
             ]
-          }
-        }));
+          };
+
+          newData[weekOffset.toString()] = currentWeek;
+          return newData;
+        });
       } else {
         setBacklogData(prev => [...prev, duplicatedTask]);
       }
     } else {
-      // Если перетягиваем в другую секцию - перемещаем задачу
-      console.log('Different location, moving task');
-      
-      // Удалить из источника
       if (sourceLocation.day && sourceLocation.section) {
-        setWeekData(prev => ({
-          ...prev,
-          [sourceLocation.day!]: {
-            ...prev[sourceLocation.day!],
-            [sourceLocation.section!.toLowerCase()]: prev[sourceLocation.day!][sourceLocation.section!.toLowerCase() as keyof DayTasks]
+        setWeeksData(prev => {
+          const newData = { ...prev };
+          const currentWeek = newData[weekOffset.toString()] || { ...weekData };
+          
+          currentWeek[sourceLocation.day!] = {
+            ...currentWeek[sourceLocation.day!],
+            [sourceLocation.section!.toLowerCase()]: currentWeek[sourceLocation.day!][sourceLocation.section!.toLowerCase() as keyof DayTasks]
               .filter(task => task.id !== taskId)
-          }
-        }));
+          };
+
+          newData[weekOffset.toString()] = currentWeek;
+          return newData;
+        });
       } else {
         setBacklogData(prev => prev.filter(task => task.id !== taskId));
       }
       
-      // Добавить в цель
       if (targetLocation.day && targetLocation.section) {
-        setWeekData(prev => ({
-          ...prev,
-          [targetLocation.day!]: {
-            ...prev[targetLocation.day!],
+        setWeeksData(prev => {
+          const newData = { ...prev };
+          const currentWeek = newData[weekOffset.toString()] || { ...weekData };
+          
+          currentWeek[targetLocation.day!] = {
+            ...currentWeek[targetLocation.day!],
             [targetLocation.section!.toLowerCase()]: [
-              ...prev[targetLocation.day!][targetLocation.section!.toLowerCase() as keyof DayTasks],
+              ...currentWeek[targetLocation.day!][targetLocation.section!.toLowerCase() as keyof DayTasks],
               taskToMove
             ]
-          }
-        }));
+          };
+
+          newData[weekOffset.toString()] = currentWeek;
+          return newData;
+        });
       } else {
         setBacklogData(prev => [...prev, taskToMove]);
       }
     }
+  };
+
+  const handleTaskClick = (task: Task) => {
+    setSelectedTask(task);
+    setIsOverlayOpen(true);
   };
 
   return {
@@ -180,6 +234,9 @@ export const usePlannerState = () => {
     handleToggleComplete,
     handleAddTask,
     handleSaveNewTask,
-    handleMoveTask
+    handleMoveTask,
+    weekOffset,
+    handlePrevWeek,
+    handleNextWeek
   };
 };

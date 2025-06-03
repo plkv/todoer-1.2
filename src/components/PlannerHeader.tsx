@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -18,9 +17,11 @@ interface PlannerHeaderProps {
   onViewChange: (view: 'Week' | 'Day' | 'Month') => void;
   isDark: boolean;
   onThemeToggle: () => void;
+  onPrevWeek: () => void;
+  onNextWeek: () => void;
 }
 
-export const PlannerHeader = ({ currentView, onViewChange, isDark, onThemeToggle }: PlannerHeaderProps) => {
+export const PlannerHeader = ({ currentView, onViewChange, isDark, onThemeToggle, onPrevWeek, onNextWeek }: PlannerHeaderProps) => {
   const colors = isDark ? darkTheme : lightTheme;
 
   return (
@@ -47,6 +48,7 @@ export const PlannerHeader = ({ currentView, onViewChange, isDark, onThemeToggle
                 color: colors.content.secondary,
                 backgroundColor: 'transparent'
               }}
+              onClick={onPrevWeek}
             >
               <ChevronLeft size={16} strokeWidth={2} />
             </Button>
@@ -70,6 +72,7 @@ export const PlannerHeader = ({ currentView, onViewChange, isDark, onThemeToggle
                 color: colors.content.secondary,
                 backgroundColor: 'transparent'
               }}
+              onClick={onNextWeek}
             >
               <ChevronRight size={16} strokeWidth={2} />
             </Button>

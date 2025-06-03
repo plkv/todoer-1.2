@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TimeSection } from './TimeSection';
 import { lightTheme, darkTheme } from '@/lib/colors';
@@ -56,7 +55,7 @@ export const DayColumn = ({
             />
           )}
         </div>
-        <h3 className="font-sf-pro-m-bold" style={{ color: colors.content.primary, fontSize: '16px', lineHeight: '20px' }}>
+        <h3 className="font-sf-pro-m-bold" style={{ color: isActive ? colors.content.primary : colors.content.tertiary, fontSize: '16px', lineHeight: '20px' }}>
           {date}
         </h3>
       </div>
