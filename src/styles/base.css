@@ -1,37 +1,44 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background-primary: 0 0% 100%;
+    --background-secondary: 0 0% 96.9%;
+    --fill-primary: 0 0% 94.1%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --foreground-primary: 0 0% 5.9%;
+    --foreground-secondary: 0 0% 5.9% / 0.64;
+    --foreground-tertiary: 0 0% 5.9% / 0.48;
+    
+    --background: var(--background-primary);
+    --foreground: var(--foreground-primary);
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --card: var(--background-primary);
+    --card-foreground: var(--foreground-primary);
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --popover: var(--background-primary);
+    --popover-foreground: var(--foreground-primary);
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --primary: var(--foreground-primary);
+    --primary-foreground: var(--background-primary);
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --secondary: var(--fill-primary);
+    --secondary-foreground: var(--foreground-primary);
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --muted: var(--fill-primary);
+    --muted-foreground: var(--foreground-secondary);
+
+    --accent: var(--fill-primary);
+    --accent-foreground: var(--foreground-primary);
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: var(--fill-primary);
+    --input: var(--fill-primary);
+    --ring: var(--foreground-primary);
 
     --radius: 0.5rem;
 
