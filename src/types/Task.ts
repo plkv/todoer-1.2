@@ -1,10 +1,15 @@
 export interface Task {
   id: string;
+  user_id: number;
   title: string;
-  isCompleted: boolean;
-  timeEstimate?: string;
-  color?: string;
-  description?: string;
+  description: string | null;
+  is_completed: boolean;
+  time_estimate: string | null;
+  color: string | null;
+  day: string | null;
+  section: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface DayTasks {

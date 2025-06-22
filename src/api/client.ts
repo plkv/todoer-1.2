@@ -1,12 +1,19 @@
 import axios from 'axios';
+import { Task } from '@/types/Task';
 
-const API_URL = 'http://localhost:3000/api';
+// Получаем адрес backend динамически
+const getBackendUrl = () => {
+  if (import.meta.env.VITE_BACKEND_URL) {
+    return import.meta.env.VITE_BACKEND_URL;
+  }
+  return 'http://localhost:3001';
+};
+
+const API_URL = getBackendUrl();
 
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  }
+  withCredentials: true, // Очень важно для отправки cookies с каждым запросом
 });
 
 // Add token to requests if it exists
@@ -22,20 +29,18 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
+    if (error.response && error.response.status === 401) {
+      // Пользователь не аутентифицирован. 
+      // Хук useAuth обработает этот случай и покажет кнопку входа.
+      console.log('Not authenticated, redirecting will be handled by useAuth hook.');
+    } else if (error.response) {
       console.error('API Error:', error.response.data);
-      return Promise.reject(error.response.data);
     } else if (error.request) {
-      // The request was made but no response was received
       console.error('Network Error:', error.request);
-      return Promise.reject({ message: 'Network error. Please check your connection.' });
     } else {
-      // Something happened in setting up the request that triggered an Error
       console.error('Error:', error.message);
-      return Promise.reject({ message: error.message });
     }
+    return Promise.reject(error);
   }
 );
 
@@ -50,23 +55,24 @@ export const auth = {
   }
 };
 
+type TaskData = Omit<Task, 'id' | 'user_id' | 'created_at' | 'updated_at'>;
+
 export const tasks = {
-  getAll: async () => {
-    const response = await api.get('/tasks');
+  getAll: async (): Promise<Task[]> => {
+    const response = await api.get('/api/tasks');
     return response.data;
   },
-  create: async (taskData: any) => {
-    const response = await api.post('/tasks', taskData);
+  create: async (taskData: TaskData): Promise<Task> => {
+    const response = await api.post('/api/tasks', taskData);
     return response.data;
   },
-  update: async (id: string, taskData: any) => {
-    const response = await api.put(`/tasks/${id}`, taskData);
+  update: async (id: string, taskData: Partial<TaskData>): Promise<Task> => {
+    const response = await api.put(`/api/tasks/${id}`, taskData);
     return response.data;
   },
-  delete: async (id: string) => {
-    const response = await api.delete(`/tasks/${id}`);
-    return response.data;
-  }
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/api/tasks/${id}`);
+  },
 };
 
 export default api; 

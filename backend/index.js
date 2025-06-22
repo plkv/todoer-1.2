@@ -1,34 +1,174 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:8080', // Разрешаем запросы с фронтенда
+  credentials: true, // Разрешаем передачу cookie
+}));
 app.use(express.json());
-
-// SQLite DB
-const db = new sqlite3.Database('./db.sqlite', (err) => {
-  if (err) {
-    console.error('Ошибка подключения к базе:', err.message);
-  } else {
-    console.log('Подключено к SQLite базе данных.');
-    // Создаём таблицу задач, если не существует
-    db.run(`CREATE TABLE IF NOT EXISTS tasks (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      description TEXT,
-      isCompleted INTEGER DEFAULT 0,
-      timeEstimate TEXT,
-      color TEXT,
-      day TEXT,
-      section TEXT,
-      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
-    )`);
+app.use(cookieParser());
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    // secure: process.env.NODE_ENV === 'production', // В продакшене использовать https
+    // httpOnly: true,
+    // maxAge: 24 * 60 * 60 * 1000 // 1 день
   }
+}));
+
+// Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// PostgreSQL DB
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+const createTables = async () => {
+  const client = await pool.connect();
+  try {
+    // Создаём таблицу пользователей
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        google_id VARCHAR(255) UNIQUE,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        name VARCHAR(255),
+        picture VARCHAR(255),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('Таблица "users" готова.');
+
+    // Создаём таблицу задач с внешним ключом на users
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS tasks (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        description TEXT,
+        is_completed BOOLEAN DEFAULT FALSE,
+        time_estimate TEXT,
+        color TEXT,
+        day TEXT,
+        section TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('Таблица "tasks" готова.');
+  } catch (err) {
+    console.error('Ошибка при создании таблиц:', err.stack);
+  } finally {
+    client.release();
+  }
+};
+
+// Passport.js-конфигурация
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/auth/google/callback"
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    const { id, displayName, emails, photos } = profile;
+    const email = emails[0].value;
+    const picture = photos[0].value;
+
+    try {
+      const client = await pool.connect();
+      try {
+        // Ищем пользователя
+        let userResult = await client.query('SELECT * FROM users WHERE google_id = $1', [id]);
+        let user = userResult.rows[0];
+
+        // Если не найден, создаём нового
+        if (!user) {
+          userResult = await client.query(
+            'INSERT INTO users (google_id, email, name, picture) VALUES ($1, $2, $3, $4) RETURNING *',
+            [id, email, displayName, picture]
+          );
+          user = userResult.rows[0];
+          console.log('Создан новый пользователь:', user);
+        } else {
+          console.log('Пользователь найден:', user);
+        }
+        return done(null, user);
+      } finally {
+        client.release();
+      }
+    } catch (err) {
+      return done(err, null);
+    }
+  }
+));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    done(null, result.rows[0]);
+  } catch (err) {
+    done(err, null);
+  }
+});
+
+// Инициализация БД
+pool.connect()
+  .then(client => {
+    console.log('Подключено к PostgreSQL базе данных.');
+    client.release();
+    createTables();
+  })
+  .catch(err => console.error('Ошибка подключения к базе:', err.stack));
+
+// Middleware для проверки аутентификации
+const ensureAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ error: 'Not authenticated' });
+};
+
+// Auth Routes
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  (req, res) => {
+    // Успешная аутентификация, перенаправляем на фронтенд
+    res.redirect('http://localhost:8080');
+  });
+
+app.get('/auth/logout', (req, res, next) => {
+  req.logout((err) => {
+    if (err) { return next(err); }
+    req.session.destroy();
+    res.clearCookie('connect.sid');
+    res.json({ message: 'Logged out' });
+  });
+});
+
+// API Route to get user info
+app.get('/api/user', ensureAuthenticated, (req, res) => {
+  res.json(req.user);
 });
 
 // Healthcheck
@@ -37,53 +177,62 @@ app.get('/api/health', (req, res) => {
 });
 
 // Получить все задачи
-app.get('/api/tasks', (req, res) => {
-  db.all('SELECT * FROM tasks', [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
+app.get('/api/tasks', ensureAuthenticated, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM tasks WHERE user_id = $1 ORDER BY created_at DESC', [req.user.id]);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Создать задачу
-app.post('/api/tasks', (req, res) => {
+app.post('/api/tasks', ensureAuthenticated, async (req, res) => {
+  const user_id = req.user.id;
   const { title, description, isCompleted, timeEstimate, color, day, section } = req.body;
-  db.run(
-    `INSERT INTO tasks (title, description, isCompleted, timeEstimate, color, day, section) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [title, description, isCompleted ? 1 : 0, timeEstimate, color, day, section],
-    function (err) {
-      if (err) return res.status(500).json({ error: err.message });
-      db.get('SELECT * FROM tasks WHERE id = ?', [this.lastID], (err, row) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(201).json(row);
-      });
-    }
-  );
+  try {
+    const result = await pool.query(
+      `INSERT INTO tasks (user_id, title, description, is_completed, time_estimate, color, day, section) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [user_id, title, description, isCompleted, timeEstimate, color, day, section]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Обновить задачу
-app.put('/api/tasks/:id', (req, res) => {
-  const { title, description, isCompleted, timeEstimate, color, day, section } = req.body;
+app.put('/api/tasks/:id', ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
-  db.run(
-    `UPDATE tasks SET title=?, description=?, isCompleted=?, timeEstimate=?, color=?, day=?, section=?, updatedAt=CURRENT_TIMESTAMP WHERE id=?`,
-    [title, description, isCompleted ? 1 : 0, timeEstimate, color, day, section, id],
-    function (err) {
-      if (err) return res.status(500).json({ error: err.message });
-      db.get('SELECT * FROM tasks WHERE id = ?', [id], (err, row) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(row);
-      });
+  const { title, description, isCompleted, timeEstimate, color, day, section } = req.body;
+  try {
+    const result = await pool.query(
+      `UPDATE tasks SET title=$1, description=$2, is_completed=$3, time_estimate=$4, color=$5, day=$6, section=$7, updated_at=CURRENT_TIMESTAMP 
+       WHERE id=$8 AND user_id=$9 RETURNING *`,
+      [title, description, isCompleted, timeEstimate, color, day, section, id, req.user.id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Задача не найдена или у вас нет прав на её изменение' });
     }
-  );
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Удалить задачу
-app.delete('/api/tasks/:id', (req, res) => {
+app.delete('/api/tasks/:id', ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
-  db.run('DELETE FROM tasks WHERE id = ?', [id], function (err) {
-    if (err) return res.status(500).json({ error: err.message });
+  try {
+    const result = await pool.query('DELETE FROM tasks WHERE id = $1 AND user_id = $2', [id, req.user.id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Задача не найдена или у вас нет прав на её удаление' });
+    }
     res.json({ success: true });
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Запуск сервера
