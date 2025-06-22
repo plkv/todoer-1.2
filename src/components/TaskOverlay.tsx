@@ -1,76 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { TimeSelector } from './TimeSelector';
 import { ColorSelector } from './ColorSelector';
-import { MaterialIcon } from './MaterialIcon';
-import { lightTheme, darkTheme } from '@/lib/colors';
-import { useTheme } from '@/hooks/useTheme';
-import { Task } from '@/types/Task';
+import { ITask } from '@/types/Task';
 
 interface TaskOverlayProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  task?: Task | null;
-  onSave: (taskData: {
-    id?: string;
-    title: string;
-    description: string;
-    timeEstimate: string;
-    color: string;
-    isCompleted: boolean;
-  }) => void;
+  task?: ITask | null;
+  onSave: (taskData: Partial<ITask>) => void;
   onDelete?: (taskId: string) => void;
 }
 
 export const TaskOverlay = ({ open, onOpenChange, task, onSave, onDelete }: TaskOverlayProps) => {
-  const { isDark } = useTheme();
-  const colors = isDark ? darkTheme : lightTheme;
-  
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [selectedTime, setSelectedTime] = useState('');
-  const [selectedColor, setSelectedColor] = useState('');
-  const [taskTitle, setTaskTitle] = useState('');
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [timeEstimate, setTimeEstimate] = useState<string | null>(null);
+  const [color, setColor] = useState<string | null>(null);
+  const [isCompleted, setIsCompleted] = useState(false);
 
-  // Обновляем состояние при изменении задачи
   useEffect(() => {
     if (task) {
-      setIsCompleted(task.isCompleted);
-      setSelectedTime(task.timeEstimate || '');
-      setSelectedColor(task.color || '');
-      setTaskTitle(task.title);
+      setTitle(task.title);
       setDescription(task.description || '');
+      setTimeEstimate(task.time_estimate || null);
+      setColor(task.color || null);
+      setIsCompleted(task.is_completed);
     } else {
-      // Сбрасываем состояние для новой задачи
-      setIsCompleted(false);
-      setSelectedTime('');
-      setSelectedColor('');
-      setTaskTitle('');
+      // Reset for new task
+      setTitle('');
       setDescription('');
+      setTimeEstimate(null);
+      setColor(null);
+      setIsCompleted(false);
     }
-  }, [task]);
-
-  const handleCheckboxChange = (checked: boolean | 'indeterminate') => {
-    setIsCompleted(checked === true);
-  };
+  }, [task, open]);
 
   const handleSave = () => {
     onSave({
       id: task?.id,
-      title: taskTitle || 'New task',
+      title: title || 'New Task',
       description,
-      timeEstimate: selectedTime,
-      color: selectedColor,
-      isCompleted
+      time_estimate: timeEstimate,
+      color,
+      is_completed: isCompleted,
     });
     onOpenChange(false);
   };
 
   const handleDelete = () => {
-    if (task && onDelete) {
+    if (task?.id && onDelete) {
       onDelete(task.id);
       onOpenChange(false);
     }
@@ -78,192 +68,63 @@ export const TaskOverlay = ({ open, onOpenChange, task, onSave, onDelete }: Task
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
-        className="w-[512px] p-0 gap-0 shadow-[0px_4px_32px_0px_rgba(0,0,0,0.12)]"
-        style={{ 
-          borderRadius: '20px',
-          padding: '24px 18px 40px 18px',
-          backgroundColor: colors.bg.primary,
-          border: 'none'
-        }}
-        hideCloseButton={true}
-      >
-        <div 
-          className="flex flex-col items-start self-stretch"
-          style={{ gap: '24px' }}
-        >
-          {/* Header with checkbox and delete */}
-          <div className="flex items-center justify-between self-stretch">
-            <div 
-              className="flex items-center flex-1"
-              style={{ gap: '4px' }}
+      <DialogContent className="sm:max-w-[480px]">
+        <DialogHeader>
+          <DialogTitle className="text-style-h-l">{task ? 'Edit Task' : 'New Task'}</DialogTitle>
+          <DialogDescription className="text-style-p-m">
+            {task ? 'Update the details of your task.' : 'Create a new task to track.'}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-6 py-4">
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Task title"
+          />
+          <Textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Add a description..."
+          />
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="isCompleted"
+              checked={isCompleted}
+              onCheckedChange={(checked) => setIsCompleted(Boolean(checked))}
+            />
+            <label
+              htmlFor="isCompleted"
+              className="leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              <Checkbox 
-                checked={isCompleted}
-                onCheckedChange={handleCheckboxChange}
-                className="w-5 h-5"
-              />
-              <span 
-                className="text-sm font-medium"
-                style={{ color: colors.content.secondary }}
-              >
-                {isCompleted ? 'Completed' : 'Not completed'}
-              </span>
-            </div>
+              <span className="text-style-p-m">Mark as completed</span>
+            </label>
+          </div>
+          <div>
+            <h4 className="mb-2 text-muted-foreground"><span className="text-style-h-s">TIME ESTIMATE</span></h4>
+            <TimeSelector value={timeEstimate || ''} onChange={setTimeEstimate} />
+          </div>
+          <div>
+            <h4 className="mb-2 text-muted-foreground"><span className="text-style-h-s">COLOR</span></h4>
+            <ColorSelector value={color} onChange={setColor} />
+          </div>
+        </div>
+        <DialogFooter className="sm:justify-between">
+          <div>
             {task && onDelete && (
               <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={handleDelete}
-                style={{ color: colors.content.tertiary }}
+                variant="destructive" 
+                onClick={handleDelete} 
               >
-                <MaterialIcon name="delete" size={20} />
+                <span className="text-style-p-m-semibold">Delete Task</span>
               </Button>
             )}
           </div>
-
-          {/* Date container */}
-          <div 
-            className="flex items-center self-stretch"
-            style={{ 
-              padding: '0px 6px',
-              gap: '10px'
-            }}
+          <Button 
+            onClick={handleSave} 
           >
-            <span 
-              style={{
-                color: colors.content.tertiary,
-                fontFamily: '"SF Pro"',
-                fontSize: '12px',
-                fontWeight: 510,
-                lineHeight: '16px',
-                letterSpacing: '-0.24px',
-                fontFeatureSettings: "'ss01' on, 'ss02' on, 'ss07' on, 'cv03' on, 'cv08' on, 'cv12' on"
-              }}
-            >
-              Wed, 28 May 2025
-            </span>
-          </div>
-
-          {/* Task Title Textarea */}
-          <div 
-            className="flex items-center self-stretch"
-            style={{ padding: '6px' }}
-          >
-            <Textarea
-              placeholder="Task title"
-              value={taskTitle}
-              onChange={(e) => setTaskTitle(e.target.value)}
-              className="flex-1 p-0 min-h-0 bg-transparent resize-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[color:var(--placeholder-color)]"
-              style={{
-                '--placeholder-color': colors.content.tertiary,
-                color: colors.content.primary,
-                fontFamily: '"SF Pro"',
-                fontSize: '18px',
-                fontWeight: 700,
-                lineHeight: '24px',
-                letterSpacing: '-0.54px',
-                fontFeatureSettings: "'ss01' on, 'ss02' on, 'ss07' on, 'cv03' on, 'cv08' on, 'cv12' on",
-                height: 'auto',
-                border: 'none',
-                outline: 'none'
-              } as React.CSSProperties}
-              rows={1}
-            />
-          </div>
-
-          {/* Description Textarea */}
-          <div 
-            className="flex flex-col items-center self-stretch"
-            style={{ padding: '6px' }}
-          >
-            <Textarea
-              placeholder="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="self-stretch p-0 bg-transparent resize-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[color:var(--placeholder-color)]"
-              style={{
-                '--placeholder-color': colors.content.tertiary,
-                minHeight: '48px',
-                color: colors.content.tertiary,
-                fontFamily: '"SF Pro"',
-                fontSize: '12px',
-                fontWeight: 510,
-                lineHeight: '16px',
-                letterSpacing: '-0.24px',
-                fontFeatureSettings: "'ss01' on, 'ss02' on, 'ss07' on, 'cv03' on, 'cv08' on, 'cv12' on",
-                border: 'none',
-                outline: 'none'
-              } as React.CSSProperties}
-              rows={3}
-            />
-          </div>
-
-          {/* Time Section */}
-          <div className="self-stretch">
-            <h3 
-              className="uppercase tracking-wide mb-4"
-              style={{
-                color: colors.content.tertiary,
-                fontFamily: '"SF Pro"',
-                fontSize: '11px',
-                fontWeight: 700,
-                lineHeight: '16px',
-                letterSpacing: '0%',
-                fontFeatureSettings: "'ss01' on, 'ss02' on, 'ss07' on, 'cv03' on, 'cv08' on, 'cv12' on"
-              }}
-            >
-              TIME
-            </h3>
-            <TimeSelector 
-              selectedTime={selectedTime}
-              onTimeSelect={setSelectedTime}
-              isDark={isDark}
-            />
-          </div>
-
-          {/* Color Section */}
-          <div className="self-stretch">
-            <h3 
-              className="uppercase tracking-wide mb-4"
-              style={{
-                color: colors.content.tertiary,
-                fontFamily: '"SF Pro"',
-                fontSize: '11px',
-                fontWeight: 700,
-                lineHeight: '16px',
-                letterSpacing: '0%',
-                fontFeatureSettings: "'ss01' on, 'ss02' on, 'ss07' on, 'cv03' on, 'cv08' on, 'cv12' on"
-              }}
-            >
-              COLOR
-            </h3>
-            <ColorSelector 
-              selectedColor={selectedColor}
-              onColorSelect={setSelectedColor}
-              isDark={isDark}
-            />
-          </div>
-
-          {/* Save Button */}
-          <div className="self-stretch">
-            <Button 
-              onClick={handleSave}
-              className="w-full"
-              style={{
-                backgroundColor: colors.content.primary,
-                color: colors.bg.primary,
-                height: '44px',
-                borderRadius: '12px',
-                fontFamily: '"SF Pro"',
-                fontSize: '16px',
-                fontWeight: 600
-              }}
-            >
-              {task ? 'Save Changes' : 'Create Task'}
-            </Button>
-          </div>
-        </div>
+            <span className="text-style-p-m-semibold">Save changes</span>
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

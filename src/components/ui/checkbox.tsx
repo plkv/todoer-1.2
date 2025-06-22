@@ -1,68 +1,30 @@
+"use client"
 
 import * as React from "react"
-import { Square, SquareCheck } from "lucide-react"
-import { colors } from "@/lib/colors"
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
+import { Check } from "lucide-react"
+
 import { cn } from "@/lib/utils"
 
-interface CheckboxProps {
-  checked?: boolean | 'indeterminate';
-  onCheckedChange?: (checked: boolean | 'indeterminate') => void;
-  className?: string;
-}
-
 const Checkbox = React.forwardRef<
-  HTMLButtonElement,
-  CheckboxProps
->(({ className, checked = false, onCheckedChange, ...props }, ref) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-
-  const handleClick = () => {
-    onCheckedChange?.(!checked);
-  };
-
-  const getIconColor = () => {
-    if (checked) {
-      // Когда задача выполнена - всегда tertiary, меняется только по ховеру
-      return isHovered ? colors.content.secondary : colors.content.tertiary;
-    }
-    if (isHovered) {
-      return colors.content.secondary;
-    }
-    return colors.content.tertiary;
-  };
-
-  return (
-    <button
-      ref={ref}
-      type="button"
-      className={cn(
-        "flex items-center justify-center w-4 h-4 transition-colors focus:outline-none",
-        className
-      )}
-      onClick={handleClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      {...props}
+  React.ElementRef<typeof CheckboxPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <CheckboxPrimitive.Root
+    ref={ref}
+    className={cn(
+      "peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
+      className
+    )}
+    {...props}
+  >
+    <CheckboxPrimitive.Indicator
+      className={cn("flex items-center justify-center text-current")}
     >
-      {checked ? (
-        <SquareCheck 
-          size={16} 
-          strokeWidth={2.25}
-          absoluteStrokeWidth={false}
-          style={{ color: getIconColor() }}
-        />
-      ) : (
-        <Square 
-          size={16} 
-          strokeWidth={2.25}
-          absoluteStrokeWidth={false}
-          style={{ color: getIconColor() }}
-        />
-      )}
-    </button>
-  );
-});
-
-Checkbox.displayName = "Checkbox";
+      <Check className="h-4 w-4" />
+    </CheckboxPrimitive.Indicator>
+  </CheckboxPrimitive.Root>
+))
+Checkbox.displayName = CheckboxPrimitive.Root.displayName
 
 export { Checkbox }

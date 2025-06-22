@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -20,9 +19,23 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'sf-pro': ['SF Pro', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-				'sf-pro-bold': ['SF Pro', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-				'sf-pro-semibold': ['SF Pro', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+				sans: ['SF Pro', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+			},
+			fontSize: {
+				'h-xl': ['24px', '28px'],
+				'h-l': ['18px', '24px'],
+				'h-s': ['11px', '16px'],
+				'p-m': ['12px', '16px'],
+				'p-s': ['10px', '12px'],
+			},
+			fontWeight: {
+				// P/M -> font-medium (500) - стандартный medium
+				// P/M Bold -> font-semibold (600) - стандартный semibold
+				// H/* -> font-bold (700) - стандартный bold
+			},
+			letterSpacing: {
+				'h-l': '-0.03em',
+				'p-m': '-0.02em',
 			},
 			colors: {
 				border: 'hsl(var(--border))',

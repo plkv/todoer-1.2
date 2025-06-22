@@ -1,50 +1,37 @@
-import React, { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { usePlannerState } from '@/hooks/usePlannerState';
+import { useTheme } from '@/hooks/useTheme';
+import { getWeekDates, getCurrentDay } from '@/lib/utils';
 import { PlannerHeader } from './PlannerHeader';
 import { DayColumn } from './DayColumn';
 import { BacklogSection } from './BacklogSection';
 import { TaskOverlay } from './TaskOverlay';
-import { lightTheme, darkTheme } from '@/lib/colors';
-import { usePlannerState } from '@/hooks/usePlannerState';
-import { useTheme } from '@/hooks/useTheme';
-import { getWeekDates, getCurrentDay } from '@/lib/utils';
+import { ITask } from '@/types/Task';
 
 export const PlannerView = () => {
-  const { isDark, toggleTheme } = useTheme();
-  const colors = isDark ? darkTheme : lightTheme;
-  
+  const { isDark } = useTheme();
   const {
-    currentView,
-    setCurrentView,
     weekData,
     backlogData,
     isOverlayOpen,
     setIsOverlayOpen,
+    selectedTask,
     handleTaskClick,
     handleToggleComplete,
-    handleAddTask,
     handleSaveNewTask,
+    handleSaveTask,
+    handleDeleteTask,
+    handleAddTask,
     handleMoveTask,
     weekOffset,
-    handlePrevWeek,
-    handleNextWeek,
-    selectedTask,
-    handleSaveTask,
-    handleDeleteTask
   } = usePlannerState();
 
   const weekDates = useMemo(() => getWeekDates(weekOffset), [weekOffset]);
   const currentDay = useMemo(() => getCurrentDay(), []);
 
-  const handleSaveTaskData = (taskData: {
-    id?: string;
-    title: string;
-    description: string;
-    timeEstimate: string;
-    color: string;
-    isCompleted: boolean;
-  }) => {
+  const handleSave = (taskData: ITask) => {
     if (taskData.id) {
       handleSaveTask(taskData.id, taskData);
     } else {
@@ -54,26 +41,11 @@ export const PlannerView = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="min-h-screen font-sf-pro" style={{ backgroundColor: colors.bg.primary }}>
-        <PlannerHeader 
-          currentView={currentView}
-          onViewChange={setCurrentView}
-          isDark={isDark}
-          onThemeToggle={toggleTheme}
-          onPrevWeek={handlePrevWeek}
-          onNextWeek={handleNextWeek}
-        />
-        
-        {/* Week Grid */}
+      <div className="flex h-screen w-full flex-col bg-background font-sans text-foreground">
+        <PlannerHeader />
         <div 
-          className="grid grid-cols-7"
-          style={{ 
-            backgroundColor: 'transparent',
-            paddingLeft: '6px',
-            paddingRight: '6px',
-            gap: '4px',
-            gridTemplateRows: 'auto auto minmax(140px, auto) minmax(140px, auto) minmax(140px, auto)'
-          }}
+          className="grid flex-1"
+          style={{ gridTemplateColumns: 'repeat(7, 1fr)', gridTemplateRows: 'auto 1fr' }}
         >
           {weekDates.map(({ day, date }) => (
             <DayColumn
@@ -84,26 +56,25 @@ export const PlannerView = () => {
               isActive={weekOffset === 0 && day === currentDay}
               onTaskClick={handleTaskClick}
               onToggleComplete={handleToggleComplete}
-              onAddTask={(dayName, section) => handleAddTask(dayName, section)}
+              onAddTask={handleAddTask}
               onMoveTask={handleMoveTask}
-              isDark={isDark}
             />
           ))}
         </div>
-
-        <BacklogSection
-          tasks={backlogData}
-          onTaskClick={handleTaskClick}
-          onToggleComplete={handleToggleComplete}
-          onAddTask={() => handleAddTask()}
-          onMoveTask={handleMoveTask}
-        />
-
-        <TaskOverlay 
+        <div className="border-t">
+          <BacklogSection 
+            tasks={backlogData}
+            onTaskClick={handleTaskClick}
+            onToggleComplete={handleToggleComplete}
+            onAddTask={() => handleAddTask(null, 'backlog')}
+            onMoveTask={handleMoveTask}
+          />
+        </div>
+        <TaskOverlay
           open={isOverlayOpen}
           onOpenChange={setIsOverlayOpen}
           task={selectedTask}
-          onSave={handleSaveTaskData}
+          onSave={handleSave}
           onDelete={handleDeleteTask}
         />
       </div>

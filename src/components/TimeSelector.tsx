@@ -1,16 +1,13 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { lightTheme, darkTheme } from '@/lib/colors';
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Plus, X } from 'lucide-react';
 
 interface TimeSelectorProps {
-  selectedTime: string;
-  onTimeSelect: (time: string) => void;
-  isDark?: boolean;
+  value: string;
+  onChange: (value: string) => void;
 }
 
 const timeOptions = [
-  { value: '', label: '', icon: true },
   { value: '5m', label: '5m' },
   { value: '15m', label: '15m' },
   { value: '30m', label: '30m' },
@@ -19,35 +16,27 @@ const timeOptions = [
   { value: '3h+', label: '3h+' }
 ];
 
-export const TimeSelector = ({ selectedTime, onTimeSelect, isDark = false }: TimeSelectorProps) => {
-  const colors = isDark ? darkTheme : lightTheme;
-
+export const TimeSelector = ({ value, onChange }: TimeSelectorProps) => {
   return (
-    <div className="flex gap-2">
-      {timeOptions.map((option, index) => {
-        const isSelected = selectedTime === option.value;
-        const isFirst = index === 0;
-        
-        return (
-          <Button
-            key={option.value || 'empty'}
-            variant="ghost"
-            size="sm"
-            onClick={() => onTimeSelect(option.value)}
-            className={`h-9 px-4 rounded-full text-sm font-medium ${isFirst ? 'w-9 px-0' : ''}`}
-            style={{
-              backgroundColor: isSelected ? colors.content.primary : colors.fill.secondary,
-              color: isSelected ? colors.bg.primary : colors.content.secondary,
-            }}
-          >
-            {isFirst ? (
-              <Plus size={20} strokeWidth={2.25} absoluteStrokeWidth={false} style={{ transform: 'rotate(45deg)' }} />
-            ) : (
-              option.label
-            )}
-          </Button>
-        );
-      })}
+    <div className="flex items-center gap-2">
+      <button 
+        onClick={() => onChange("")}
+        className="flex h-9 w-9 items-center justify-center rounded-full border bg-muted text-muted-foreground transition-colors hover:bg-accent"
+      >
+        <Plus size={20} className="-rotate-45" />
+      </button>
+      <ToggleGroup 
+        type="single" 
+        value={value} 
+        onValueChange={(val) => { if (val) onChange(val) }}
+        className="flex-wrap justify-start"
+      >
+        {timeOptions.map((option) => (
+          <ToggleGroupItem key={option.value} value={option.value} aria-label={option.value} className="text-style-p-m">
+            {option.label}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
     </div>
   );
 };

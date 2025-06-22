@@ -1,21 +1,12 @@
-
-import React, { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { TaskCard } from './TaskCard';
 import { Plus, Settings, ArrowUpDown } from 'lucide-react';
-import { colors } from '@/lib/colors';
-
-interface Task {
-  id: string;
-  title: string;
-  isCompleted: boolean;
-  timeEstimate?: string;
-  color?: string;
-}
+import { ITask } from '@/types/Task';
+import { cn } from '@/lib/utils';
 
 interface BacklogSectionProps {
-  tasks: Task[];
-  onTaskClick: (task: Task) => void;
+  tasks: ITask[];
+  onTaskClick: (task: ITask) => void;
   onToggleComplete: (id: string, completed: boolean) => void;
   onAddTask: () => void;
   onMoveTask?: (taskId: string, sourceLocation: { day?: string; section?: string }, targetLocation: { day?: string; section?: string }) => void;
@@ -28,7 +19,6 @@ export const BacklogSection = ({
   onAddTask,
   onMoveTask
 }: BacklogSectionProps) => {
-  const [isHovered, setIsHovered] = useState(false);
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'task',
@@ -45,73 +35,42 @@ export const BacklogSection = ({
   return (
     <div 
       ref={drop}
-      className="border-t"
-      style={{ 
-        backgroundColor: isOver ? colors.fill.secondary : 'transparent',
-        borderColor: colors.border.primary,
-        marginTop: '6px',
-        padding: '6px',
-        transition: 'background-color 0.2s'
-      }}
+      className={cn(
+        "border-t p-2 transition-colors",
+        isOver ? "bg-muted" : "bg-transparent"
+      )}
     >
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between" style={{ marginBottom: '6px' }}>
-          <div 
-            className="flex items-center"
-            style={{ gap: '4px' }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            <h2 className="font-sf-pro-l" style={{ color: colors.content.primary }}>
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-2 flex items-center justify-between">
+          <div className="group flex items-center gap-1">
+            <h2 className="text-style-h-l text-foreground">
               Backlog
             </h2>
-            {isHovered && (
-              <button
-                onClick={onAddTask}
-                className="h-7 w-7 rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center"
-                style={{ color: colors.content.tertiary }}
-              >
-                <Plus size={16} strokeWidth={2} />
-              </button>
-            )}
+            <button
+              onClick={onAddTask}
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-accent"
+            >
+              <Plus size={16} strokeWidth={2} />
+            </button>
           </div>
 
-          <div className="flex items-center" style={{ gap: '6px' }}>
-            <div className="flex items-center" style={{ gap: '4px' }}>
-              <button 
-                className="flex items-center hover:opacity-70 transition-opacity rounded-md"
-                style={{ color: colors.content.tertiary, gap: '4px', padding: '4px' }}
-              >
-                <span className="font-sf-pro-s">Filter</span>
-                <Settings size={14} strokeWidth={2} />
-              </button>
-              
-              <button 
-                className="flex items-center hover:opacity-70 transition-opacity rounded-md"
-                style={{ color: colors.content.tertiary, gap: '4px', padding: '4px' }}
-              >
-                <span className="font-sf-pro-s">Sort</span>
-                <ArrowUpDown size={14} strokeWidth={2} />
-              </button>
-            </div>
-
-            <button
-              className="hover:bg-gray-100 transition-colors rounded-lg font-sf-pro-m"
-              style={{ color: colors.content.secondary, padding: '4px 6px' }}
-            >
-              Style Guide
+          <div className="flex items-center gap-2">
+            <button className="text-style-p-m flex items-center gap-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+              <span>Filter</span>
+              <Settings size={14} strokeWidth={2} />
+            </button>
+            <button className="text-style-p-m flex items-center gap-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+              <span>Sort</span>
+              <ArrowUpDown size={14} strokeWidth={2} />
             </button>
           </div>
         </div>
 
-        <div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 2xl:grid-cols-8"
-          style={{ gap: '4px' }}
-        >
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
           {tasks.map((task) => (
             <TaskCard
               key={task.id}
-              {...task}
+              task={task}
               onClick={() => onTaskClick(task)}
               onToggleComplete={onToggleComplete}
               sourceLocation={{}}

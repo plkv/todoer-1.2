@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Task, WeekData, DayTasks } from '@/types/Task';
+import { ITask, WeekData, DayTasks } from '@/types/Task';
 import { tasks as tasksApi } from '@/api/client';
 
 // Эта функция-хелпер распределяет плоский список задач по дням и секциям
-const distributeTasksToWeek = (tasks: Task[]): WeekData => {
+const distributeTasksToWeek = (tasks: ITask[]): WeekData => {
   const weekData: WeekData = {
     'MON': { morning: [], day: [], evening: [] },
     'TUE': { morning: [], day: [], evening: [] },
@@ -31,12 +31,12 @@ export const usePlannerState = () => {
   const queryClient = useQueryClient();
 
   const [currentView, setCurrentView] = useState<'Week' | 'Day' | 'Month'>('Week');
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [newTaskContext, setNewTaskContext] = useState<{ day?: string; section?: string }>({});
 
   // Загрузка всех задач с сервера с помощью React Query
-  const { data: allTasks = [], isLoading: isLoadingTasks } = useQuery<Task[]>({
+  const { data: allTasks = [], isLoading: isLoadingTasks } = useQuery<ITask[]>({
     queryKey: ['tasks'],
     queryFn: tasksApi.getAll,
   });
@@ -56,17 +56,16 @@ export const usePlannerState = () => {
     },
     onError: (error: any) => {
       console.error("Ошибка при выполнении операции:", error);
-      // Здесь можно было бы показать toast с ошибкой
     },
   };
 
   const createTaskMutation = useMutation({
-    mutationFn: (newTaskData: Omit<Task, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => tasksApi.create(newTaskData),
+    mutationFn: (newTaskData: Omit<ITask, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => tasksApi.create(newTaskData),
     ...mutationOptions,
   });
   
   const updateTaskMutation = useMutation({
-    mutationFn: ({ taskId, data }: { taskId: string; data: Partial<Task> }) => tasksApi.update(taskId, data),
+    mutationFn: ({ taskId, data }: { taskId: string; data: Partial<ITask> }) => tasksApi.update(taskId, data),
     ...mutationOptions,
   });
 
@@ -83,45 +82,25 @@ export const usePlannerState = () => {
     setIsOverlayOpen(true);
   };
 
-  const handleSaveNewTask = (taskData: {
-    title: string;
-    description: string;
-    timeEstimate: string;
-    color: string;
-  }) => {
+  const handleSaveNewTask = (taskData: Partial<Omit<ITask, 'id' | 'user_id' | 'created_at' | 'updated_at'>>) => {
     createTaskMutation.mutate({
-      title: taskData.title,
-      description: taskData.description,
-      color: taskData.color,
+      title: taskData.title || 'Новая задача',
+      description: taskData.description || null,
+      color: taskData.color || null,
       is_completed: false,
       day: newTaskContext.day || null,
       section: newTaskContext.section || null,
-      time_estimate: taskData.timeEstimate,
+      time_estimate: taskData.time_estimate || null,
     });
     setNewTaskContext({});
   };
 
-  const handleSaveTask = (taskId: string, taskData: {
-    title: string;
-    description: string;
-    timeEstimate: string;
-    color: string;
-    isCompleted: boolean;
-  }) => {
-    updateTaskMutation.mutate({ taskId, data: {
-      title: taskData.title,
-      description: taskData.description,
-      time_estimate: taskData.timeEstimate,
-      color: taskData.color,
-      is_completed: taskData.isCompleted
-    } });
+  const handleSaveTask = (taskId: string, taskData: Partial<ITask>) => {
+    updateTaskMutation.mutate({ taskId, data: taskData });
   };
   
   const handleToggleComplete = (taskId: string, completed: boolean) => {
-    const task = allTasks.find(t => t.id === taskId);
-    if(task) {
-      updateTaskMutation.mutate({ taskId, data: { is_completed: completed } });
-    }
+    updateTaskMutation.mutate({ taskId, data: { is_completed: completed } });
   };
 
   const handleDeleteTask = (taskId: string) => {
@@ -133,19 +112,22 @@ export const usePlannerState = () => {
     sourceLocation: { day?: string; section?: string },
     targetLocation: { day?: string; section?: string }
   ) => {
-    const task = allTasks.find(t => t.id === taskId);
-    if (task) {
-        updateTaskMutation.mutate({ 
-            taskId, 
-            data: { 
-                day: targetLocation.day || null,
-                section: targetLocation.section || null
-            } 
-        });
-    }
+    const taskToMove = allTasks.find(t => t.id === taskId);
+    if (!taskToMove) return;
+
+    const updatedTask = {
+      ...taskToMove,
+      day: targetLocation.day || null,
+      section: targetLocation.section || null,
+    };
+
+    updateTaskMutation.mutate({ 
+      taskId, 
+      data: updatedTask 
+    });
   };
 
-  const handleTaskClick = (task: Task) => {
+  const handleTaskClick = (task: ITask) => {
     setSelectedTask(task);
     setIsOverlayOpen(true);
   };

@@ -27,14 +27,14 @@ export const PlannerHeader = () => {
     <div className="border-b bg-background px-4 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-semibold text-foreground">Planner</h1>
+          <h1 className="text-style-h-xl">Planner</h1>
           
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/60" onClick={handlePrevWeek}>
               <ChevronLeft size={16} strokeWidth={2} />
             </Button>
             
-            <Button variant="secondary" className="font-semibold">Today</Button>
+            <Button variant="secondary" className="text-style-p-m-semibold">Today</Button>
             
             <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/60" onClick={handleNextWeek}>
               <ChevronRight size={16} strokeWidth={2} />
@@ -48,7 +48,7 @@ export const PlannerHeader = () => {
                 variant={currentView === view ? 'outline' : 'ghost'}
                 size="sm"
                 onClick={() => setCurrentView(view)}
-                className="font-semibold"
+                className="text-style-p-m-semibold"
               >
                 {view}
               </Button>
@@ -73,12 +73,12 @@ export const PlannerHeader = () => {
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{user?.name}</p>
+                  <p className="text-style-p-m-semibold leading-none">{user?.name}</p>
                   <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => logout()} className="cursor-pointer">
+              <DropdownMenuItem onSelect={() => logout()} className="cursor-pointer text-style-p-m">
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>

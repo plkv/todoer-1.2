@@ -1,4 +1,4 @@
-export interface Task {
+export interface ITask {
   id: string;
   user_id: number;
   title: string;
@@ -13,9 +13,11 @@ export interface Task {
 }
 
 export interface DayTasks {
-  morning: Task[];
-  day: Task[];
-  evening: Task[];
+  morning: ITask[];
+  day: ITask[];
+  evening: ITask[];
 }
 
 export type WeekData = Record<string, DayTasks>;
+
+export type Task = ITask; // Alias for backward compatibility if needed

@@ -1,18 +1,17 @@
 import React from 'react';
 import { TimeSection } from './TimeSection';
-import { lightTheme, darkTheme } from '@/lib/colors';
-import { Task, DayTasks } from '@/types/Task';
+import { ITask, DayTasks } from '@/types/Task';
+import { cn } from '@/lib/utils';
 
 interface DayColumnProps {
   dayName: string;
   date: string;
   tasks: DayTasks;
   isActive?: boolean;
-  onTaskClick: (task: Task) => void;
+  onTaskClick: (task: ITask) => void;
   onToggleComplete: (id: string, completed: boolean) => void;
   onAddTask: (day: string, section: string) => void;
   onMoveTask?: (taskId: string, sourceLocation: { day?: string; section?: string }, targetLocation: { day?: string; section?: string }) => void;
-  isDark?: boolean;
 }
 
 export const DayColumn = ({ 
@@ -23,45 +22,32 @@ export const DayColumn = ({
   onTaskClick, 
   onToggleComplete, 
   onAddTask,
-  onMoveTask,
-  isDark = false
+  onMoveTask
 }: DayColumnProps) => {
-  const colors = isDark ? darkTheme : lightTheme;
 
   return (
-    <div 
-      className="grid grid-rows-subgrid row-span-5"
-      style={{
-        backgroundColor: 'transparent',
-        gap: '6px'
-      }}
-    >
+    <div className="grid grid-rows-subgrid row-span-5 gap-1.5">
       {/* Day Header */}
-      <div 
-        className="flex flex-col flex-shrink-0"
-        style={{ 
-          padding: '6px',
-          gap: '4px'
-        }}
-      >
+      <div className="flex flex-col flex-shrink-0 p-1.5 gap-1">
         <div className="flex items-center gap-2">
-          <h2 className="font-sf-pro-s" style={{ color: isActive ? colors.content.primary : colors.content.tertiary }}>
-            {dayName}
+          <h2 
+            className={cn(isActive ? "text-foreground" : "text-muted-foreground")}
+          >
+            <span className="text-style-h-s">{dayName}</span>
           </h2>
           {isActive && (
-            <div 
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: colors.accent.blue }}
-            />
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
           )}
         </div>
-        <h3 className="font-sf-pro-m-bold" style={{ color: isActive ? colors.content.primary : colors.content.tertiary, fontSize: '16px', lineHeight: '20px' }}>
-          {date}
+        <h3 
+          className={cn(isActive ? "text-foreground" : "text-muted-foreground")}
+        >
+          <span className="text-style-h-l">{date}</span>
         </h3>
       </div>
 
       {/* Spacer for alignment */}
-      <div></div>
+      <div />
 
       {/* Time Sections */}
       <TimeSection
@@ -72,7 +58,6 @@ export const DayColumn = ({
         onAddTask={(section) => onAddTask(dayName, section)}
         onMoveTask={onMoveTask}
         dayName={dayName}
-        isDark={isDark}
       />
 
       <TimeSection
@@ -83,7 +68,6 @@ export const DayColumn = ({
         onAddTask={(section) => onAddTask(dayName, section)}
         onMoveTask={onMoveTask}
         dayName={dayName}
-        isDark={isDark}
       />
 
       <TimeSection
@@ -94,7 +78,6 @@ export const DayColumn = ({
         onAddTask={(section) => onAddTask(dayName, section)}
         onMoveTask={onMoveTask}
         dayName={dayName}
-        isDark={isDark}
       />
     </div>
   );

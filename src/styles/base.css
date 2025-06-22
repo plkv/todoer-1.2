@@ -12,37 +12,37 @@
     --foreground-secondary: 0 0% 5.9% / 0.64;
     --foreground-tertiary: 0 0% 5.9% / 0.48;
     
-    --background: var(--background-primary);
-    --foreground: var(--foreground-primary);
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
 
-    --card: var(--background-primary);
-    --card-foreground: var(--foreground-primary);
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
 
-    --popover: var(--background-primary);
-    --popover-foreground: var(--foreground-primary);
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
 
-    --primary: var(--foreground-primary);
-    --primary-foreground: var(--background-primary);
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: var(--fill-primary);
-    --secondary-foreground: var(--foreground-primary);
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
 
-    --muted: var(--fill-primary);
-    --muted-foreground: var(--foreground-secondary);
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
 
-    --accent: var(--fill-primary);
-    --accent-foreground: var(--foreground-primary);
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: var(--fill-primary);
-    --input: var(--fill-primary);
-    --ring: var(--foreground-primary);
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -98,5 +98,38 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* H/XL - SF Pro Bold, 24px */
+  .text-style-h-xl {
+    @apply text-h-xl font-bold font-sf-pro;
+  }
+  /* H/L - SF Pro Bold, 18px */
+  .text-style-h-l {
+    @apply text-h-l font-bold tracking-h-l font-sf-pro;
+  }
+  /* H/S - SF Pro Bold Uppercase, 11px */
+  .text-style-h-s {
+    @apply text-h-s font-bold uppercase font-sf-pro;
+  }
+  /* P/M - SF Pro Medium, 12px */
+  .text-style-p-m {
+    @apply text-p-m font-medium tracking-p-m font-sf-pro;
+  }
+  /* P/M Semibold - SF Pro Semibold, 12px */
+  .text-style-p-m-semibold {
+    @apply text-p-m font-semibold tracking-p-m font-sf-pro;
+  }
+  /* P/S - SF Pro, 10px */
+  .text-style-p-s {
+    @apply text-p-s font-sf-pro;
+  }
+}
+
+@layer utilities {
+  .font-sf-pro {
+    font-feature-settings: 'ss01' on, 'ss02' on, 'ss07' on, 'cv03' on, 'cv08' on, 'cv12' on;
   }
 }
