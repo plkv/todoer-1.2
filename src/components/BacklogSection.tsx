@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 interface BacklogSectionProps {
   tasks: ITask[];
   onTaskClick: (task: ITask) => void;
-  onToggleComplete: (id: string, completed: boolean) => void;
+  onToggleComplete: (task: ITask, completed: boolean) => void;
   onAddTask: () => void;
   onMoveTask?: (taskId: string, sourceLocation: { day?: string; section?: string }, targetLocation: { day?: string; section?: string }) => void;
 }

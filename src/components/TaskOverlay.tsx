@@ -49,6 +49,7 @@ export const TaskOverlay = ({ open, onOpenChange, task, onSave, onDelete }: Task
 
   const handleSave = () => {
     onSave({
+      ...task,
       id: task?.id,
       title: title || 'New Task',
       description,

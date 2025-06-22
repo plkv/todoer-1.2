@@ -6,7 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 interface TaskCardProps {
   task: Task;
   onClick: () => void;
-  onToggleComplete: (id: string, completed: boolean) => void;
+  onToggleComplete: (task: Task, completed: boolean) => void;
   sourceLocation?: { day?: string; section?: string };
 }
 
@@ -19,9 +19,8 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
     }),
   }));
 
-  const handleCheckboxClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onToggleComplete(task.id, !task.is_completed);
+  const handleCheckboxChange = (checked: boolean) => {
+    onToggleComplete(task, checked);
   };
 
   return (
@@ -36,9 +35,11 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
         task.color ? `bg-${task.color}-100 dark:bg-${task.color}-900/50` : 'bg-muted/70 hover:bg-muted'
       )}
     >
-      <div onClick={handleCheckboxClick} className="flex-shrink-0">
-        <Checkbox checked={task.is_completed} />
-      </div>
+      <Checkbox 
+        checked={task.is_completed}
+        onCheckedChange={handleCheckboxChange}
+        onClick={(e) => e.stopPropagation()}
+      />
 
       <p 
         className={cn(

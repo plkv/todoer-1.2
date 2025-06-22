@@ -48,30 +48,52 @@ export const usePlannerState = () => {
 
   // --- МУТАЦИИ (создание, обновление, удаление) ---
   
-  const mutationOptions = {
+  const createTaskMutation = useMutation({
+    mutationFn: (newTaskData: Omit<ITask, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => tasksApi.create(newTaskData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       setIsOverlayOpen(false);
       setSelectedTask(null);
     },
     onError: (error: any) => {
-      console.error("Ошибка при выполнении операции:", error);
+      console.error("Ошибка при создании задачи:", error);
     },
-  };
-
-  const createTaskMutation = useMutation({
-    mutationFn: (newTaskData: Omit<ITask, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => tasksApi.create(newTaskData),
-    ...mutationOptions,
   });
   
   const updateTaskMutation = useMutation({
-    mutationFn: ({ taskId, data }: { taskId: string; data: Partial<ITask> }) => tasksApi.update(taskId, data),
-    ...mutationOptions,
+    mutationFn: ({ taskId, data }: { taskId: string; data: Partial<ITask> }) =>
+      tasksApi.update(taskId, data),
+    onMutate: async ({ taskId, data }) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks'] });
+      const previousTasks = queryClient.getQueryData<ITask[]>(['tasks']);
+      queryClient.setQueryData<ITask[]>(['tasks'], (oldTasks = []) =>
+        oldTasks.map((task) =>
+          task.id === taskId ? { ...task, ...data } : task
+        )
+      );
+      return { previousTasks };
+    },
+    onError: (err, variables, context) => {
+      console.error("Ошибка обновления задачи, откат:", err);
+      if (context?.previousTasks) {
+        queryClient.setQueryData(['tasks'], context.previousTasks);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    },
   });
 
   const deleteTaskMutation = useMutation({
     mutationFn: (taskId: string) => tasksApi.delete(taskId),
-    ...mutationOptions,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      setIsOverlayOpen(false);
+      setSelectedTask(null);
+    },
+    onError: (error: any) => {
+      console.error("Ошибка при удалении задачи:", error);
+    },
   });
 
   // --- ОБРАБОТЧИКИ ДЕЙСТВИЙ ---
@@ -87,7 +109,7 @@ export const usePlannerState = () => {
       title: taskData.title || 'Новая задача',
       description: taskData.description || null,
       color: taskData.color || null,
-      is_completed: false,
+      is_completed: taskData.is_completed || false,
       day: newTaskContext.day || null,
       section: newTaskContext.section || null,
       time_estimate: taskData.time_estimate || null,
@@ -96,11 +118,22 @@ export const usePlannerState = () => {
   };
 
   const handleSaveTask = (taskId: string, taskData: Partial<ITask>) => {
-    updateTaskMutation.mutate({ taskId, data: taskData });
+    updateTaskMutation.mutate(
+      { taskId, data: taskData },
+      {
+        onSuccess: () => {
+          setIsOverlayOpen(false);
+          setSelectedTask(null);
+        },
+      }
+    );
   };
   
-  const handleToggleComplete = (taskId: string, completed: boolean) => {
-    updateTaskMutation.mutate({ taskId, data: { is_completed: completed } });
+  const handleToggleComplete = (task: ITask, completed: boolean) => {
+    updateTaskMutation.mutate({
+      taskId: task.id,
+      data: { ...task, is_completed: completed },
+    });
   };
 
   const handleDeleteTask = (taskId: string) => {

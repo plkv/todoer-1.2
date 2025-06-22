@@ -31,7 +31,7 @@ export const PlannerView = () => {
   const weekDates = useMemo(() => getWeekDates(weekOffset), [weekOffset]);
   const currentDay = useMemo(() => getCurrentDay(), []);
 
-  const handleSave = (taskData: ITask) => {
+  const handleSave = (taskData: Partial<ITask>) => {
     if (taskData.id) {
       handleSaveTask(taskData.id, taskData);
     } else {

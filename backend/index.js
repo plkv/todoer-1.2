@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -189,12 +190,12 @@ app.get('/api/tasks', ensureAuthenticated, async (req, res) => {
 // Создать задачу
 app.post('/api/tasks', ensureAuthenticated, async (req, res) => {
   const user_id = req.user.id;
-  const { title, description, isCompleted, timeEstimate, color, day, section } = req.body;
+  const { title, description, is_completed, time_estimate, color, day, section } = req.body;
   try {
     const result = await pool.query(
       `INSERT INTO tasks (user_id, title, description, is_completed, time_estimate, color, day, section) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-      [user_id, title, description, isCompleted, timeEstimate, color, day, section]
+      [user_id, title, description, is_completed, time_estimate, color, day, section]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -205,18 +206,37 @@ app.post('/api/tasks', ensureAuthenticated, async (req, res) => {
 // Обновить задачу
 app.put('/api/tasks/:id', ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
-  const { title, description, isCompleted, timeEstimate, color, day, section } = req.body;
+  const body = req.body;
+  
   try {
-    const result = await pool.query(
-      `UPDATE tasks SET title=$1, description=$2, is_completed=$3, time_estimate=$4, color=$5, day=$6, section=$7, updated_at=CURRENT_TIMESTAMP 
-       WHERE id=$8 AND user_id=$9 RETURNING *`,
-      [title, description, isCompleted, timeEstimate, color, day, section, id, req.user.id]
-    );
-    if (result.rowCount === 0) {
+    // Получаем текущее состояние задачи
+    const currentTaskResult = await pool.query('SELECT * FROM tasks WHERE id = $1 AND user_id = $2', [id, req.user.id]);
+    if (currentTaskResult.rowCount === 0) {
       return res.status(404).json({ error: 'Задача не найдена или у вас нет прав на её изменение' });
     }
+    const currentTask = currentTaskResult.rows[0];
+
+    // Объединяем старые данные с новыми, чтобы избежать null
+    const newTaskData = { ...currentTask, ...body };
+    const { title, description, is_completed, time_estimate, color, day, section } = newTaskData;
+
+    const result = await pool.query(
+      `UPDATE tasks SET 
+        title=$1, 
+        description=$2, 
+        is_completed=$3, 
+        time_estimate=$4, 
+        color=$5, 
+        day=$6, 
+        section=$7, 
+        updated_at=CURRENT_TIMESTAMP
+       WHERE id=$8 AND user_id=$9 RETURNING *`,
+      [title, description, is_completed, time_estimate, color, day, section, id, req.user.id]
+    );
+    
     res.json(result.rows[0]);
   } catch (err) {
+    console.error('Ошибка обновления задачи:', err);
     res.status(500).json({ error: err.message });
   }
 });
