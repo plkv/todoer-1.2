@@ -4,120 +4,84 @@
 
 @layer base {
   :root {
-    --background-primary: 0 0% 100% / 1;
-    --background-secondary: 0 0% 96.9% / 1;
-    --fill-primary: 0 0% 97% / 1;
+    /* Backgrounds (surface) */
+    --bg-prim: 0 0% 100% / 1; /* был background, background-primary */
+    --bg-sec: 0 0% 96.9% / 1; /* был background-secondary, card */
+    --bg-tert: 240 4.8% 95.9% / 1; /* был muted */
 
-    --foreground-primary: 0 0% 5.9% / 1;
-    --foreground-secondary: 0 0% 5.9% / 0.64;
-    --foreground-tertiary: 0 0% 5.9% / 0.32;
-    
-    --background: 0 0% 100% / 1;
-    --foreground: 240 10% 3.9% / 1;
+    /* Fills (low contrast fills for components) */
+    --fill-prim: 0 0% 97% / 1; /* был fill-primary */
+    --fill-sec: 240 4.8% 95.9% / 1; /* был accent */
 
-    --card: 0 0% 100% / 1;
-    --card-foreground: 240 10% 3.9% / 1;
+    /* Borders */
+    --brd-prim: 240 5.9% 90% / 1; /* был border */
+    --brd-sec: 220 13% 91% / 1; /* был sidebar-border */
 
-    --popover: 0 0% 100% / 1;
-    --popover-foreground: 240 10% 3.9% / 1;
+    /* Accents (high contrast fills) */
+    --accent-prim: 240 5.9% 10% / 1; /* был primary */
+    --accent-sec: 240 4.8% 95.9% / 1; /* был secondary */
+    --accent-destructive: 0 84.2% 60.2% / 1; /* был destructive */
 
-    --primary: 240 5.9% 10% / 1;
-    --primary-foreground: 0 0% 98% / 1;
+    /* Content (text/icons) */
+    --content-prim: 0 0% 5.9% / 1; /* был foreground, foreground-primary */
+    --content-sec: 0 0% 5.9% / 0.64; /* был foreground-secondary */
+    --content-tert: 0 0% 5.9% / 0.32; /* был foreground-tertiary */
 
-    --secondary: 240 4.8% 95.9% / 1;
-    --secondary-foreground: 240 5.9% 10% / 1;
-
-    --muted: 240 4.8% 95.9% / 1;
-    --muted-foreground: 240 3.8% 46.1% / 1;
-
-    --accent: 240 4.8% 95.9% / 1;
-    --accent-foreground: 240 5.9% 10% / 1;
-
-    --destructive: 0 84.2% 60.2% / 1;
-    --destructive-foreground: 0 0% 98% / 1;
-
-    --border: 240 5.9% 90% / 1;
-    --input: 240 5.9% 90% / 1;
-    --ring: 240 5.9% 10% / 1;
-
-    --radius: 0.75rem;
-
-    --sidebar-background: 0 0% 100% / 1;
-    --sidebar-foreground: 240 5.3% 26.1% / 1;
-    --sidebar-primary: 240 5.9% 10% / 1;
-    --sidebar-primary-foreground: 0 0% 98% / 1;
-    --sidebar-accent: 240 4.8% 95.9% / 1;
-    --sidebar-accent-foreground: 240 5.9% 10% / 1;
-    --sidebar-border: 220 13% 91% / 1;
-    --sidebar-ring: 217.2 91.2% 59.8% / 1;
-
-    --task-text: 0 0% 6% / 1;
-    --task-text-disabled: 0 0% 6% / 0.48;
-    --content-tertiary: 0 0% 6% / 0.32;
-
-    --card-red: 0 100% 63% / 0.12;
-    --card-red-hover: 0 100% 63% / 0.20;
-    --card-orange: 36 100% 52% / 0.12;
-    --card-orange-hover: 36 100% 52% / 0.20;
-    --card-yellow: 48 100% 60% / 0.12;
-    --card-yellow-hover: 48 100% 60% / 0.20;
-    --card-green: 156 100% 40% / 0.12;
-    --card-green-hover: 156 100% 40% / 0.20;
-    --card-blue: 210 100% 60% / 0.12;
-    --card-blue-hover: 210 100% 60% / 0.20;
-    --card-purple: 262 100% 70% / 0.12;
-    --card-purple-hover: 262 100% 70% / 0.20;
-    --card-gray: 0 0% 63% / 0.12;
-    --card-gray-hover: 0 0% 63% / 0.20;
+    /* Дополнительные переменные для карточек (пример) */
+    --bg-card-red: 0 100% 63% / 0.12;
+    --bg-card-red-hover: 0 100% 63% / 0.20;
+    --bg-card-orange: 36 100% 52% / 0.12;
+    --bg-card-orange-hover: 36 100% 52% / 0.20;
+    --bg-card-yellow: 48 100% 60% / 0.12;
+    --bg-card-yellow-hover: 48 100% 60% / 0.20;
+    --bg-card-green: 156 100% 40% / 0.12;
+    --bg-card-green-hover: 156 100% 40% / 0.20;
+    --bg-card-blue: 210 100% 60% / 0.12;
+    --bg-card-blue-hover: 210 100% 60% / 0.20;
+    --bg-card-purple: 262 100% 70% / 0.12;
+    --bg-card-purple-hover: 262 100% 70% / 0.20;
+    --bg-card-gray: 0 0% 63% / 0.12;
+    --bg-card-gray-hover: 0 0% 63% / 0.20;
   }
 
   .dark {
-    --background: 222.2 84% 4.9% / 1;
-    --foreground: 210 40% 98% / 1;
-
-    --card: 222.2 84% 4.9% / 1;
-    --card-foreground: 210 40% 98% / 1;
-
-    --popover: 222.2 84% 4.9% / 1;
-    --popover-foreground: 210 40% 98% / 1;
-
-    --primary: 210 40% 98% / 1;
-    --primary-foreground: 222.2 47.4% 11.2% / 1;
-
-    --secondary: 217.2 32.6% 17.5% / 1;
-    --secondary-foreground: 210 40% 98% / 1;
-
-    --muted: 217.2 32.6% 17.5% / 1;
-    --muted-foreground: 215 20.2% 65.1% / 1;
-
-    --accent: 217.2 32.6% 17.5% / 1;
-    --accent-foreground: 210 40% 98% / 1;
-
-    --destructive: 0 62.8% 30.6% / 1;
-    --destructive-foreground: 210 40% 98% / 1;
-
-    --border: 217.2 32.6% 17.5% / 1;
-    --input: 217.2 32.6% 17.5% / 1;
-    --ring: 212.7 26.8% 83.9% / 1;
-    --sidebar-background: 240 5.9% 10% / 1;
-    --sidebar-foreground: 240 4.8% 95.9% / 1;
-    --sidebar-primary: 224.3 76.3% 48% / 1;
-    --sidebar-primary-foreground: 0 0% 100% / 1;
-    --sidebar-accent: 240 3.7% 15.9% / 1;
-    --sidebar-accent-foreground: 240 4.8% 95.9% / 1;
-    --sidebar-border: 240 3.7% 15.9% / 1;
-    --sidebar-ring: 217.2 91.2% 59.8% / 1;
-    --foreground-tertiary: 0 0% 100% / 0.32;
+    --bg-prim: 222.2 84% 4.9% / 1;
+    --bg-sec: 222.2 84% 4.9% / 1;
+    --bg-tert: 217.2 32.6% 17.5% / 1;
+    --fill-prim: 217.2 32.6% 17.5% / 1;
+    --fill-sec: 217.2 32.6% 17.5% / 1;
+    --brd-prim: 217.2 32.6% 17.5% / 1;
+    --brd-sec: 240 3.7% 15.9% / 1;
+    --accent-prim: 210 40% 98% / 1;
+    --accent-sec: 217.2 32.6% 17.5% / 1;
+    --accent-destructive: 0 62.8% 30.6% / 1;
+    --content-prim: 210 40% 98% / 1;
+    --content-sec: 210 40% 98% / 0.64;
+    --content-tert: 0 0% 100% / 0.32;
+    --bg-card-red: 0 100% 63% / 0.12;
+    --bg-card-red-hover: 0 100% 63% / 0.20;
+    --bg-card-orange: 36 100% 52% / 0.12;
+    --bg-card-orange-hover: 36 100% 52% / 0.20;
+    --bg-card-yellow: 48 100% 60% / 0.12;
+    --bg-card-yellow-hover: 48 100% 60% / 0.20;
+    --bg-card-green: 156 100% 40% / 0.12;
+    --bg-card-green-hover: 156 100% 40% / 0.20;
+    --bg-card-blue: 210 100% 60% / 0.12;
+    --bg-card-blue-hover: 210 100% 60% / 0.20;
+    --bg-card-purple: 262 100% 70% / 0.12;
+    --bg-card-purple-hover: 262 100% 70% / 0.20;
+    --bg-card-gray: 0 0% 63% / 0.12;
+    --bg-card-gray-hover: 0 0% 63% / 0.20;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-[hsl(var(--brd-prim))];
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[hsl(var(--bg-prim))] text-[hsl(var(--content-prim))];
   }
 }
 
@@ -152,18 +116,18 @@
   .font-sf-pro {
     font-feature-settings: 'ss01' on, 'ss02' on, 'ss07' on, 'cv03' on, 'cv08' on, 'cv12' on;
   }
-  .card-bg-red { background-color: hsl(var(--card-red)); }
-  .hover\:card-bg-red-hover:hover { background-color: hsl(var(--card-red-hover)); }
-  .card-bg-orange { background-color: hsl(var(--card-orange)); }
-  .hover\:card-bg-orange-hover:hover { background-color: hsl(var(--card-orange-hover)); }
-  .card-bg-yellow { background-color: hsl(var(--card-yellow)); }
-  .hover\:card-bg-yellow-hover:hover { background-color: hsl(var(--card-yellow-hover)); }
-  .card-bg-green { background-color: hsl(var(--card-green)); }
-  .hover\:card-bg-green-hover:hover { background-color: hsl(var(--card-green-hover)); }
-  .card-bg-blue { background-color: hsl(var(--card-blue)); }
-  .hover\:card-bg-blue-hover:hover { background-color: hsl(var(--card-blue-hover)); }
-  .card-bg-purple { background-color: hsl(var(--card-purple)); }
-  .hover\:card-bg-purple-hover:hover { background-color: hsl(var(--card-purple-hover)); }
-  .card-bg-gray { background-color: hsl(var(--card-gray)); }
-  .hover\:card-bg-gray-hover:hover { background-color: hsl(var(--card-gray-hover)); }
+  .card-bg-red { background-color: hsl(var(--bg-card-red)); }
+  .hover\:card-bg-red-hover:hover { background-color: hsl(var(--bg-card-red-hover)); }
+  .card-bg-orange { background-color: hsl(var(--bg-card-orange)); }
+  .hover\:card-bg-orange-hover:hover { background-color: hsl(var(--bg-card-orange-hover)); }
+  .card-bg-yellow { background-color: hsl(var(--bg-card-yellow)); }
+  .hover\:card-bg-yellow-hover:hover { background-color: hsl(var(--bg-card-yellow-hover)); }
+  .card-bg-green { background-color: hsl(var(--bg-card-green)); }
+  .hover\:card-bg-green-hover:hover { background-color: hsl(var(--bg-card-green-hover)); }
+  .card-bg-blue { background-color: hsl(var(--bg-card-blue)); }
+  .hover\:card-bg-blue-hover:hover { background-color: hsl(var(--bg-card-blue-hover)); }
+  .card-bg-purple { background-color: hsl(var(--bg-card-purple)); }
+  .hover\:card-bg-purple-hover:hover { background-color: hsl(var(--bg-card-purple-hover)); }
+  .card-bg-gray { background-color: hsl(var(--bg-card-gray)); }
+  .hover\:card-bg-gray-hover:hover { background-color: hsl(var(--bg-card-gray-hover)); }
 }

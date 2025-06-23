@@ -9,6 +9,15 @@ export default {
 		"./src/**/*.{ts,tsx}",
 	],
 	prefix: "",
+	safelist: [
+		'card-bg-red', 'card-bg-red-hover',
+		'card-bg-orange', 'card-bg-orange-hover',
+		'card-bg-yellow', 'card-bg-yellow-hover',
+		'card-bg-green', 'card-bg-green-hover',
+		'card-bg-blue', 'card-bg-blue-hover',
+		'card-bg-purple', 'card-bg-purple-hover',
+		'card-bg-gray', 'card-bg-gray-hover',
+	],
 	theme: {
 		container: {
 			center: true,
@@ -38,6 +47,19 @@ export default {
 				'p-m': '-0.02em',
 			},
 			colors: {
+				'bg-prim': 'hsl(var(--bg-prim))',
+				'bg-sec': 'hsl(var(--bg-sec))',
+				'bg-tert': 'hsl(var(--bg-tert))',
+				'fill-prim': 'hsl(var(--fill-prim))',
+				'fill-sec': 'hsl(var(--fill-sec))',
+				'brd-prim': 'hsl(var(--brd-prim))',
+				'brd-sec': 'hsl(var(--brd-sec))',
+				'accent-prim': 'hsl(var(--accent-prim))',
+				'accent-sec': 'hsl(var(--accent-sec))',
+				'accent-destructive': 'hsl(var(--accent-destructive))',
+				'content-prim': 'hsl(var(--content-prim))',
+				'content-sec': 'hsl(var(--content-sec))',
+				'content-tert': 'hsl(var(--content-tert))',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -108,7 +130,23 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+			},
+			backgroundImage: theme => ({
+				'card-bg-red': 'linear-gradient(rgba(255,71,66,0.12), rgba(255,71,66,0.12))',
+				'card-bg-red-hover': 'linear-gradient(rgba(255,71,66,0.20), rgba(255,71,66,0.20))',
+				'card-bg-orange': 'linear-gradient(rgba(255,159,10,0.12), rgba(255,159,10,0.12))',
+				'card-bg-orange-hover': 'linear-gradient(rgba(255,159,10,0.20), rgba(255,159,10,0.20))',
+				'card-bg-yellow': 'linear-gradient(rgba(255,221,51,0.12), rgba(255,221,51,0.12))',
+				'card-bg-yellow-hover': 'linear-gradient(rgba(255,221,51,0.20), rgba(255,221,51,0.20))',
+				'card-bg-green': 'linear-gradient(rgba(0,204,102,0.12), rgba(0,204,102,0.12))',
+				'card-bg-green-hover': 'linear-gradient(rgba(0,204,102,0.20), rgba(0,204,102,0.20))',
+				'card-bg-blue': 'linear-gradient(rgba(51,153,255,0.12), rgba(51,153,255,0.12))',
+				'card-bg-blue-hover': 'linear-gradient(rgba(51,153,255,0.20), rgba(51,153,255,0.20))',
+				'card-bg-purple': 'linear-gradient(rgba(153,102,255,0.12), rgba(153,102,255,0.12))',
+				'card-bg-purple-hover': 'linear-gradient(rgba(153,102,255,0.20), rgba(153,102,255,0.20))',
+				'card-bg-gray': 'linear-gradient(rgba(160,160,160,0.12), rgba(160,160,160,0.12))',
+				'card-bg-gray-hover': 'linear-gradient(rgba(160,160,160,0.20), rgba(160,160,160,0.20))',
+			}),
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
