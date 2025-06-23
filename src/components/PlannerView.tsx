@@ -7,7 +7,7 @@ import { getWeekDates, getCurrentDay } from '@/lib/utils';
 import { PlannerHeader } from './PlannerHeader';
 import { DayColumn } from './DayColumn';
 import { BacklogSection } from './BacklogSection';
-import { TaskOverlay } from './TaskOverlay';
+import TaskOverlay from './TaskOverlay';
 import { ITask } from '@/types/Task';
 
 export const PlannerView = () => {
@@ -23,13 +23,43 @@ export const PlannerView = () => {
     handleSaveNewTask,
     handleSaveTask,
     handleDeleteTask,
+    handleDuplicateTask,
     handleAddTask,
     handleMoveTask,
     weekOffset,
+    newTaskContext,
   } = usePlannerState();
 
   const weekDates = useMemo(() => getWeekDates(weekOffset), [weekOffset]);
   const currentDay = useMemo(() => getCurrentDay(), []);
+
+  const taskForOverlay = useMemo(() => {
+    if (selectedTask) return selectedTask;
+    if (isOverlayOpen && !selectedTask) {
+      return {
+        id: '',
+        title: '',
+        description: null,
+        day: newTaskContext.day || null,
+        section: newTaskContext.section || null,
+        time_estimate: null,
+        is_completed: false,
+        color: null,
+        user_id: '',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      } as ITask;
+    }
+    return null;
+  }, [selectedTask, isOverlayOpen, newTaskContext]);
+
+  const displayDateForOverlay = useMemo(() => {
+    if (!isOverlayOpen || !taskForOverlay) return null;
+    const day = taskForOverlay.day;
+    if (!day) return new Date();
+    const dateInfo = weekDates.find((d) => d.day === day);
+    return dateInfo ? dateInfo.fullDate : new Date();
+  }, [isOverlayOpen, taskForOverlay, weekDates]);
 
   const handleSave = (taskData: Partial<ITask>) => {
     if (taskData.id) {
@@ -71,11 +101,13 @@ export const PlannerView = () => {
           />
         </div>
         <TaskOverlay
-          open={isOverlayOpen}
-          onOpenChange={setIsOverlayOpen}
-          task={selectedTask}
+          isOpen={isOverlayOpen}
+          onClose={() => setIsOverlayOpen(false)}
+          task={taskForOverlay}
+          displayDate={displayDateForOverlay}
           onSave={handleSave}
           onDelete={handleDeleteTask}
+          onDuplicate={handleDuplicateTask}
         />
       </div>
     </DndProvider>

@@ -1,6 +1,6 @@
 export interface ITask {
   id: string;
-  user_id: number;
+  user_id: string;
   title: string;
   description: string | null;
   is_completed: boolean;

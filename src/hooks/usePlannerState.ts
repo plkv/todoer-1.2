@@ -140,6 +140,20 @@ export const usePlannerState = () => {
     deleteTaskMutation.mutate(taskId);
   };
 
+  const handleDuplicateTask = (taskToDuplicate: ITask) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, created_at, updated_at, user_id, ...taskData } = taskToDuplicate;
+    createTaskMutation.mutate({
+      ...taskData,
+      title: `${taskData.title} (Copy)`, // Add (Copy) to the title
+    }, {
+      onSuccess: () => {
+        setIsOverlayOpen(false);
+        setSelectedTask(null);
+      }
+    });
+  };
+
   const handleMoveTask = (
     taskId: string,
     sourceLocation: { day?: string; section?: string },
@@ -191,5 +205,7 @@ export const usePlannerState = () => {
     handleNextWeek,
     handleSaveTask,
     handleDeleteTask,
+    handleDuplicateTask,
+    newTaskContext,
   };
 };
