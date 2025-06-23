@@ -46,9 +46,6 @@ export const DayColumn = ({
         </h3>
       </div>
 
-      {/* Spacer for alignment */}
-      <div />
-
       {/* Time Sections */}
       <TimeSection
         title="MORNING"

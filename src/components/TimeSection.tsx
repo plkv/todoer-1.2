@@ -9,7 +9,7 @@ interface TimeSectionProps {
   title: string;
   tasks: ITask[];
   onTaskClick: (task: ITask) => void;
-  onToggleComplete: (id: string, completed: boolean) => void;
+  onToggleComplete: (task: ITask, completed: boolean) => void;
   onAddTask: (section: string) => void;
   onMoveTask?: (taskId: string, sourceLocation: { day?: string; section?: string }, targetLocation: { day?: string; section?: string }) => void;
   dayName?: string;
