@@ -28,7 +28,7 @@ export const DayColumn = ({
   return (
     <div className="grid grid-rows-subgrid row-span-5 gap-1.5">
       {/* Day Header */}
-      <div className="flex flex-col flex-shrink-0 p-1.5 gap-1">
+      <div className="flex flex-col flex-shrink-0 p-1.5 gap-0">
         <div className="flex items-center gap-2">
           <h2 
             className={cn(isActive ? "text-content-prim" : "text-content-tert")}

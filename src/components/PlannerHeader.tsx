@@ -45,10 +45,14 @@ export const PlannerHeader = () => {
             {(['Day', 'Week'] as const).map((view) => (
               <Button
                 key={view}
-                variant={currentView === view ? 'outline' : 'ghost'}
+                variant={currentView === view ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setCurrentView(view)}
-                className="text-style-p-m-semibold"
+                className={
+                  currentView === view
+                    ? 'bg-bg-prim text-style-p-m-semibold text-content-prim'
+                    : 'bg-transparent text-style-p-m-semibold text-content-tert hover:bg-bg-prim hover:text-content-prim'
+                }
               >
                 {view}
               </Button>

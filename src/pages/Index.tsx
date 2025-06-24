@@ -16,13 +16,15 @@ const Index = () => {
 
   if (!user) {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-gray-50">
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-bg-prim">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">Добро пожаловать в Todoer</h1>
-          <p className="mt-2 text-lg text-gray-600">
+          <h1 className="text-4xl font-bold text-content-prim">
+            Добро пожаловать в Todoer
+          </h1>
+          <p className="mt-2 text-lg text-content-sec">
             Войдите, чтобы начать планировать свой день.
           </p>
-          <Button onClick={login} className="mt-6">
+          <Button onClick={login} variant="default" className="mt-6 text-style-p-m-semibold">
             Войти через Google
           </Button>
         </div>

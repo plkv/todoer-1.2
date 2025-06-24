@@ -54,12 +54,21 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
         )}
       />
 
-      <div className="basis-0 grow h-4 max-h-8 min-h-px min-w-px relative shrink-0 flex flex-col justify-center">
+      <div className="basis-0 grow max-h-[32px] min-h-px min-w-px relative shrink-0 flex flex-col justify-center overflow-hidden">
         <p
           className={cn(
-            'font-semibold text-[12px] leading-[16px] tracking-[-0.24px] truncate',
+            'font-semibold text-[12px] leading-[16px] tracking-[-0.24px]',
             task.is_completed ? 'text-content-tert' : 'text-content-prim'
           )}
+          style={{
+            maxHeight: '32px',
+            overflow: 'hidden',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'normal',
+          }}
         >
           {task.title}
         </p>
