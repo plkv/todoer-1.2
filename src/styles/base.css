@@ -6,26 +6,27 @@
   :root {
     /* Backgrounds (surface) */
     --bg-prim: 0 0% 100% / 1; /* был background, background-primary */
-    --bg-sec: 0 0% 96.9% / 1; /* был background-secondary, card */
-    --bg-tert: 240 4.8% 95.9% / 1; /* был muted */
+    --bg-sec: 0 0% 98% / 1; /* был background-secondary, card */
+    --bg-tert: 0 0% 90% / 1; /* был muted */
 
     /* Fills (low contrast fills for components) */
-    --fill-prim: 0 0% 97% / 1; /* был fill-primary */
-    --fill-sec: 240 4.8% 95.9% / 1; /* был accent */
+    --fill-prim: 0 0% 0% / 0.03; /* был fill-primary */
+    --fill-sec: 0 0% 0% / 0.06; /* был accent */
 
     /* Borders */
-    --brd-prim: 240 5.9% 90% / 1; /* был border */
-    --brd-sec: 220 13% 91% / 1; /* был sidebar-border */
+    --brd-prim: 0 0% 0% / 0.16; /* был border */
+    --brd-sec: 0 0% 0% / 0.24; /* был sidebar-border */
+    --brd-tert: 0 0% 0% / 0.32; /* новый: для hover бордеров интерактивных элементов */
 
     /* Accents (high contrast fills) */
-    --accent-prim: 240 5.9% 10% / 1; /* был primary */
-    --accent-sec: 240 4.8% 95.9% / 1; /* был secondary */
+    --accent-prim: 0 0% 4% / 1; /* был primary */
+    --accent-sec: 0 0% 8% / 1; /* был secondary */
     --accent-destructive: 0 84.2% 60.2% / 1; /* был destructive */
 
     /* Content (text/icons) */
-    --content-prim: 0 0% 5.9% / 1; /* был foreground, foreground-primary */
-    --content-sec: 0 0% 5.9% / 0.64; /* был foreground-secondary */
-    --content-tert: 0 0% 5.9% / 0.32; /* был foreground-tertiary */
+    --content-prim: 0 0% 4% / 1; /* был foreground, foreground-primary */
+    --content-sec: 0 0% 4% / 0.64; /* был foreground-secondary */
+    --content-tert: 0 0% 4% / 0.32; /* был foreground-tertiary */
 
     /* Дополнительные переменные для карточек (пример) */
     --bg-card-red: 0 100% 63% / 0.12;
@@ -42,21 +43,36 @@
     --bg-card-purple-hover: 262 100% 70% / 0.20;
     --bg-card-gray: 0 0% 63% / 0.12;
     --bg-card-gray-hover: 0 0% 63% / 0.20;
+
+    /* Border radius (centralized) */
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
+    --radius-full: 9999px;
+
+    /* On-dark palette (for elements on dark backgrounds) */
+    --on-dark-content-prim: 0 0% 100% / 1;
+    --on-dark-content-sec: 0 0% 100% / 0.64;
+    --on-dark-content-tert: 0 0% 100% / 0.32;
+    --on-dark-accent-prim: 0 0% 100% / 1;
+    --on-dark-accent-sec: 0 0% 96% / 1;
   }
 
   .dark {
-    --bg-prim: 222.2 84% 4.9% / 1;
-    --bg-sec: 222.2 84% 4.9% / 1;
-    --bg-tert: 217.2 32.6% 17.5% / 1;
-    --fill-prim: 217.2 32.6% 17.5% / 1;
-    --fill-sec: 217.2 32.6% 17.5% / 1;
-    --brd-prim: 217.2 32.6% 17.5% / 1;
-    --brd-sec: 240 3.7% 15.9% / 1;
-    --accent-prim: 210 40% 98% / 1;
-    --accent-sec: 217.2 32.6% 17.5% / 1;
+    --bg-prim: 0 0% 4% / 1;
+    --bg-sec: 0 0% 6% / 1;
+    --bg-tert: 0 0% 8% / 1;
+    --fill-prim: 0 0% 100% / 0.04;
+    --fill-sec: 0 0% 100% / 0.08;
+    --brd-prim: 0 0% 100% / 0.20;
+    --brd-sec: 0 0% 100% / 0.32;
+    --brd-tert:  0 0% 100% / 0.40;
+    --accent-prim:  0 0% 100% / 1;
+    --accent-sec:  0 0% 96% / 1;
     --accent-destructive: 0 62.8% 30.6% / 1;
-    --content-prim: 210 40% 98% / 1;
-    --content-sec: 210 40% 98% / 0.64;
+    --content-prim:  0 0% 100% / 1;
+    --content-sec:  0 0% 100% / 0.64;
     --content-tert: 0 0% 100% / 0.32;
     --bg-card-red: 0 100% 63% / 0.12;
     --bg-card-red-hover: 0 100% 63% / 0.20;
@@ -72,6 +88,20 @@
     --bg-card-purple-hover: 262 100% 70% / 0.20;
     --bg-card-gray: 0 0% 63% / 0.12;
     --bg-card-gray-hover: 0 0% 63% / 0.20;
+
+    /* Border radius (centralized) */
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
+    --radius-full: 9999px;
+
+    /* On-dark palette (for elements on dark backgrounds) */
+    --on-dark-content-prim: 0 0% 100% / 1;
+    --on-dark-content-sec: 0 0% 100% / 0.64;
+    --on-dark-content-tert: 0 0% 100% / 0.32;
+    --on-dark-accent-prim: 0 0% 100% / 1;
+    --on-dark-accent-sec: 0 0% 96% / 1;
   }
 }
 

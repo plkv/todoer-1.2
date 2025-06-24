@@ -54,6 +54,7 @@ export default {
 				'fill-sec': 'hsl(var(--fill-sec))',
 				'brd-prim': 'hsl(var(--brd-prim))',
 				'brd-sec': 'hsl(var(--brd-sec))',
+				'brd-tert': 'hsl(var(--brd-tert))',
 				'accent-prim': 'hsl(var(--accent-prim))',
 				'accent-sec': 'hsl(var(--accent-sec))',
 				'accent-destructive': 'hsl(var(--accent-destructive))',
@@ -105,9 +106,11 @@ export default {
 				}
 			},
 			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				xs: 'var(--radius-xs)',
+				sm: 'var(--radius-sm)',
+				md: 'var(--radius-md)',
+				lg: 'var(--radius-lg)',
+				full: 'var(--radius-full)',
 			},
 			keyframes: {
 				'accordion-down': {

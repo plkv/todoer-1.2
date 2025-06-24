@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -15,8 +15,9 @@ import { TimeSelector } from './TimeSelector';
 import { ColorSelector } from './ColorSelector';
 import { ITask } from '@/types/Task';
 import { format } from 'date-fns';
-import { MaterialIcon } from './MaterialIcon';
+import { Copy, Trash, Check } from '@phosphor-icons/react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface TaskOverlayProps {
   task: ITask | null;
@@ -30,10 +31,17 @@ interface TaskOverlayProps {
 
 const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onDuplicate }: TaskOverlayProps) => {
   const [editedTask, setEditedTask] = useState<ITask | null>(task);
+  const titleRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setEditedTask(task);
   }, [task]);
+
+  useEffect(() => {
+    if (isOpen && titleRef.current) {
+      titleRef.current.focus();
+    }
+  }, [isOpen]);
 
   const handleFieldChange = (field: keyof ITask, value: any) => {
     if (editedTask) {
@@ -60,39 +68,48 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose();
+    } else if (e.key === 'Enter' && !e.shiftKey) {
+      if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') {
+        const textarea = document.activeElement as HTMLTextAreaElement;
+        if (textarea && textarea.value.includes('\n')) return;
+      }
+      e.preventDefault();
+      handleSaveAndClose();
+    }
+  };
+
   if (!editedTask) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleSaveAndClose()}>
-      <DialogContent className="sm:max-w-[512px] bg-background text-foreground border-border p-6 flex flex-col gap-6">
+      <DialogContent
+        hideCloseButton={true}
+        className="w-full max-w-[520px] bg-bg-prim text-content-prim border border-brd-prim pt-6 pr-[18px] pb-10 pl-[18px] flex flex-col gap-6"
+        onKeyDown={handleKeyDown}
+      >
+        <DialogTitle className="sr-only">Task details</DialogTitle>
+        <DialogDescription className="sr-only">Edit task details, time estimate, and color.</DialogDescription>
         {/* Header with Checkbox and Actions */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ml-2">
             <Checkbox
-              id="completed"
               checked={editedTask.is_completed}
               onCheckedChange={(checked) => handleFieldChange('is_completed', !!checked)}
+              className="w-4 h-4 rounded border border-brd-prim flex items-center justify-center transition-colors duration-150"
             />
-            <label htmlFor="completed" className="text-style-p-m text-muted-foreground">
+            <label className="text-sm text-content-sec select-none">
               {editedTask.is_completed ? 'Completed' : 'Not completed'}
             </label>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-1 justify-end">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" onClick={handleDuplicate}>
-                    <MaterialIcon name="content_copy" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Duplicate</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
                   <Button variant="ghost" size="icon" onClick={handleDelete}>
-                    <MaterialIcon name="delete" />
+                    <Trash size={20} weight="regular" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -105,38 +122,38 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
 
         {/* Main Content */}
         <div className="flex flex-col gap-4">
-          <div className="text-style-p-s text-muted-foreground ml-1.5">
+          <div className="text-xs text-content-tert ml-2">
             {displayDate ? format(displayDate, 'E, d MMM yyyy') : 'Date not set'}
           </div>
-
           <Textarea
+            ref={titleRef}
             value={editedTask.title || ''}
             onChange={(e) => handleFieldChange('title', e.target.value)}
             placeholder="Task Title"
-            className="text-style-h-l bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none"
+            autoFocus
+            className="text-lg font-semibold bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[40px] ml-2 placeholder:text-content-tert"
           />
-
           <Textarea
             value={editedTask.description || ''}
             onChange={(e) => handleFieldChange('description', e.target.value)}
             placeholder="Description"
-            className="text-style-p-m bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[60px]"
+            className="text-sm bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[60px] ml-2 placeholder:text-content-tert"
           />
         </div>
 
         {/* Time Selector */}
-        <div className="flex flex-col gap-2 p-1.5">
-          <label className="text-style-h-s text-muted-foreground">TIME ESTIMATE</label>
-          <TimeSelector
+        <div className="flex flex-col gap-2 p-1.5 ml-2">
+          <label className="text-xs text-content-sec font-medium uppercase tracking-wide">Time estimate</label>
+          <TimeSelector 
             value={editedTask.time_estimate || ''}
             onChange={(value) => handleFieldChange('time_estimate', value)}
           />
         </div>
 
         {/* Color Selector */}
-        <div className="flex flex-col gap-2 p-1.5">
-          <label className="text-style-h-s text-muted-foreground">COLOR</label>
-          <ColorSelector
+        <div className="flex flex-col gap-2 p-1.5 ml-2">
+          <label className="text-xs text-content-sec font-medium uppercase tracking-wide">Color</label>
+          <ColorSelector 
             value={editedTask.color || ''}
             onChange={(value) => handleFieldChange('color', value)}
           />

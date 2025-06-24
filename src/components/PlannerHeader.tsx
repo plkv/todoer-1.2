@@ -24,24 +24,24 @@ export const PlannerHeader = () => {
   } = usePlannerState();
 
   return (
-    <div className="border-b bg-background px-4 py-3">
+    <div className="border-b-brd-prim bg-fill-prim px-4 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h1 className="text-style-h-xl">Planner</h1>
+          <h1 className="text-style-h-xl text-content-prim">Planner</h1>
           
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/60" onClick={handlePrevWeek}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-content-sec" onClick={handlePrevWeek}>
               <ChevronLeft size={16} strokeWidth={2} />
             </Button>
             
-            <Button variant="secondary" className="text-style-p-m-semibold">Today</Button>
+            <Button variant="secondary" className="text-style-p-m-semibold text-content-prim">Today</Button>
             
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/60" onClick={handleNextWeek}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-content-sec" onClick={handleNextWeek}>
               <ChevronRight size={16} strokeWidth={2} />
             </Button>
           </div>
 
-          <div className="flex items-center rounded-lg bg-muted p-1">
+          <div className="flex items-center rounded-lg bg-fill-sec p-1">
             {(['Day', 'Week'] as const).map((view) => (
               <Button
                 key={view}

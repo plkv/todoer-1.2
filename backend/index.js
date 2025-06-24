@@ -59,13 +59,13 @@ const createTables = async () => {
       CREATE TABLE IF NOT EXISTS tasks (
         id SERIAL PRIMARY KEY,
         user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        title TEXT NOT NULL,
-        description TEXT,
+      title TEXT NOT NULL,
+      description TEXT,
         is_completed BOOLEAN DEFAULT FALSE,
         time_estimate TEXT,
-        color TEXT,
-        day TEXT,
-        section TEXT,
+      color TEXT,
+      day TEXT,
+      section TEXT,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       )

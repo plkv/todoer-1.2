@@ -71,7 +71,7 @@ export const PlannerView = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="flex h-screen w-full flex-col bg-background font-sans text-foreground">
+      <div className="flex h-screen w-full flex-col bg-fill-prim font-sans text-content-prim">
         <PlannerHeader />
         <div 
           className="grid flex-1"
@@ -91,16 +91,16 @@ export const PlannerView = () => {
             />
           ))}
         </div>
-        <div className="border-t">
-          <BacklogSection 
-            tasks={backlogData}
-            onTaskClick={handleTaskClick}
-            onToggleComplete={handleToggleComplete}
+        <div className="border-t-brd-prim">
+        <BacklogSection
+          tasks={backlogData}
+          onTaskClick={handleTaskClick}
+          onToggleComplete={handleToggleComplete}
             onAddTask={() => handleAddTask(null, 'backlog')}
-            onMoveTask={handleMoveTask}
-          />
+          onMoveTask={handleMoveTask}
+        />
         </div>
-        <TaskOverlay
+        <TaskOverlay 
           isOpen={isOverlayOpen}
           onClose={() => setIsOverlayOpen(false)}
           task={taskForOverlay}

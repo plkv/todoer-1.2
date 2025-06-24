@@ -1,7 +1,6 @@
-
 import * as React from "react"
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu"
-import { MaterialIcon } from "@/components/MaterialIcon"
+import { CaretRight, Check, Circle } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 
@@ -33,7 +32,7 @@ const ContextMenuSubTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    <MaterialIcon name="chevron_right" size={16} className="ml-auto" />
+    <CaretRight size={16} className="ml-auto" />
   </ContextMenuPrimitive.SubTrigger>
 ))
 ContextMenuSubTrigger.displayName = ContextMenuPrimitive.SubTrigger.displayName
@@ -103,7 +102,7 @@ const ContextMenuCheckboxItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator>
-        <MaterialIcon name="check" size={14} />
+        <Check size={14} />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -126,7 +125,7 @@ const ContextMenuRadioItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator>
-        <MaterialIcon name="radio_button_checked" size={8} />
+        <Circle size={8} weight="fill" />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     {children}

@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ITask, WeekData, DayTasks } from '@/types/Task';
 import { tasks as tasksApi } from '@/api/client';
-
+  
 // Эта функция-хелпер распределяет плоский список задач по дням и секциям
 const distributeTasksToWeek = (tasks: ITask[]): WeekData => {
   const weekData: WeekData = {
@@ -34,6 +34,8 @@ export const usePlannerState = () => {
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [newTaskContext, setNewTaskContext] = useState<{ day?: string; section?: string }>({});
+  const [history, setHistory] = useState<any[]>([]);
+  const [future, setFuture] = useState<any[]>([]);
 
   // Загрузка всех задач с сервера с помощью React Query
   const { data: allTasks = [], isLoading: isLoadingTasks } = useQuery<ITask[]>({
@@ -45,6 +47,44 @@ export const usePlannerState = () => {
   const backlogData = allTasks.filter(task => !task.day || !task.section);
   const weekTasks = allTasks.filter(task => task.day && task.section);
   const weekData = distributeTasksToWeek(weekTasks);
+
+  // Сохраняем снапшот для undo
+  const pushHistory = useCallback((snapshot: any) => {
+    setHistory((prev) => [...prev, snapshot]);
+    setFuture([]);
+  }, []);
+
+  // Undo
+  const undo = useCallback(() => {
+    setHistory((prev) => {
+      if (prev.length === 0) return prev;
+      setFuture((f) => [getCurrentState(), ...f]);
+      const last = prev[prev.length - 1];
+      restoreState(last);
+      return prev.slice(0, -1);
+    });
+  }, []);
+
+  // Redo
+  const redo = useCallback(() => {
+    setFuture((prev) => {
+      if (prev.length === 0) return prev;
+      pushHistory(getCurrentState());
+      const next = prev[0];
+      restoreState(next);
+      return prev.slice(1);
+    });
+  }, [pushHistory]);
+
+  // Получить текущий state (allTasks)
+  const getCurrentState = useCallback(() => {
+    return allTasks;
+  }, [allTasks]);
+
+  // Восстановить state (allTasks)
+  const restoreState = useCallback((snapshot: any) => {
+    queryClient.setQueryData(['tasks'], snapshot);
+  }, [queryClient]);
 
   // --- МУТАЦИИ (создание, обновление, удаление) ---
   
@@ -117,7 +157,8 @@ export const usePlannerState = () => {
     setNewTaskContext({});
   };
 
-  const handleSaveTask = (taskId: string, taskData: Partial<ITask>) => {
+  const handleSaveTask = useCallback((taskId: string, taskData: Partial<ITask>) => {
+    pushHistory(getCurrentState());
     updateTaskMutation.mutate(
       { taskId, data: taskData },
       {
@@ -127,7 +168,7 @@ export const usePlannerState = () => {
         },
       }
     );
-  };
+  }, [getCurrentState, pushHistory, updateTaskMutation]);
   
   const handleToggleComplete = (task: ITask, completed: boolean) => {
     updateTaskMutation.mutate({
@@ -136,9 +177,10 @@ export const usePlannerState = () => {
     });
   };
 
-  const handleDeleteTask = (taskId: string) => {
+  const handleDeleteTask = useCallback((taskId: string) => {
+    pushHistory(getCurrentState());
     deleteTaskMutation.mutate(taskId);
-  };
+  }, [getCurrentState, pushHistory, deleteTaskMutation]);
 
   const handleDuplicateTask = (taskToDuplicate: ITask) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -155,19 +197,20 @@ export const usePlannerState = () => {
   };
 
   const handleMoveTask = (
-    taskId: string,
-    sourceLocation: { day?: string; section?: string },
+    taskId: string, 
+    sourceLocation: { day?: string; section?: string }, 
     targetLocation: { day?: string; section?: string }
   ) => {
     const taskToMove = allTasks.find(t => t.id === taskId);
     if (!taskToMove) return;
-
+    
     const updatedTask = {
-      ...taskToMove,
+        ...taskToMove,
       day: targetLocation.day || null,
       section: targetLocation.section || null,
     };
 
+    pushHistory(getCurrentState());
     updateTaskMutation.mutate({ 
       taskId, 
       data: updatedTask 
@@ -178,7 +221,7 @@ export const usePlannerState = () => {
     setSelectedTask(task);
     setIsOverlayOpen(true);
   };
-  
+
   // Функции, которые пока не используются с API (пагинация по неделям)
   // Их нужно будет реализовывать отдельно на бэкенде
   const [weekOffset, setWeekOffset] = useState(0); 
@@ -207,5 +250,7 @@ export const usePlannerState = () => {
     handleDeleteTask,
     handleDuplicateTask,
     newTaskContext,
+    undo,
+    redo,
   };
 };

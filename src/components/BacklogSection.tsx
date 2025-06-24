@@ -36,32 +36,32 @@ export const BacklogSection = ({
     <div 
       ref={drop}
       className={cn(
-        "border-t p-2 transition-colors",
-        isOver ? "bg-muted" : "bg-transparent"
+        "border-t-brd-prim p-2 transition-colors",
+        isOver ? "bg-fill-sec" : "bg-fill-prim"
       )}
     >
       <div className="mx-auto max-w-7xl">
         <div className="mb-2 flex items-center justify-between">
           <div className="group flex items-center gap-1">
-            <h2 className="text-style-h-l text-foreground">
+            <h2 className="text-style-h-l text-content-prim">
               Backlog
             </h2>
-            <button
-              onClick={onAddTask}
-              className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-accent"
-            >
-              <Plus size={16} strokeWidth={2} />
-            </button>
+              <button
+                onClick={onAddTask}
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-content-sec opacity-0 transition-opacity group-hover:opacity-100 hover:bg-fill-sec"
+              >
+                <Plus size={16} strokeWidth={2} />
+              </button>
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="text-style-p-m flex items-center gap-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+            <button className="text-style-p-m flex items-center gap-1 rounded-md p-1 text-content-sec transition-colors hover:bg-fill-sec hover:text-content-prim">
               <span>Filter</span>
-              <Settings size={14} strokeWidth={2} />
-            </button>
-            <button className="text-style-p-m flex items-center gap-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+                <Settings size={14} strokeWidth={2} />
+              </button>
+            <button className="text-style-p-m flex items-center gap-1 rounded-md p-1 text-content-sec transition-colors hover:bg-fill-sec hover:text-content-prim">
               <span>Sort</span>
-              <ArrowUpDown size={14} strokeWidth={2} />
+                <ArrowUpDown size={14} strokeWidth={2} />
             </button>
           </div>
         </div>

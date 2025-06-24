@@ -1,7 +1,9 @@
 import { useDrag } from 'react-dnd';
 import { cn } from '@/lib/utils';
 import { Task } from '@/types/Task';
+import { Check } from '@phosphor-icons/react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { colorMap } from '@/styles/colors';
 
 interface TaskCardProps {
   task: Task;
@@ -23,36 +25,56 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
     onToggleComplete(task, checked);
   };
 
+  const rgb = task.color && colorMap[task.color] ? colorMap[task.color] : undefined;
+  const colorClass = task.color ? `card-bg-${task.color}` : 'bg-fill-prim';
+  const colorHoverClass = task.color ? `hover:card-bg-${task.color}-hover` : 'hover:bg-fill-sec';
+
   return (
     <div
       ref={drag}
       onClick={onClick}
       className={cn(
-        'group flex cursor-grab items-center gap-2 rounded-lg p-1.5 transition-all duration-200 ease-out',
-        'active:cursor-grabbing',
+        'group flex flex-row items-start gap-1 w-[172px] min-h-7 rounded-md p-[6px] transition-colors duration-200 ease-out',
+        'active:cursor-grabbing cursor-grab',
         isDragging && 'opacity-50',
-        task.is_completed && 'opacity-60',
-        task.color ? `bg-${task.color}-100 dark:bg-${task.color}-900/50` : 'bg-muted/70 hover:bg-muted'
+        colorClass,
+        colorHoverClass
       )}
     >
-      <Checkbox 
+      <Checkbox
         checked={task.is_completed}
-        onCheckedChange={handleCheckboxChange}
-        onClick={(e) => e.stopPropagation()}
+        onCheckedChange={(checked) => {
+          handleCheckboxChange(!!checked);
+        }}
+        onClick={e => e.stopPropagation()}
+        className={cn(
+          'size-4 min-w-4 min-h-4 rounded-sm relative flex items-center justify-center shrink-0 transition-colors duration-150',
+          !task.is_completed && 'hover:border-brd-tert',
+          task.is_completed && 'border-[hsl(var(--accent-prim))] bg-[hsl(var(--accent-prim))]'
+        )}
       />
 
-      <p 
-        className={cn(
-          "text-style-p-m-semibold flex-1 truncate",
-          task.is_completed ? "text-muted-foreground line-through" : "text-foreground"
-        )}
-      >
-        <span className="text-style-p-m-semibold">{task.title}</span>
-      </p>
+      <div className="basis-0 grow h-4 max-h-8 min-h-px min-w-px relative shrink-0 flex flex-col justify-center">
+        <p
+          className={cn(
+            'font-semibold text-[12px] leading-[16px] tracking-[-0.24px] truncate',
+            task.is_completed ? 'text-content-tert' : 'text-content-prim'
+          )}
+        >
+          {task.title}
+        </p>
+      </div>
 
       {task.time_estimate && (
-        <div className="flex-shrink-0 text-xs text-muted-foreground">
-          {task.time_estimate}
+        <div className="flex-shrink-0 h-4 flex items-center py-0.5">
+          <span
+            className={cn(
+              'font-medium text-[10px] leading-[12px] text-nowrap',
+              task.is_completed ? 'text-content-tert' : 'text-content-sec'
+            )}
+          >
+            {task.time_estimate}
+          </span>
         </div>
       )}
     </div>

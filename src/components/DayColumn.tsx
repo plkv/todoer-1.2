@@ -31,16 +31,16 @@ export const DayColumn = ({
       <div className="flex flex-col flex-shrink-0 p-1.5 gap-1">
         <div className="flex items-center gap-2">
           <h2 
-            className={cn(isActive ? "text-foreground" : "text-muted-foreground")}
+            className={cn(isActive ? "text-content-prim" : "text-content-tert")}
           >
             <span className="text-style-h-s">{dayName}</span>
           </h2>
           {isActive && (
-            <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+            <div className="w-1.5 h-1.5 rounded-full bg-accent-prim" />
           )}
         </div>
         <h3 
-          className={cn(isActive ? "text-foreground" : "text-muted-foreground")}
+          className={cn(isActive ? "text-content-prim" : "text-content-tert")}
         >
           <span className="text-style-h-l">{date}</span>
         </h3>
