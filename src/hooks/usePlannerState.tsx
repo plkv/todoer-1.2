@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, createContext as createReactContext, useMemo } from 'react';
+import React, { useState, useCallback, useContext, createContext as createReactContext, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ITask, WeekData, DayTasks } from '../types/Task';
 import { tasks as tasksApi } from '../api/client';
@@ -22,18 +22,66 @@ const distributeTasksToWeek = (tasks: ITask[], weekDates: { day: string; date: s
   return weekData;
 };
 
+const HISTORY_KEY = 'planner:history';
+const SETTINGS_KEY = 'planner:settings';
+const HISTORY_LIMIT = 50;
+
 function usePlannerStateImpl() {
   console.log('[toast] usePlannerStateImpl loaded');
   const queryClient = useQueryClient();
 
-  const [currentView, setCurrentView] = useState<'Week' | 'Day'>('Week');
+  // --- SETTINGS ---
+  // Восстанавливаем настройки из localStorage
+  const getInitialSettings = () => {
+    try {
+      const saved = localStorage.getItem(SETTINGS_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          currentView: parsed.currentView || 'Week',
+          selectedDate: parsed.selectedDate ? new Date(parsed.selectedDate) : new Date(),
+        };
+      }
+    } catch {}
+    return { currentView: 'Week', selectedDate: new Date() };
+  };
+  const [currentView, setCurrentViewState] = useState<'Week' | 'Day'>(getInitialSettings().currentView);
+  const [selectedDate, setSelectedDateState] = useState<Date>(getInitialSettings().selectedDate);
+
+  // Сохраняем настройки при изменении
+  useEffect(() => {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ currentView, selectedDate }));
+  }, [currentView, selectedDate]);
+
+  const setCurrentView = (view: 'Week' | 'Day') => setCurrentViewState(view);
+  const setSelectedDate = (date: Date) => setSelectedDateState(date);
+
+  // --- HISTORY ---
+  // Восстанавливаем историю из localStorage
+  const getInitialHistory = () => {
+    try {
+      const saved = localStorage.getItem(HISTORY_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          history: parsed.history || [],
+          future: parsed.future || [],
+        };
+      }
+    } catch {}
+    return { history: [], future: [] };
+  };
+  const [history, setHistory] = useState<any[]>(getInitialHistory().history);
+  const [future, setFuture] = useState<any[]>(getInitialHistory().future);
+
+  // Сохраняем историю при изменении
+  useEffect(() => {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify({ history, future }));
+  }, [history, future]);
+
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [newTaskContext, setNewTaskContext] = useState<{ day?: string; section?: string }>({});
-
-  // Новый state: выбранная дата (по умолчанию сегодня)
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  console.log('selectedDate:', selectedDate);
 
   // Получаем массив дат недели, в которую входит selectedDate
   const weekDates = React.useMemo(() => {
@@ -64,10 +112,49 @@ function usePlannerStateImpl() {
   const weekData = distributeTasksToWeek(weekTasks, weekDates);
 
   // --- Методы смены недели/даты ---
-  const handlePrevWeek = () => setSelectedDate(prev => subWeeks(prev, 1));
-  const handleNextWeek = () => setSelectedDate(prev => addWeeks(prev, 1));
+  const handlePrevWeek = () => setSelectedDate(subWeeks(selectedDate, 1));
+  const handleNextWeek = () => setSelectedDate(addWeeks(selectedDate, 1));
   const handleDateChange = (date: Date) => setSelectedDate(date);
   const handleToday = () => setSelectedDate(new Date());
+
+  // --- HISTORY HELPERS ---
+  const getCurrentState = useCallback(() => allTasks, [allTasks]);
+  const restoreState = useCallback((tasks: ITask[]) => {
+    // TODO: Можно реализовать через queryClient.setQueryData, если нужно
+    // queryClient.setQueryData(['tasks', weekStart, weekEnd], tasks);
+    // Но для простоты пока не трогаем сервер, только локально
+  }, []);
+
+  const pushHistory = useCallback((snapshot: any) => {
+    setHistory((prev) => {
+      const next = [...prev, snapshot].slice(-HISTORY_LIMIT);
+      return next;
+    });
+    setFuture([]);
+  }, []);
+
+  const undo = useCallback(() => {
+    setHistory((prev) => {
+      if (prev.length === 0) return prev;
+      setFuture((f) => [getCurrentState(), ...f]);
+      const last = prev[prev.length - 1];
+      restoreState(last);
+      return prev.slice(0, -1);
+    });
+  }, [getCurrentState, restoreState]);
+
+  const redo = useCallback(() => {
+    setFuture((prev) => {
+      if (prev.length === 0) return prev;
+      pushHistory(getCurrentState());
+      const next = prev[0];
+      restoreState(next);
+      return prev.slice(1);
+    });
+  }, [getCurrentState, pushHistory, restoreState]);
+
+  const isUndoAvailable = history.length > 0;
+  const isRedoAvailable = future.length > 0;
 
   // --- МУТАЦИИ (создание, обновление, удаление) ---
   
@@ -166,16 +253,19 @@ function usePlannerStateImpl() {
   };
 
   const handleSaveTask = useCallback((taskId: string, taskData: Partial<ITask> & { _actionType?: string }) => {
+    pushHistory(getCurrentState());
     updateTaskMutation.mutate({ taskId, data: { ...taskData, _actionType: 'edit' } as any });
-  }, [updateTaskMutation]);
+  }, [updateTaskMutation, getCurrentState, pushHistory]);
   
   const handleToggleComplete = (task: ITask, completed: boolean) => {
+    pushHistory(getCurrentState());
     updateTaskMutation.mutate({ taskId: task.id, data: { ...task, is_completed: completed, _actionType: 'complete' } as any });
   };
 
   const handleDeleteTask = useCallback((taskId: string) => {
+    pushHistory(getCurrentState());
     deleteTaskMutation.mutate(taskId);
-  }, [deleteTaskMutation]);
+  }, [deleteTaskMutation, getCurrentState, pushHistory]);
 
   const handleDuplicateTask = (taskToDuplicate: ITask) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -202,6 +292,7 @@ function usePlannerStateImpl() {
   ) => {
     const taskToMove = allTasks.find(t => t.id === taskId);
     if (!taskToMove) return;
+    pushHistory(getCurrentState());
     const updatedTask = {
       ...taskToMove,
       day: targetLocation.day || null,
@@ -229,10 +320,11 @@ function usePlannerStateImpl() {
     setNewTaskContext,
     weekDates,
     selectedDate,
+    setSelectedDate,
     handlePrevWeek,
     handleNextWeek,
-    handleDateChange,
-    handleToday,
+    handleDateChange: setSelectedDate,
+    handleToday: () => setSelectedDate(new Date()),
     handleTaskClick,
     handleAddTask,
     handleSaveNewTask,
@@ -241,6 +333,10 @@ function usePlannerStateImpl() {
     handleDeleteTask,
     handleDuplicateTask,
     handleMoveTask,
+    undo,
+    redo,
+    isUndoAvailable,
+    isRedoAvailable,
   };
 }
 
