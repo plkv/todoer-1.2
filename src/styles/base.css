@@ -1,3 +1,5 @@
+@import "inter-ui/inter.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -124,40 +126,86 @@
 
   body {
     @apply bg-[hsl(var(--bg-prim))] text-[hsl(var(--content-prim))];
+    font-family: 'Inter var', Inter, sans-serif;
   }
 }
 
 @layer components {
-  /* H/XL - SF Pro Bold, 24px */
+  /* H/XL - Inter Variable Bold, 24/28, 0 */
   .text-style-h-xl {
-    @apply text-h-xl font-bold font-sf-pro;
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 28px;
+    letter-spacing: 0;
   }
-  /* H/L - SF Pro Bold, 18px */
+  /* H/L Bold - Inter Variable SemiBold, 18/24, -3% */
+  .text-style-h-l-bold {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: -0.03em;
+  }
+  /* H/L Reg - Inter Variable Medium, 18/24, -3% */
   .text-style-h-l {
-    @apply text-h-l font-bold tracking-h-l font-sf-pro;
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: -0.03em;
   }
-  /* H/S - SF Pro Bold Uppercase, 11px */
+  /* H/S - Inter Variable SemiBold, 11/16, 2% */
   .text-style-h-s {
-    @apply text-h-s font-bold uppercase font-sf-pro;
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.02em;
   }
-  /* P/M - SF Pro Medium, 12px */
+  /* P/L Reg - Inter Variable Medium, 13/16, -2% */
+  .text-style-p-l {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -0.02em;
+  }
+  /* P/L Bold - Inter Variable SemiBold, 13/16, -2% */
+  .text-style-p-l-bold {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -0.02em;
+  }
+  /* P/M Reg - Inter Variable Medium, 12/16, -2% */
   .text-style-p-m {
-    @apply text-p-m font-medium tracking-p-m font-sf-pro;
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: -0.02em;
   }
-  /* P/M Semibold - SF Pro Semibold, 12px */
-  .text-style-p-m-semibold {
-    @apply text-p-m font-semibold tracking-p-m font-sf-pro;
+  /* P/M Bold - Inter Variable SemiBold, 12/16, -2% */
+  .text-style-p-m-bold {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: -0.02em;
   }
-  /* P/S - SF Pro, 10px */
+  /* P/S Regular - Inter Variable Medium, 10/12, 0% */
   .text-style-p-s {
-    @apply text-p-s font-sf-pro;
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0;
   }
 }
 
 @layer utilities {
-  .font-sf-pro {
-    font-feature-settings: 'ss01' on, 'ss02' on, 'ss07' on, 'cv03' on, 'cv08' on, 'cv12' on;
-  }
   .card-bg-red { background-color: hsl(var(--bg-card-red)); }
   .hover\:card-bg-red-hover:hover { background-color: hsl(var(--bg-card-red-hover)); }
   .card-bg-orange { background-color: hsl(var(--bg-card-orange)); }

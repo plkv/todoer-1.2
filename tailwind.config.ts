@@ -28,23 +28,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['SF Pro', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-			},
-			fontSize: {
-				'h-xl': ['24px', '28px'],
-				'h-l': ['18px', '24px'],
-				'h-s': ['11px', '16px'],
-				'p-m': ['12px', '16px'],
-				'p-s': ['10px', '12px'],
-			},
-			fontWeight: {
-				// P/M -> font-medium (500) - стандартный medium
-				// P/M Bold -> font-semibold (600) - стандартный semibold
-				// H/* -> font-bold (700) - стандартный bold
-			},
-			letterSpacing: {
-				'h-l': '-0.03em',
-				'p-m': '-0.02em',
+				sans: ['Inter var', 'Inter', 'sans-serif'],
 			},
 			colors: {
 				'bg-prim': 'hsl(var(--bg-prim))',
