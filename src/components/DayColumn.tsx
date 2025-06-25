@@ -1,7 +1,7 @@
 import React from 'react';
 import { TimeSection } from './TimeSection';
 import { ITask, DayTasks } from '@/types/Task';
-import { cn } from '@/lib/utils';
+import { cn, getDayDateString } from '@/lib/utils';
 
 interface DayColumnProps {
   dayName: string;
@@ -25,22 +25,25 @@ export const DayColumn = ({
   onMoveTask
 }: DayColumnProps) => {
 
+  const todayStr = getDayDateString(new Date());
+  const isToday = date === todayStr;
+
   return (
     <div className="grid grid-rows-subgrid row-span-5 gap-1.5">
       {/* Day Header */}
       <div className="flex flex-col flex-shrink-0 p-1.5 gap-0">
         <div className="flex items-center gap-2">
           <h2 
-            className={cn(isActive ? "text-content-prim" : "text-content-tert")}
+            className={cn(isToday ? "text-content-prim font-bold" : "text-content-tert")}
           >
             <span className="text-style-h-s">{dayName}</span>
+            {isToday && (
+              <div className="w-1.5 h-1.5 rounded-full bg-accent-prim inline-block ml-1" />
+            )}
           </h2>
-          {isActive && (
-            <div className="w-1.5 h-1.5 rounded-full bg-accent-prim" />
-          )}
         </div>
         <h3 
-          className={cn(isActive ? "text-content-prim" : "text-content-tert")}
+          className={cn(isToday ? "text-content-prim font-bold" : "text-content-tert")}
         >
           <span className="text-style-h-l">{date}</span>
         </h3>

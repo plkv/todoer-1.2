@@ -20,7 +20,8 @@ export const PlannerHeader = () => {
     currentView, 
     setCurrentView, 
     handlePrevPeriod, 
-    handleNextPeriod 
+    handleNextPeriod,
+    handleToday
   } = usePlannerState();
 
   return (
@@ -33,7 +34,7 @@ export const PlannerHeader = () => {
             <Button variant="ghost" className="h-7 w-7 rounded-[6px] p-0 flex items-center justify-center" onClick={handlePrevPeriod}>
               <ChevronLeft size={14} strokeWidth={2} />
             </Button>
-            <Button variant="secondary" className="h-7 min-w-[44px] rounded-[6px] text-style-p-m-semibold text-content-prim px-2 flex items-center justify-center">Today</Button>
+            <Button variant="secondary" className="h-7 min-w-[44px] rounded-[6px] text-style-p-m-semibold text-content-prim px-2 flex items-center justify-center" onClick={handleToday}>Today</Button>
             <Button variant="ghost" className="h-7 w-7 rounded-[6px] p-0 flex items-center justify-center" onClick={handleNextPeriod}>
               <ChevronRight size={14} strokeWidth={2} />
             </Button>
