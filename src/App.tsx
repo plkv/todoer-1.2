@@ -6,6 +6,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import React, { useEffect } from 'react';
 import { usePlannerState } from './hooks/usePlannerState';
+import { PlannerStateProvider } from './hooks/usePlannerState';
 
 const queryClient = new QueryClient();
 
@@ -32,17 +33,19 @@ function HotkeyHandler() {
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <HotkeyHandler />
-      <TooltipProvider>
-        <Toaster />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <PlannerStateProvider>
+        <HotkeyHandler />
+        <TooltipProvider>
+          <Toaster />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </PlannerStateProvider>
     </QueryClientProvider>
   );
 };

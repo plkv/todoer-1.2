@@ -3,17 +3,17 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { usePlannerState } from '@/hooks/usePlannerState';
 import { useTheme } from '@/hooks/useTheme';
-import { getWeekDates, getCurrentDay } from '@/lib/utils';
 import { PlannerHeader } from './PlannerHeader';
 import { DayColumn } from './DayColumn';
 import { BacklogSection } from './BacklogSection';
 import TaskOverlay from './TaskOverlay';
 import { ITask } from '@/types/Task';
+import { getWeekdayLabel } from '@/lib/utils';
 
 export const PlannerView = () => {
   const { isDark } = useTheme();
   const {
-    weekData,
+    periodData,
     backlogData,
     isOverlayOpen,
     setIsOverlayOpen,
@@ -26,12 +26,12 @@ export const PlannerView = () => {
     handleDuplicateTask,
     handleAddTask,
     handleMoveTask,
-    weekOffset,
+    periodDates,
+    selectedDate,
     newTaskContext,
   } = usePlannerState();
 
-  const weekDates = useMemo(() => getWeekDates(weekOffset), [weekOffset]);
-  const currentDay = useMemo(() => getCurrentDay(), []);
+  const safePeriodDates = Array.isArray(periodDates) ? periodDates : [];
 
   const taskForOverlay = useMemo(() => {
     if (selectedTask) return selectedTask;
@@ -57,9 +57,9 @@ export const PlannerView = () => {
     if (!isOverlayOpen || !taskForOverlay) return null;
     const day = taskForOverlay.day;
     if (!day) return new Date();
-    const dateInfo = weekDates.find((d) => d.day === day);
+    const dateInfo = safePeriodDates.find((d) => d.date === day);
     return dateInfo ? dateInfo.fullDate : new Date();
-  }, [isOverlayOpen, taskForOverlay, weekDates]);
+  }, [isOverlayOpen, taskForOverlay, safePeriodDates]);
 
   const handleSave = (taskData: Partial<ITask>) => {
     if (taskData.id) {
@@ -75,15 +75,15 @@ export const PlannerView = () => {
         <PlannerHeader />
         <div 
           className="grid flex-1"
-          style={{ gridTemplateColumns: 'repeat(7, 1fr)', gridTemplateRows: 'auto 1fr' }}
+          style={{ gridTemplateColumns: `repeat(${safePeriodDates.length}, 1fr)`, gridTemplateRows: 'auto 1fr' }}
         >
-          {weekDates.map(({ day, date }) => (
+          {safePeriodDates.map(({ date }) => (
             <DayColumn
-              key={day}
-              dayName={day}
+              key={date}
+              dayName={getWeekdayLabel(date)}
               date={date}
-              tasks={weekData[day]}
-              isActive={weekOffset === 0 && day === currentDay}
+              tasks={periodData[date]}
+              isActive={date === selectedDate.toISOString().slice(0, 10)}
               onTaskClick={handleTaskClick}
               onToggleComplete={handleToggleComplete}
               onAddTask={handleAddTask}

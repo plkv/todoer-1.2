@@ -10,7 +10,7 @@ interface DayColumnProps {
   isActive?: boolean;
   onTaskClick: (task: ITask) => void;
   onToggleComplete: (task: ITask, completed: boolean) => void;
-  onAddTask: (day: string, section: string) => void;
+  onAddTask: (date: string, section: string) => void;
   onMoveTask?: (taskId: string, sourceLocation: { day?: string; section?: string }, targetLocation: { day?: string; section?: string }) => void;
 }
 
@@ -52,9 +52,9 @@ export const DayColumn = ({
         tasks={tasks.morning}
         onTaskClick={onTaskClick}
         onToggleComplete={onToggleComplete}
-        onAddTask={(section) => onAddTask(dayName, section)}
+        onAddTask={(section) => onAddTask(date, section)}
         onMoveTask={onMoveTask}
-        dayName={dayName}
+        dayName={date}
       />
 
       <TimeSection
@@ -62,9 +62,9 @@ export const DayColumn = ({
         tasks={tasks.day}
         onTaskClick={onTaskClick}
         onToggleComplete={onToggleComplete}
-        onAddTask={(section) => onAddTask(dayName, section)}
+        onAddTask={(section) => onAddTask(date, section)}
         onMoveTask={onMoveTask}
-        dayName={dayName}
+        dayName={date}
       />
 
       <TimeSection
@@ -72,9 +72,9 @@ export const DayColumn = ({
         tasks={tasks.evening}
         onTaskClick={onTaskClick}
         onToggleComplete={onToggleComplete}
-        onAddTask={(section) => onAddTask(dayName, section)}
+        onAddTask={(section) => onAddTask(date, section)}
         onMoveTask={onMoveTask}
-        dayName={dayName}
+        dayName={date}
       />
     </div>
   );

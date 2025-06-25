@@ -4,6 +4,7 @@ import { ITask, WeekData, DayTasks } from '../types/Task';
 import { tasks as tasksApi } from '../api/client';
 import { startOfWeek, addWeeks, subWeeks, isSameWeek } from 'date-fns';
 import { toast } from '@/components/ui/sonner';
+import { getWeekDateStrings, getMonthDateStrings, getDayDateString, getWeekdayLabel } from '@/lib/utils';
   
 // Эта функция-хелпер распределяет плоский список задач по датам и секциям
 const distributeTasksToWeek = (tasks: ITask[], weekDates: { day: string; date: string; fullDate: Date }[]): Record<string, DayTasks> => {
@@ -111,23 +112,52 @@ function usePlannerStateImpl() {
   const [newTaskContext, setNewTaskContext] = useState<{ day?: string; section?: string }>({});
 
   // --- ПЕРИОД КАЛЕНДАРЯ ---
-  // Вычисляем массив дат для текущего режима
-  const periodDates = useMemo(() => {
-    if (currentView === 'Day') return getDayDate(selectedDate);
-    if (currentView === 'Month') return getMonthDates(selectedDate);
+  const periodDateStrings = useMemo(() => {
+    if (currentView === 'Day') return [getDayDateString(selectedDate)];
+    if (currentView === 'Month') return getMonthDateStrings(selectedDate);
     // Week по умолчанию
-    const start = startOfWeek(selectedDate, { weekStartsOn: 1 });
-    return Array.from({ length: 7 }).map((_, i) => {
-      const date = new Date(start);
-      date.setDate(start.getDate() + i);
-      return {
-        day: date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
-        date: date.toISOString().slice(0, 10),
-        fullDate: date,
-      };
-    });
+    return getWeekDateStrings(selectedDate);
   }, [selectedDate, currentView]);
-  const periodDateStrings = periodDates.map(d => d.fullDate.toISOString().slice(0, 10));
+
+  // --- API ---
+  const periodStart = periodDateStrings[0];
+  const periodEnd = periodDateStrings[periodDateStrings.length - 1];
+  const { data: allTasks = [], isLoading: isLoadingTasks } = useQuery<ITask[]>({
+    queryKey: ['tasks', periodStart, periodEnd],
+    queryFn: () => tasksApi.getByDate(periodStart, periodEnd),
+  });
+
+  // Фильтруем задачи на те, что в бэклоге, и те, что в периоде
+  const backlogData = allTasks.filter(task => !task.day || !task.section);
+  const periodTasks = allTasks.filter(task => task.day && periodDateStrings.includes(task.day) && task.section);
+
+  // --- Данные для UI: periodDates ---
+  const periodDates = useMemo(() =>
+    periodDateStrings.map(date => ({
+      date,
+      dayName: getWeekdayLabel(date),
+      fullDate: new Date(date),
+    })),
+    [periodDateStrings]
+  );
+
+  // --- Распределение задач по датам и секциям ---
+  const distributeTasksToPeriod = (tasks: ITask[], dateStrings: string[]): Record<string, DayTasks> => {
+    const data: Record<string, DayTasks> = {};
+    dateStrings.forEach(date => {
+      data[date] = { morning: [], day: [], evening: [] };
+    });
+    tasks.forEach(task => {
+      if (task.day && task.section && data[task.day]) {
+        const sectionKey = task.section.toLowerCase() as keyof DayTasks;
+        if (data[task.day][sectionKey]) {
+          data[task.day][sectionKey].push(task);
+        }
+      }
+    });
+    return data;
+  };
+  const periodData = distributeTasksToPeriod(periodTasks, periodDateStrings);
 
   // --- Методы перехода ---
   const goToDate = (date: Date) => setSelectedDate(date);
@@ -139,20 +169,6 @@ function usePlannerStateImpl() {
     setCurrentView('Month');
     setSelectedDate(date);
   };
-
-  // --- API ---
-  // Загрузка задач за период с сервера с помощью React Query
-  const periodStart = periodDateStrings[0];
-  const periodEnd = periodDateStrings[periodDateStrings.length - 1];
-  const { data: allTasks = [], isLoading: isLoadingTasks } = useQuery<ITask[]>({
-    queryKey: ['tasks', periodStart, periodEnd],
-    queryFn: () => tasksApi.getByDate(periodStart, periodEnd),
-  });
-
-  // Фильтруем задачи на те, что в бэклоге, и те, что в периоде
-  const backlogData = allTasks.filter(task => !task.day || !task.section);
-  const periodTasks = allTasks.filter(task => task.day && periodDateStrings.includes(task.day) && task.section);
-  const periodData = distributeTasksToWeek(periodTasks, periodDates);
 
   // --- Методы смены периода ---
   const handlePrevPeriod = () => {
@@ -214,11 +230,11 @@ function usePlannerStateImpl() {
       setIsOverlayOpen(false);
       setSelectedTask(null);
       console.log('[toast] onSuccess create');
-      toast({ title: 'Задача создана', description: 'Задача успешно создана', variant: 'default' });
+      toast('Задача создана', { description: 'Задача успешно создана' });
     },
     onError: (error: any) => {
       console.error('[toast] Ошибка при создании задачи:', error);
-      toast({ title: 'Ошибка при создании задачи', description: error.message, variant: 'destructive' });
+      toast('Ошибка при создании задачи', { description: error.message });
     },
   });
   
@@ -240,18 +256,18 @@ function usePlannerStateImpl() {
       if (context?.previousTasks) {
         queryClient.setQueryData(['tasks'], context.previousTasks);
       }
-      toast({ title: 'Ошибка обновления задачи', description: err.message, variant: 'destructive' });
+      toast('Ошибка обновления задачи', { description: err.message });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
     onSuccess: (data, variables, context) => {
       if (context?.actionType === 'edit') {
-        toast({ title: 'Задача обновлена', description: 'Задача успешно обновлена', variant: 'default' });
+        toast('Задача обновлена', { description: 'Задача успешно обновлена' });
       } else if (context?.actionType === 'move') {
-        toast({ title: 'Задача перемещена', description: 'Задача успешно перемещена', variant: 'default' });
+        toast('Задача перемещена', { description: 'Задача успешно перемещена' });
       } else if (context?.actionType === 'complete') {
-        toast({ title: 'Статус задачи изменён', description: 'Статус задачи успешно изменён', variant: 'default' });
+        toast('Статус задачи изменён', { description: 'Статус задачи успешно изменён' });
       }
       setIsOverlayOpen(false);
       setSelectedTask(null);
@@ -264,11 +280,11 @@ function usePlannerStateImpl() {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       setIsOverlayOpen(false);
       setSelectedTask(null);
-      toast({ title: 'Задача удалена', description: 'Задача успешно удалена', variant: 'default' });
+      toast('Задача удалена', { description: 'Задача успешно удалена' });
     },
     onError: (error: any) => {
       console.error("Ошибка при удалении задачи:", error);
-      toast({ title: 'Ошибка при удалении задачи', description: error.message, variant: 'destructive' });
+      toast('Ошибка при удалении задачи', { description: error.message });
     },
   });
 
@@ -326,10 +342,10 @@ function usePlannerStateImpl() {
       onSuccess: () => {
         setIsOverlayOpen(false);
         setSelectedTask(null);
-        toast({ title: 'Задача продублирована', description: 'Копия задачи успешно создана', variant: 'default' });
+        toast('Задача продублирована', { description: 'Копия задачи успешно создана' });
       },
       onError: (error: any) => {
-        toast({ title: 'Ошибка при дублировании задачи', description: error.message, variant: 'destructive' });
+        toast('Ошибка при дублировании задачи', { description: error.message });
       }
     });
   };
