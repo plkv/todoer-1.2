@@ -60,11 +60,11 @@ export const TimeSection = ({
         )}
       </h3>
       
-      <div className="flex flex-1 flex-col gap-1">
+      <div className="flex flex-col gap-1 w-full min-w-0">
           {tasks.map((task) => (
             <TaskCard
               key={task.id}
-            task={task}
+              task={task}
               onClick={() => onTaskClick(task)}
               onToggleComplete={onToggleComplete}
               sourceLocation={{ day: dayName, section: title }}
@@ -73,7 +73,7 @@ export const TimeSection = ({
         
         <div 
           onClick={() => onAddTask(title)}
-          className="group/add-task flex flex-row items-center gap-1 w-[172px] min-h-7 rounded-md p-[6px] cursor-pointer justify-between transition-colors duration-200 ease-out opacity-0 group-hover:opacity-100 hover:bg-fill-sec"
+          className="group/add-task flex flex-row items-center gap-1 min-h-7 rounded-md p-[6px] cursor-pointer justify-between transition-colors duration-200 ease-out opacity-0 group-hover:opacity-100 hover:bg-fill-sec w-full min-w-0"
         >
           <div className="flex flex-row items-center gap-1">
             <Plus className="h-3 w-3 text-content-tert" strokeWidth={2.5} />

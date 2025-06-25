@@ -34,7 +34,7 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
       ref={drag}
       onClick={onClick}
       className={cn(
-        'group flex flex-row items-start gap-1 w-[172px] min-h-7 rounded-md p-[6px] transition-colors duration-200 ease-out',
+        'group flex flex-row items-start gap-1 min-h-7 rounded-md p-[6px] transition-colors duration-200 ease-out min-w-0 w-full',
         'active:cursor-grabbing cursor-grab',
         isDragging && 'opacity-50',
         colorClass,
