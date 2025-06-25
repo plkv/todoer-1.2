@@ -1,83 +1,112 @@
-import { useDrop } from 'react-dnd';
+import { Button } from '@/components/ui/button';
+import { Plus, Settings, Inbox } from 'lucide-react';
 import { TaskCard } from './TaskCard';
-import { Plus, Settings, ArrowUpDown } from 'lucide-react';
-import { ITask } from '@/types/Task';
 import { cn } from '@/lib/utils';
+import { useDrop } from 'react-dnd';
+import React from 'react';
+import { ITask } from '@/types/Task';
+import { IconPlus, IconSettings, IconInbox, Icon00 } from './ui/icons';
 
-interface BacklogSectionProps {
+export type List = {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
   tasks: ITask[];
+};
+
+type BacklogSectionProps = {
+  lists: List[];
+  onAddList: () => void;
+  onSettingsClick: () => void;
+  onAddTask: (listId: string) => void;
   onTaskClick: (task: ITask) => void;
   onToggleComplete: (task: ITask, completed: boolean) => void;
-  onAddTask: () => void;
-  onMoveTask?: (taskId: string, sourceLocation: { day?: string; section?: string }, targetLocation: { day?: string; section?: string }) => void;
-}
+  onMoveTask: (taskId: string, sourceLocation: { section?: string }, targetLocation: { section?: string }) => void;
+};
 
-export const BacklogSection = ({ 
-  tasks, 
-  onTaskClick, 
-  onToggleComplete, 
+export const BacklogSection = ({
+  lists,
+  onAddList,
+  onSettingsClick,
   onAddTask,
-  onMoveTask
+  onTaskClick,
+  onToggleComplete,
+  onMoveTask,
 }: BacklogSectionProps) => {
-
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: 'task',
-    drop: (item: { id: string; sourceLocation: { day?: string; section?: string } }) => {
-      if (onMoveTask) {
-        onMoveTask(item.id, item.sourceLocation, {});
-      }
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  }));
+  const totalTasks = lists.reduce((sum, list) => sum + list.tasks.length, 0);
 
   return (
-    <div 
-      ref={drop}
-      className={cn(
-        "border-t-brd-prim p-2 transition-colors",
-        isOver ? "bg-fill-sec" : "bg-fill-prim"
-      )}
-    >
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-2 flex items-center justify-between">
-          <div className="group flex items-center gap-1">
-            <h2 className="text-style-h-l text-content-prim">
-              Backlog
-            </h2>
-              <button
-                onClick={onAddTask}
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-content-sec opacity-0 transition-opacity group-hover:opacity-100 hover:bg-fill-sec text-style-p-m"
-              >
-                <Plus size={16} strokeWidth={2} />
-              </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button className="text-style-p-m flex items-center gap-1 rounded-md p-1 text-content-sec transition-colors hover:bg-fill-sec hover:text-content-prim">
-              <span>Filter</span>
-                <Settings size={14} strokeWidth={2} />
-              </button>
-            <button className="text-style-p-m flex items-center gap-1 rounded-md p-1 text-content-sec transition-colors hover:bg-fill-sec hover:text-content-prim">
-              <span>Sort</span>
-                <ArrowUpDown size={14} strokeWidth={2} />
-            </button>
-          </div>
+    <aside className="flex flex-col h-full w-full min-w-0 bg-bg-sec border-r border-brd-prim overflow-y-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-5 pb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-style-h-l text-content-prim">Backlog</span>
+          <span className="text-style-p-m-bold bg-fill-prim rounded px-2 py-0.5">{totalTasks}</span>
         </div>
-
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-          {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onClick={() => onTaskClick(task)}
-              onToggleComplete={onToggleComplete}
-              sourceLocation={{}}
-            />
-          ))}
-        </div>
+        <Button variant="ghost" size="m" iconLeft={<Icon00 className='w-5 h-5' />} onClick={onSettingsClick} />
       </div>
-    </div>
+
+      {/* Add List Button */}
+      <Button
+        variant="secondary"
+        size="m"
+        iconLeft={<Icon00 className="w-4 h-4" />}
+        className="w-full justify-start text-style-p-m px-5 pb-2"
+        onClick={onAddList}
+      >
+        Добавить список
+      </Button>
+
+      {/* Lists Section */}
+      <div className="flex flex-col min-w-0 px-2 pb-2">
+        {lists.map((list) => {
+          // Drag-n-drop для секции
+          const [{ isOver }, drop] = useDrop(() => ({
+            accept: 'task',
+            drop: (item: { id: string; sourceLocation: { section?: string } }) => {
+              if (onMoveTask) {
+                onMoveTask(item.id, item.sourceLocation, { section: list.id });
+              }
+            },
+            collect: (monitor) => ({
+              isOver: monitor.isOver(),
+            }),
+          }), [onMoveTask, list.id]);
+
+          return (
+            <div key={list.id} ref={drop} className={cn("mb-2 last:mb-0 p-2 bg-bg-prim rounded-lg min-w-0 transition-colors", isOver && "bg-fill-sec")}> 
+              {/* List Header */}
+              <div className="flex items-center gap-2 mb-1">
+                <span className="flex items-center justify-center w-6 h-6 rounded bg-fill-sec">
+                  {list.icon}
+                </span>
+                <span className="text-style-p-m-bold text-content-prim truncate">{list.name}</span>
+                <span className="text-style-p-m bg-fill-sec rounded px-2 py-0.5">{list.tasks.length}</span>
+                <Button
+                  variant="ghost"
+                  size="m"
+                  iconLeft={<Icon00 className="w-4 h-4" />}
+                  className="ml-auto"
+                  onClick={() => onAddTask(list.id)}
+                  title="Добавить задачу"
+                />
+              </div>
+              {/* Tasks */}
+              <div className="flex flex-col min-w-0">
+                {list.tasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    onClick={() => onTaskClick(task)}
+                    onToggleComplete={onToggleComplete}
+                    sourceLocation={{ section: list.id }}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </aside>
   );
 };

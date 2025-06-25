@@ -71,6 +71,7 @@
     --misc-empty: 0 0% 0% / 0;
     --misc-cont-prim-fix: 0 0% 100% / 1;
     --misc-cont-prim-inverse: 0 0% 100% / 1;
+    --translucent: 0 0% 100% / 0.8;
   }
 
   .dark {

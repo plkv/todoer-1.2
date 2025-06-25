@@ -1,56 +1,76 @@
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
-
 import { cn } from "@/lib/utils"
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-style-p-m ring-offset-bg-bg-prim transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-  {
-    variants: {
-      variant: {
-        default: "bg-accent-prim text-content-prim hover:bg-accent-prim/90",
-        destructive:
-          "bg-accent-destructive text-content-prim hover:bg-accent-destructive/90",
-        outline:
-          "border border-brd-prim bg-bg-prim hover:bg-accent-prim/10 hover:text-content-prim",
-        secondary:
-          "bg-fill-sec text-content-sec hover:bg-fill-sec/80",
-        ghost: "hover:bg-accent-prim/10 hover:text-content-prim",
-        link: "text-accent-prim underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10 rounded-full",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
-
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'primary' | 'secondary' | 'ghost'
+  size?: 'm' | 's' | 'l'
+  iconLeft?: React.ReactNode
+  iconRight?: React.ReactNode
+  secondary?: React.ReactNode
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
+const variantClasses = {
+  primary:
+    'bg-accent-prim text-on-dark-content-prim hover:bg-accent-prim/90 active:bg-accent-prim/80 disabled:bg-accent-prim/40',
+  secondary:
+    'bg-fill-sec text-content-prim hover:bg-fill-sec/80 active:bg-fill-sec/60 disabled:bg-fill-sec/40',
+  ghost:
+    'bg-transparent text-content-prim hover:bg-fill-sec active:bg-fill-prim disabled:text-content-tert',
+}
+
+const sizeClasses = {
+  l: 'h-7 min-h-[28px] rounded-[10px] px-4',
+  m: 'h-7 min-h-[28px] rounded-[8px] px-3',
+  s: 'h-7 min-h-[28px] rounded-[6px] px-2',
+}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    { variant = 'primary', size = 'm', iconLeft, iconRight, secondary, className, children, disabled, ...props },
+    ref
+  ) => {
+    const hasLabel = !!children;
+    const hasSecondary = !!secondary;
+    const hasIconLeft = !!iconLeft;
+    const hasIconRight = !!iconRight;
+    // Только одна иконка, без текста и secondary
+    const iconOnly = (hasIconLeft && !hasLabel && !hasSecondary && !hasIconRight) || (hasIconRight && !hasLabel && !hasSecondary && !hasIconLeft);
+
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+      <button
         ref={ref}
+        type={props.type || 'button'}
+        disabled={disabled}
+        className={cn(
+          'inline-flex items-center font-medium transition-colors select-none outline-none focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2',
+          variantClasses[variant],
+          sizeClasses[size],
+          iconOnly ? 'w-7 h-7 min-w-[28px] min-h-[28px] justify-center p-0' : 'min-h-[28px] h-7 px-3 gap-1',
+          disabled && 'cursor-not-allowed opacity-60',
+          className
+        )}
         {...props}
-      />
-    )
+      >
+        {/* Left outer spacer */}
+        {!iconOnly && <span className="w-1" aria-hidden="true" />}
+        {/* Icon left */}
+        {iconLeft && <span className="flex items-center justify-center">{iconLeft}</span>}
+        {/* Gap between iconLeft and label/secondary */}
+        {iconLeft && (hasLabel || hasSecondary) && <span className="w-1" aria-hidden="true" />}
+        {/* Label */}
+        {hasLabel && <span className="truncate">{children}</span>}
+        {/* Gap between label and secondary */}
+        {hasLabel && hasSecondary && <span className="w-1" aria-hidden="true" />}
+        {/* Secondary label */}
+        {hasSecondary && <span className="text-style-p-s text-content-tert truncate">{secondary}</span>}
+        {/* Gap между secondary и iconRight */}
+        {(hasLabel || hasSecondary) && iconRight && <span className="w-1" aria-hidden="true" />}
+        {/* Icon right */}
+        {iconRight && <span className="flex items-center justify-center">{iconRight}</span>}
+        {/* Right outer spacer */}
+        {!iconOnly && <span className="w-1" aria-hidden="true" />}
+      </button>
+    );
   }
 )
 Button.displayName = "Button"
-
-export { Button, buttonVariants }
