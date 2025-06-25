@@ -11,7 +11,7 @@ interface ColorSelectorProps {
 export const ColorSelector = ({ value, onChange }: ColorSelectorProps) => {
   return (
     <div className="flex items-center gap-2">
-      <div className="flex bg-gray-100 rounded-full p-1 w-fit">
+      <div className="flex bg-fill-prim rounded-full p-1 w-fit">
         <ToggleGroup
           type="single"
           value={value}
@@ -25,7 +25,7 @@ export const ColorSelector = ({ value, onChange }: ColorSelectorProps) => {
               className={cn(
                 "w-8 h-8 rounded-full border-2 p-0 transition-all flex items-center justify-center mx-0.5 border-transparent",
                 option.className,
-                "data-[state=on]:border-black"
+                "data-[state=on]:border-accent-prim"
               )}
               aria-label={`Select ${option.value} color`}
             />

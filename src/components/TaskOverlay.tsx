@@ -131,13 +131,13 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
             onChange={(e) => handleFieldChange('title', e.target.value)}
             placeholder="Task Title"
             autoFocus
-            className="text-lg font-semibold bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[40px] ml-2 placeholder:text-content-tert"
+            className="text-lg font-semibold bg-bg-prim border-brd-prim focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[40px] ml-2 placeholder:text-content-tert"
           />
           <Textarea
             value={editedTask.description || ''}
             onChange={(e) => handleFieldChange('description', e.target.value)}
             placeholder="Description"
-            className="text-sm bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[60px] ml-2 placeholder:text-content-tert"
+            className="text-sm bg-bg-prim border-brd-prim focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[60px] ml-2 placeholder:text-content-tert"
           />
         </div>
 

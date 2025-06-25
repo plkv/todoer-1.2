@@ -26,6 +26,33 @@ const HISTORY_KEY = 'planner:history';
 const SETTINGS_KEY = 'planner:settings';
 const HISTORY_LIMIT = 50;
 
+// Добавляем типы для режима просмотра и периода
+export type CalendarView = 'Day' | 'Week' | 'Month';
+
+function getMonthDates(date: Date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const days: { day: string; date: string; fullDate: Date }[] = [];
+  for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+    days.push({
+      day: d.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
+      date: d.toISOString().slice(0, 10),
+      fullDate: new Date(d),
+    });
+  }
+  return days;
+}
+
+function getDayDate(date: Date) {
+  return [{
+    day: date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
+    date: date.toISOString().slice(0, 10),
+    fullDate: date,
+  }];
+}
+
 function usePlannerStateImpl() {
   console.log('[toast] usePlannerStateImpl loaded');
   const queryClient = useQueryClient();
@@ -45,7 +72,7 @@ function usePlannerStateImpl() {
     } catch {}
     return { currentView: 'Week', selectedDate: new Date() };
   };
-  const [currentView, setCurrentViewState] = useState<'Week' | 'Day'>(getInitialSettings().currentView);
+  const [currentView, setCurrentViewState] = useState<CalendarView>(getInitialSettings().currentView);
   const [selectedDate, setSelectedDateState] = useState<Date>(getInitialSettings().selectedDate);
 
   // Сохраняем настройки при изменении
@@ -53,7 +80,7 @@ function usePlannerStateImpl() {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify({ currentView, selectedDate }));
   }, [currentView, selectedDate]);
 
-  const setCurrentView = (view: 'Week' | 'Day') => setCurrentViewState(view);
+  const setCurrentView = (view: CalendarView) => setCurrentViewState(view);
   const setSelectedDate = (date: Date) => setSelectedDateState(date);
 
   // --- HISTORY ---
@@ -83,9 +110,13 @@ function usePlannerStateImpl() {
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [newTaskContext, setNewTaskContext] = useState<{ day?: string; section?: string }>({});
 
-  // Получаем массив дат недели, в которую входит selectedDate
-  const weekDates = React.useMemo(() => {
-    const start = startOfWeek(selectedDate, { weekStartsOn: 1 }); // Пн
+  // --- ПЕРИОД КАЛЕНДАРЯ ---
+  // Вычисляем массив дат для текущего режима
+  const periodDates = useMemo(() => {
+    if (currentView === 'Day') return getDayDate(selectedDate);
+    if (currentView === 'Month') return getMonthDates(selectedDate);
+    // Week по умолчанию
+    const start = startOfWeek(selectedDate, { weekStartsOn: 1 });
     return Array.from({ length: 7 }).map((_, i) => {
       const date = new Date(start);
       date.setDate(start.getDate() + i);
@@ -95,33 +126,51 @@ function usePlannerStateImpl() {
         fullDate: date,
       };
     });
-  }, [selectedDate]);
-  const weekDateStrings = weekDates.map(d => d.fullDate.toISOString().slice(0, 10));
+  }, [selectedDate, currentView]);
+  const periodDateStrings = periodDates.map(d => d.fullDate.toISOString().slice(0, 10));
 
-  // Загрузка задач за неделю с сервера с помощью React Query
-  const weekStart = weekDateStrings[0];
-  const weekEnd = weekDateStrings[weekDateStrings.length - 1];
+  // --- Методы перехода ---
+  const goToDate = (date: Date) => setSelectedDate(date);
+  const goToWeek = (date: Date) => {
+    setCurrentView('Week');
+    setSelectedDate(date);
+  };
+  const goToMonth = (date: Date) => {
+    setCurrentView('Month');
+    setSelectedDate(date);
+  };
+
+  // --- API ---
+  // Загрузка задач за период с сервера с помощью React Query
+  const periodStart = periodDateStrings[0];
+  const periodEnd = periodDateStrings[periodDateStrings.length - 1];
   const { data: allTasks = [], isLoading: isLoadingTasks } = useQuery<ITask[]>({
-    queryKey: ['tasks', weekStart, weekEnd],
-    queryFn: () => tasksApi.getByDate(weekStart, weekEnd),
+    queryKey: ['tasks', periodStart, periodEnd],
+    queryFn: () => tasksApi.getByDate(periodStart, periodEnd),
   });
 
-  // Фильтруем задачи на те, что в бэклоге, и те, что на неделе
+  // Фильтруем задачи на те, что в бэклоге, и те, что в периоде
   const backlogData = allTasks.filter(task => !task.day || !task.section);
-  const weekTasks = allTasks.filter(task => task.day && weekDateStrings.includes(task.day) && task.section);
-  const weekData = distributeTasksToWeek(weekTasks, weekDates);
+  const periodTasks = allTasks.filter(task => task.day && periodDateStrings.includes(task.day) && task.section);
+  const periodData = distributeTasksToWeek(periodTasks, periodDates);
 
-  // --- Методы смены недели/даты ---
-  const handlePrevWeek = () => setSelectedDate(subWeeks(selectedDate, 1));
-  const handleNextWeek = () => setSelectedDate(addWeeks(selectedDate, 1));
-  const handleDateChange = (date: Date) => setSelectedDate(date);
-  const handleToday = () => setSelectedDate(new Date());
+  // --- Методы смены периода ---
+  const handlePrevPeriod = () => {
+    if (currentView === 'Day') setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() - 1));
+    else if (currentView === 'Week') setSelectedDate(subWeeks(selectedDate, 1));
+    else if (currentView === 'Month') setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1));
+  };
+  const handleNextPeriod = () => {
+    if (currentView === 'Day') setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1));
+    else if (currentView === 'Week') setSelectedDate(addWeeks(selectedDate, 1));
+    else if (currentView === 'Month') setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1));
+  };
 
   // --- HISTORY HELPERS ---
   const getCurrentState = useCallback(() => allTasks, [allTasks]);
   const restoreState = useCallback((tasks: ITask[]) => {
     // TODO: Можно реализовать через queryClient.setQueryData, если нужно
-    // queryClient.setQueryData(['tasks', weekStart, weekEnd], tasks);
+    // queryClient.setQueryData(['tasks', periodStart, periodEnd], tasks);
     // Но для простоты пока не трогаем сервер, только локально
   }, []);
 
@@ -309,7 +358,7 @@ function usePlannerStateImpl() {
   return {
     currentView,
     setCurrentView,
-    weekData,
+    periodData,
     backlogData,
     isLoadingTasks,
     selectedTask,
@@ -318,11 +367,14 @@ function usePlannerStateImpl() {
     setIsOverlayOpen,
     newTaskContext,
     setNewTaskContext,
-    weekDates,
+    periodDates,
     selectedDate,
     setSelectedDate,
-    handlePrevWeek,
-    handleNextWeek,
+    goToDate,
+    goToWeek,
+    goToMonth,
+    handlePrevPeriod,
+    handleNextPeriod,
     handleDateChange: setSelectedDate,
     handleToday: () => setSelectedDate(new Date()),
     handleTaskClick,

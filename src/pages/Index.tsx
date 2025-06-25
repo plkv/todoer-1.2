@@ -9,7 +9,7 @@ const Index = () => {
   if (isLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <div className="text-2xl">Загрузка...</div>
+        <div className="text-style-h-l">Загрузка...</div>
       </div>
     );
   }
@@ -18,10 +18,10 @@ const Index = () => {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center bg-bg-prim">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-content-prim">
+          <h1 className="text-style-h-xl font-bold text-content-prim">
             Добро пожаловать в Todoer
           </h1>
-          <p className="mt-2 text-lg text-content-sec">
+          <p className="mt-2 text-style-p-l-semibold text-content-sec">
             Войдите, чтобы начать планировать свой день.
           </p>
           <Button onClick={login} variant="default" className="mt-6 text-style-p-m-semibold">
