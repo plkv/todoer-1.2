@@ -62,6 +62,10 @@ export const tasks = {
     const response = await api.get('/api/tasks');
     return response.data;
   },
+  getByDate: async (start: string, end: string): Promise<Task[]> => {
+    const response = await api.get(`/api/tasks?start=${start}&end=${end}`);
+    return response.data;
+  },
   create: async (taskData: TaskData): Promise<Task> => {
     const response = await api.post('/api/tasks', taskData);
     return response.data;
