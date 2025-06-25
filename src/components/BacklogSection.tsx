@@ -48,7 +48,7 @@ export const BacklogSection = ({
             </h2>
               <button
                 onClick={onAddTask}
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-content-sec opacity-0 transition-opacity group-hover:opacity-100 hover:bg-fill-sec"
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-content-sec opacity-0 transition-opacity group-hover:opacity-100 hover:bg-fill-sec text-style-p-m"
               >
                 <Plus size={16} strokeWidth={2} />
               </button>

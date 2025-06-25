@@ -77,7 +77,7 @@ export const TimeSection = ({
         >
           <div className="flex flex-row items-center gap-1">
             <Plus className="h-3 w-3 text-content-tert" strokeWidth={2.5} />
-            <p className="text-style-p-m-semibold text-content-tert">
+            <p className="text-style-p-m text-content-tert">
               Add task
             </p>
           </div>

@@ -57,8 +57,8 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
       <div className="basis-0 grow max-h-[32px] min-h-px min-w-px relative shrink-0 flex flex-col justify-center overflow-hidden">
         <p
           className={cn(
-            'font-semibold text-[12px] leading-[16px] tracking-[-0.24px]',
-            task.is_completed ? 'text-content-tert' : 'text-content-prim'
+            task.is_completed ? 'text-content-tert' : 'text-content-prim',
+            'text-style-p-m'
           )}
           style={{
             maxHeight: '32px',
@@ -79,7 +79,8 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
           <span
             className={cn(
               'font-medium text-[10px] leading-[12px] text-nowrap',
-              task.is_completed ? 'text-content-tert' : 'text-content-sec'
+              task.is_completed ? 'text-content-tert' : 'text-content-sec',
+              'text-style-p-m'
             )}
           >
             {task.time_estimate}
