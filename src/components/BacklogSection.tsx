@@ -80,7 +80,7 @@ const BacklogListSection = ({
   };
 
   return (
-    <div key={list.id} ref={drop} className={cn("mb-2 last:mb-0 p-2 bg-bg-prim rounded-lg min-w-0 transition-colors", isOver && "bg-fill-sec")}> 
+    <div key={list.id} ref={drop} className={cn("w-full p-2 rounded-lg transition-colors", isOver && "bg-fill-sec")}> 
       {/* List Header */}
       <div className="flex items-center gap-2 mb-1 w-full">
         <span className="flex items-center justify-center w-6 h-6 rounded bg-fill-sec">
@@ -123,7 +123,7 @@ const BacklogListSection = ({
         </Button>
       </div>
       {/* Tasks */}
-      <div className="flex flex-col min-w-0">
+      <div className="flex flex-col flex-1 w-full p-[2px_0] gap-2 items-stretch">
         {list.tasks.map((task: ITask) => (
           <TaskCard
             key={task.id}
@@ -201,7 +201,7 @@ export const BacklogSection = ({
         </Button>
       </div>
       {/* Content container */}
-      <div className="flex flex-col flex-1 w-full p-[2px_0] gap-1 items-center">
+      <div className="flex flex-col flex-1 w-full p-[2px_0] gap-2 items-stretch">
         {lists.map((list) => (
           <BacklogListSection
             key={list.id}
