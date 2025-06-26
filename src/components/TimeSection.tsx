@@ -47,8 +47,7 @@ export const TimeSection = ({
     <div 
       ref={drop}
       className={cn(
-        "group relative flex flex-col rounded-xl p-1.5 gap-1.5 transition-colors duration-200 ease-out",
-        "min-h-[140px]"
+        "group relative flex flex-col rounded-xl p-1.5 gap-1.5 transition-colors duration-200 ease-out min-h-[140px]"
       )}
     >
       <h3 className="text-style-h-s px-1.5 text-content-tert transition-colors duration-200 ease-out group-hover:text-content-prim flex items-center gap-2">
@@ -73,7 +72,7 @@ export const TimeSection = ({
         
         <div 
           onClick={() => onAddTask(title)}
-          className="group/add-task flex flex-row items-center gap-1 min-h-7 rounded-md p-[6px] cursor-pointer justify-between transition-colors duration-200 ease-out opacity-0 group-hover:opacity-100 hover:bg-fill-sec w-full min-w-0"
+          className="group/add-task flex flex-row items-center gap-1 min-h-7 rounded-md p-[6px] cursor-pointer justify-between transition-colors duration-200 ease-out opacity-0 group-hover:opacity-100 w-full min-w-0"
         >
           <div className="flex flex-row items-center gap-1">
             <IconPlus size="m" className="text-content-tert" strokeWidth={2.5} />

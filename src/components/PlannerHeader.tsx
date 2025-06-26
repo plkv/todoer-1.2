@@ -25,15 +25,15 @@ export const PlannerHeader = () => {
   } = usePlannerState();
 
   return (
-    <div className="border-b-brd-prim bg-fill-prim px-4 py-3">
+    <div className="border-b border-b-brd-prim px-4 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 min-w-0">
           <div className="flex items-center gap-0.5 min-w-0">
-            <Button variant="ghost-prim" size="l" onClick={handlePrevPeriod}>
+            <Button variant="ghost-prim" size="m" onClick={handlePrevPeriod}>
               <IconChevronLeft size="l" strokeWidth={2} />
             </Button>
             <Button variant="secondary" size="m" onClick={handleToday}>Today</Button>
-            <Button variant="ghost-prim" size="l" onClick={handleNextPeriod}>
+            <Button variant="ghost-prim" size="m" onClick={handleNextPeriod}>
               <IconChevronRight size="l" strokeWidth={2} />
             </Button>
           </div>

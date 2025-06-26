@@ -181,7 +181,7 @@ export const PlannerView = () => {
           />
         </aside>
         {/* content (третья колонка) */}
-        <div className="flex-1 h-screen max-h-screen overflow-y-auto flex flex-col min-w-0">
+        <div className="flex-1 h-screen max-h-screen overflow-y-auto flex flex-col min-w-0 bg-bg-prim">
           <PlannerHeader />
           <div 
             className="grid flex-1 min-w-0"
