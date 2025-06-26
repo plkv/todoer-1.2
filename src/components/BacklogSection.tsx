@@ -80,50 +80,60 @@ const BacklogListSection = ({
   };
 
   return (
-    <div key={list.id} ref={drop} className={cn("w-full p-2 rounded-lg transition-colors", isOver && "bg-fill-sec")}> 
+    <div
+      key={list.id}
+      ref={drop}
+      className={cn(
+        "flex flex-col items-end p-0 pt-4 px-2 w-full gap-section-xs transition-colors",
+        isOver && "bg-fill-sec"
+      )}
+    >
       {/* List Header */}
-      <div className="flex items-center gap-2 mb-1 w-full">
-        <span className="flex items-center justify-center w-6 h-6 rounded bg-fill-sec">
+      <div className="flex flex-row items-end gap-1 px-1 py-1 w-full">
+        <span className="flex items-center justify-center w-4 h-4 mr-1">
           {React.isValidElement(list.icon) && (list.icon.type && (list.icon.type as any).displayName && (list.icon.type as any).displayName.startsWith('Icon'))
             ? React.cloneElement(list.icon as React.ReactElement, { size: 'm' })
             : list.icon}
         </span>
-        <span className="text-style-p-m-bold text-content-prim truncate">{list.name}</span>
-        <span className="text-style-p-m bg-fill-sec rounded px-2 py-0.5">{list.tasks.length}</span>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost-sec"
-              size="m"
-              className="ml-auto"
-              title="Меню списка"
-            >
-              <IconMore size="m" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {list.id === 'inbox' ? (
-              <DropdownMenuItem onSelect={handleDeleteAllTasks} className="text-red-600">Удалить все задачи</DropdownMenuItem>
-            ) : (
-              <>
-                <DropdownMenuItem onSelect={handleDeleteList} className="text-red-600">Удалить список</DropdownMenuItem>
-                <DropdownMenuItem onSelect={handleDeleteAllTasks}>Удалить все задачи</DropdownMenuItem>
-                <DropdownMenuItem onSelect={handleDuplicateList}>Дублировать список</DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Button
-          variant="ghost-prim"
-          size="m"
-          title="Добавить задачу"
-          onClick={() => onAddTask(list.id)}
-        >
-          <IconPlus size="m" />
-        </Button>
+        <span className="font-semibold text-[13px] leading-4 tracking-[-0.26px] text-content-prim truncate">{list.name}</span>
+        <span className="font-semibold text-[13px] leading-4 tracking-[-0.26px] text-content-sec">{list.tasks.length}</span>
+        <div className="flex flex-row gap-1 ml-auto">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost-sec"
+                size="m"
+                className="p-1.5 rounded-[6px]"
+                title="Меню списка"
+              >
+                <IconMore size="m" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {list.id === 'inbox' ? (
+                <DropdownMenuItem onSelect={handleDeleteAllTasks} className="text-red-600">Удалить все задачи</DropdownMenuItem>
+              ) : (
+                <>
+                  <DropdownMenuItem onSelect={handleDeleteList} className="text-red-600">Удалить список</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleDeleteAllTasks}>Удалить все задачи</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleDuplicateList}>Дублировать список</DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button
+            variant="ghost-prim"
+            size="m"
+            className="p-1.5 rounded-[6px]"
+            title="Добавить задачу"
+            onClick={() => onAddTask(list.id)}
+          >
+            <IconPlus size="m" />
+          </Button>
+        </div>
       </div>
       {/* Tasks */}
-      <div className="flex flex-col flex-1 w-full p-[2px_0] gap-2 items-stretch">
+      <div className="flex flex-col flex-1 w-full p-[2px_0] gap-section-xs items-stretch">
         {list.tasks.map((task: ITask) => (
           <TaskCard
             key={task.id}

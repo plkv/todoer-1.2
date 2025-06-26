@@ -222,3 +222,7 @@
   .card-bg-gray { background-color: hsl(var(--bg-card-gray)); }
   .hover\:card-bg-gray-hover:hover { background-color: hsl(var(--bg-card-gray-hover)); }
 }
+
+.gap-section-xs {
+  gap: 0.25rem;
+}
