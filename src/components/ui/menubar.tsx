@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as MenubarPrimitive from "@radix-ui/react-menubar"
-import { IconCheck, IconChevronRight, IconCircle } from './icons';
+import { IconCheck, IconChevronRight } from './icons';
 
 import { cn } from "@/lib/utils"
 
@@ -60,7 +60,7 @@ const MenubarSubTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    <IconChevronRight className="ml-auto h-4 w-4" />
+    <IconChevronRight size="xl" className="ml-auto" />
   </MenubarPrimitive.SubTrigger>
 ))
 MenubarSubTrigger.displayName = MenubarPrimitive.SubTrigger.displayName
@@ -138,7 +138,7 @@ const MenubarCheckboxItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <MenubarPrimitive.ItemIndicator>
-        <IconCheck className="h-4 w-4" />
+        <IconCheck size="xl" />
       </MenubarPrimitive.ItemIndicator>
     </span>
     {children}
@@ -160,7 +160,7 @@ const MenubarRadioItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <MenubarPrimitive.ItemIndicator>
-        <IconCircle className="h-2 w-2 fill-current" />
+        <IconCheck size="xl" />
       </MenubarPrimitive.ItemIndicator>
     </span>
     {children}

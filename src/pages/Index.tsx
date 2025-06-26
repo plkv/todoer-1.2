@@ -24,7 +24,7 @@ const Index = () => {
           <p className="mt-2 text-style-p-l-semibold text-content-sec">
             Войдите, чтобы начать планировать свой день.
           </p>
-          <Button onClick={login} variant="default" className="mt-6 text-style-p-m-semibold">
+          <Button onClick={login} variant="primary" className="mt-6">
             Войти через Google
           </Button>
         </div>

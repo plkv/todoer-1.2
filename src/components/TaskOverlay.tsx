@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import { Copy, Trash, Check } from '@phosphor-icons/react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { cn } from '@/lib/utils';
+import { IconClose } from './ui/icons';
 
 interface TaskOverlayProps {
   task: ITask | null;
@@ -108,8 +109,8 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" onClick={handleDelete}>
-                    <Trash size={20} weight="regular" />
+                  <Button variant="ghost-prim" size="l" onClick={handleDelete}>
+                    <IconClose size="l" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>

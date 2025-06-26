@@ -21,6 +21,7 @@ import {
   DropdownMenuLabel,
 } from './ui/dropdown-menu';
 import { IconSettings, IconList, IconSun, IconMoon, IconAuto } from './ui/icons';
+import { AvatarButton } from './ui/avatar-button';
 
 export const PlannerView = () => {
   const { isDark, toggleTheme } = useTheme();
@@ -145,15 +146,7 @@ export const PlannerView = () => {
           <div className="flex flex-col items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="h-10 w-10 rounded-full p-0 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-accent-prim">
-                  <Avatar>
-                    {user?.picture ? (
-                      <AvatarImage src={user.picture} alt={user.name || 'User'} />
-                    ) : (
-                      <AvatarFallback>{user?.name?.[0] || '?'}</AvatarFallback>
-                    )}
-                  </Avatar>
-                </button>
+                <AvatarButton user={user} />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
@@ -169,13 +162,13 @@ export const PlannerView = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             <button
-              className="flex items-center justify-center w-10 h-10 rounded-md hover:bg-fill-prim transition-colors"
+              className="inline-flex items-center justify-center h-9 w-9 min-w-[36px] min-h-[36px] p-2 rounded-[8px] bg-transparent text-content-prim hover:bg-fill-sec active:bg-fill-prim disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2 transition-colors"
               title="Theme Mode"
               onClick={handleThemeModeSwitch}
             >
-              {themeMode === 'auto' && <IconAuto width={20} height={20} />}
-              {themeMode === 'light' && <IconSun width={20} height={20} />}
-              {themeMode === 'dark' && <IconMoon width={20} height={20} />}
+              {themeMode === 'auto' && <IconAuto size="xl" />}
+              {themeMode === 'light' && <IconSun size="xl" />}
+              {themeMode === 'dark' && <IconMoon size="xl" />}
             </button>
           </div>
         </nav>

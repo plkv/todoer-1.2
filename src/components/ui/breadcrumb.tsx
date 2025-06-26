@@ -80,7 +80,7 @@ const BreadcrumbSeparator = ({
   <li
     role="presentation"
     aria-hidden="true"
-    className={cn("[&>svg]:size-3.5", className)}
+    className={cn("[&>svg]:h-4 [&>svg]:w-4", className)}
     {...props}
   >
     {children ?? <IconChevronRight />}
@@ -98,7 +98,7 @@ const BreadcrumbEllipsis = ({
     className={cn("flex h-9 w-9 items-center justify-center", className)}
     {...props}
   >
-    <IconDots className="h-4 w-4" />
+    <IconDots size="xl" />
     <span className="sr-only">More</span>
   </span>
 )

@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { useDrop } from 'react-dnd';
 import React from 'react';
 import { ITask } from '@/types/Task';
-import { IconPlus, IconSettings, IconInbox, Icon00 } from './ui/icons';
+import { IconPlus, IconSettings, IconList } from './ui/icons';
 
 export type List = {
   id: string;
@@ -36,29 +36,31 @@ export const BacklogSection = ({
   const totalTasks = lists.reduce((sum, list) => sum + list.tasks.length, 0);
 
   return (
-    <aside className="flex flex-col h-full w-full min-w-0 bg-bg-sec border-r border-brd-prim overflow-y-auto">
+    <aside className="flex flex-col gap-1.5 items-start align-stretch h-full w-full min-w-0 bg-bg-sec border-r border-brd-prim overflow-y-auto">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 pt-5 pb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-style-h-l text-content-prim">Backlog</span>
-          <span className="text-style-p-m-bold bg-fill-prim rounded px-2 py-0.5">{totalTasks}</span>
-        </div>
-        <Button variant="ghost" size="m" iconLeft={<Icon00 className='w-5 h-5' />} onClick={onSettingsClick} />
+      <div className="flex items-center justify-start gap-1 w-full p-3 [gap:4px] [align-self:stretch]">
+        <span className="text-style-h-l text-content-prim">Backlog</span>
+        <span className="text-style-h-l text-content-sec">{totalTasks}</span>
+        <Button
+          variant="ghost-prim"
+          size="m"
+          className="ml-auto"
+          onClick={onSettingsClick}
+          title="Настройки"
+        >
+          <IconSettings size="m" />
+        </Button>
+        <Button
+          variant="ghost-prim"
+          size="m"
+          onClick={onAddList}
+          title="Добавить список"
+        >
+          <IconPlus size="m" />
+        </Button>
       </div>
-
-      {/* Add List Button */}
-      <Button
-        variant="secondary"
-        size="m"
-        iconLeft={<Icon00 className="w-4 h-4" />}
-        className="w-full justify-start text-style-p-m px-5 pb-2"
-        onClick={onAddList}
-      >
-        Добавить список
-      </Button>
-
-      {/* Lists Section */}
-      <div className="flex flex-col min-w-0 px-2 pb-2">
+      {/* Content container */}
+      <div className="flex flex-col flex-1 w-full p-[2px_0] gap-1 items-start">
         {lists.map((list) => {
           // Drag-n-drop для секции
           const [{ isOver }, drop] = useDrop(() => ({
@@ -78,18 +80,21 @@ export const BacklogSection = ({
               {/* List Header */}
               <div className="flex items-center gap-2 mb-1">
                 <span className="flex items-center justify-center w-6 h-6 rounded bg-fill-sec">
-                  {list.icon}
+                  {React.isValidElement(list.icon) && (list.icon.type && (list.icon.type as any).displayName && (list.icon.type as any).displayName.startsWith('Icon'))
+                    ? React.cloneElement(list.icon as React.ReactElement, { size: 'm' })
+                    : list.icon}
                 </span>
                 <span className="text-style-p-m-bold text-content-prim truncate">{list.name}</span>
                 <span className="text-style-p-m bg-fill-sec rounded px-2 py-0.5">{list.tasks.length}</span>
                 <Button
-                  variant="ghost"
-                  size="m"
-                  iconLeft={<Icon00 className="w-4 h-4" />}
+                  variant="ghost-prim"
+                  size="l"
                   className="ml-auto"
                   onClick={() => onAddTask(list.id)}
                   title="Добавить задачу"
-                />
+                >
+                  <IconPlus size="l" />
+                </Button>
               </div>
               {/* Tasks */}
               <div className="flex flex-col min-w-0">

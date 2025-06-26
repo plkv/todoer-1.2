@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
-import { IconChevronLeft, IconChevronRight, IconDots, Icon00 } from './icons';
+import { IconChevronLeft, IconChevronRight, IconDots } from './icons';
 
 import { cn } from "@/lib/utils"
 import { ButtonProps, buttonVariants } from "@/components/ui/button"
@@ -43,7 +43,7 @@ type PaginationLinkProps = {
 const PaginationLink = ({
   className,
   isActive,
-  size = "icon",
+  size = "l",
   ...props
 }: PaginationLinkProps) => (
   <a
@@ -66,11 +66,11 @@ const PaginationPrevious = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to previous page"
-    size="default"
+    size="l"
     className={cn("gap-1 pl-2.5", className)}
     {...props}
   >
-    <IconChevronLeft className="h-4 w-4" />
+    <IconChevronLeft size="l" />
     <span>Previous</span>
   </PaginationLink>
 )
@@ -82,12 +82,12 @@ const PaginationNext = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to next page"
-    size="default"
+    size="l"
     className={cn("gap-1 pr-2.5", className)}
     {...props}
   >
     <span>Next</span>
-    <IconChevronRight className="h-4 w-4" />
+    <IconChevronRight size="l" />
   </PaginationLink>
 )
 PaginationNext.displayName = "PaginationNext"
@@ -101,7 +101,7 @@ const PaginationEllipsis = ({
     className={cn("flex h-9 w-9 items-center justify-center", className)}
     {...props}
   >
-    <IconDots className="h-4 w-4" />
+    <IconDots size="l" />
     <span className="sr-only">More pages</span>
   </span>
 )
