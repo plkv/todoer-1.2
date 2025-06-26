@@ -1,3 +1,4 @@
+import React from 'react';
 import { useMemo } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -19,10 +20,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from './ui/dropdown-menu';
-import { IconSettings, IconInbox, Icon00 } from './ui/icons';
+import { IconSettings, IconList, IconSun, IconMoon, IconAuto } from './ui/icons';
 
 export const PlannerView = () => {
-  const { isDark } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const {
     periodData,
@@ -85,7 +86,7 @@ export const PlannerView = () => {
   const backlogLists: List[] = useMemo(() => {
     // Собираем уникальные секции (section) из задач беклога
     const sectionMap: Record<string, { name: string; icon: React.ReactNode }> = {
-      inbox: { name: 'Инбокс', icon: <IconInbox className="w-4 h-4" /> },
+      inbox: { name: 'Инбокс', icon: <IconList className="w-4 h-4" /> },
       // Можно добавить дефолтные иконки для других секций
     };
     // Собираем все секции
@@ -111,6 +112,29 @@ export const PlannerView = () => {
     if (!name) return;
     // Создаём фиктивную задачу для появления списка (или реализовать отдельную сущность "список")
     handleSaveNewTask({ title: 'Новая задача', section: name });
+  };
+
+  // Новый переключатель темы с 3 состояниями
+  const [themeMode, setThemeMode] = React.useState<'auto' | 'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('theme-mode');
+    if (saved === 'light' || saved === 'dark' || saved === 'auto') return saved;
+    return 'auto';
+  });
+
+  React.useEffect(() => {
+    localStorage.setItem('theme-mode', themeMode);
+    if (themeMode === 'auto') {
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('dark', systemDark);
+    } else {
+      document.documentElement.classList.toggle('dark', themeMode === 'dark');
+    }
+  }, [themeMode]);
+
+  const handleThemeModeSwitch = () => {
+    setThemeMode((prev) =>
+      prev === 'auto' ? 'light' : prev === 'light' ? 'dark' : 'auto'
+    );
   };
 
   return (
@@ -144,8 +168,14 @@ export const PlannerView = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <button className="flex items-center justify-center w-10 h-10 rounded-md hover:bg-fill-prim transition-colors" title="Settings">
-              <Icon00 width={20} height={20} />
+            <button
+              className="flex items-center justify-center w-10 h-10 rounded-md hover:bg-fill-prim transition-colors"
+              title="Theme Mode"
+              onClick={handleThemeModeSwitch}
+            >
+              {themeMode === 'auto' && <IconAuto width={20} height={20} />}
+              {themeMode === 'light' && <IconSun width={20} height={20} />}
+              {themeMode === 'dark' && <IconMoon width={20} height={20} />}
             </button>
           </div>
         </nav>
