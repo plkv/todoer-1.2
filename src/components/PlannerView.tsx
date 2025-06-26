@@ -43,6 +43,10 @@ export const PlannerView = () => {
     periodDates,
     selectedDate,
     newTaskContext,
+    sections,
+    handleAddList,
+    handleDeleteList,
+    handleDuplicateList,
   } = usePlannerState();
 
   const safePeriodDates = Array.isArray(periodDates) ? periodDates : [];
@@ -83,37 +87,15 @@ export const PlannerView = () => {
     }
   };
 
-  // Группировка задач беклога по section
+  // Формируем списки на основе sections
   const backlogLists: List[] = useMemo(() => {
-    // Собираем уникальные секции (section) из задач беклога
-    const sectionMap: Record<string, { name: string; icon: React.ReactNode }> = {
-      inbox: { name: 'Инбокс', icon: <IconList className="w-4 h-4" /> },
-      // Можно добавить дефолтные иконки для других секций
-    };
-    // Собираем все секции
-    backlogData.forEach(task => {
-      const section = (task.section || 'inbox').toLowerCase();
-      if (!sectionMap[section]) {
-        sectionMap[section] = { name: section.charAt(0).toUpperCase() + section.slice(1), icon: <span>📁</span> };
-      }
-    });
-    // Формируем массив списков
-    return Object.entries(sectionMap).map(([section, meta]) => ({
-      id: section,
-      name: meta.name,
-      icon: meta.icon,
-      tasks: backlogData.filter(task => (task.section || 'inbox').toLowerCase() === section),
+    return sections.map(section => ({
+      id: section.id,
+      name: section.name,
+      icon: section.id === 'inbox' ? <IconList className="w-4 h-4" /> : <span>📁</span>,
+      tasks: backlogData.filter(task => (task.section || 'inbox') === section.id),
     }));
-  }, [backlogData]);
-
-  // Добавление нового списка (section)
-  const handleAddList = () => {
-    // Пример: prompt для имени списка, можно заменить на модалку
-    const name = window.prompt('Название нового списка');
-    if (!name) return;
-    // Создаём фиктивную задачу для появления списка (или реализовать отдельную сущность "список")
-    handleSaveNewTask({ title: 'Новая задача', section: name });
-  };
+  }, [sections, backlogData]);
 
   // Новый переключатель темы с 3 состояниями
   const [themeMode, setThemeMode] = React.useState<'auto' | 'light' | 'dark'>(() => {
@@ -136,6 +118,15 @@ export const PlannerView = () => {
     setThemeMode((prev) =>
       prev === 'auto' ? 'light' : prev === 'light' ? 'dark' : 'auto'
     );
+  };
+
+  const handleDeleteAllTasks = (listId: string) => {
+    const tasksToDelete = backlogData.filter(task => (task.section || 'inbox') === listId);
+    tasksToDelete.forEach(task => handleDeleteTask(task.id));
+  };
+
+  const handleRestoreTask = (task: ITask) => {
+    handleSaveNewTask(task);
   };
 
   return (
@@ -166,14 +157,14 @@ export const PlannerView = () => {
               title="Theme Mode"
               onClick={handleThemeModeSwitch}
             >
-              {themeMode === 'auto' && <IconAuto size="xl" />}
-              {themeMode === 'light' && <IconSun size="xl" />}
-              {themeMode === 'dark' && <IconMoon size="xl" />}
+              {themeMode === 'auto' && <IconAuto size="l" />}
+              {themeMode === 'light' && <IconSun size="l" />}
+              {themeMode === 'dark' && <IconMoon size="l" />}
             </button>
           </div>
         </nav>
         {/* backlog (вторая колонка) */}
-        <aside className="backlog lg:w-64 w-full h-screen max-h-screen overflow-y-auto border-r border-brd-prim flex-shrink-0 bg-bg-sec">
+        <aside className="backlog lg:w-64 w-full h-screen max-h-screen overflow-y-auto flex-shrink-0 bg-bg-sec">
           <BacklogSection
             lists={backlogLists}
             onAddList={handleAddList}
@@ -182,6 +173,11 @@ export const PlannerView = () => {
             onTaskClick={handleTaskClick}
             onToggleComplete={handleToggleComplete}
             onMoveTask={(taskId, source, target) => handleMoveTask(taskId, { section: source.section }, { section: target.section })}
+            onDuplicateList={handleDuplicateList}
+            onDeleteAllTasks={handleDeleteAllTasks}
+            onDeleteTask={handleDeleteTask}
+            onRestoreTask={handleRestoreTask}
+            onDeleteList={handleDeleteList}
           />
         </aside>
         {/* content (третья колонка) */}

@@ -371,6 +371,43 @@ function usePlannerStateImpl() {
     setIsOverlayOpen(true);
   };
 
+  // --- SECTIONS (списки) ---
+  const SECTIONS_KEY = 'planner:sections';
+  const getInitialSections = () => {
+    try {
+      const saved = localStorage.getItem(SECTIONS_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return [
+      { id: 'inbox', name: 'Инбокс' },
+    ];
+  };
+  const [sections, setSections] = useState<{ id: string; name: string }[]>(getInitialSections());
+  useEffect(() => {
+    localStorage.setItem(SECTIONS_KEY, JSON.stringify(sections));
+  }, [sections]);
+
+  const handleAddList = () => {
+    const name = window.prompt('Название нового списка');
+    if (!name) return;
+    const id = name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+    setSections(prev => [...prev, { id, name }]);
+  };
+  const handleDeleteList = (listId: string) => {
+    if (listId === 'inbox') return;
+    setSections(prev => prev.filter(s => s.id !== listId));
+    // Удалить все задачи с этим section
+    // (реализация удаления задач — ниже, если потребуется)
+  };
+  const handleDuplicateList = (listId: string) => {
+    const orig = sections.find(s => s.id === listId);
+    if (!orig) return;
+    const newName = orig.name + ' (копия)';
+    const newId = newName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+    setSections(prev => [...prev, { id: newId, name: newName }]);
+    // Дублировать задачи (реализация — ниже, если потребуется)
+  };
+
   return {
     currentView,
     setCurrentView,
@@ -405,6 +442,10 @@ function usePlannerStateImpl() {
     redo,
     isUndoAvailable,
     isRedoAvailable,
+    sections,
+    handleAddList,
+    handleDeleteList,
+    handleDuplicateList,
   };
 }
 
