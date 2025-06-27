@@ -80,9 +80,9 @@
     --bg-tert: 0 0% 8% / 1;
     --fill-prim: 0 0% 100% / 0.04;
     --fill-sec: 0 0% 100% / 0.08;
-    --brd-prim: 0 0% 100% / 0.20;
-    --brd-sec: 0 0% 100% / 0.32;
-    --brd-tert:  0 0% 100% / 0.40;
+    --brd-prim: 0 0% 100% / 0.08;
+    --brd-sec: 0 0% 100% / 0.16;
+    --brd-tert:  0 0% 100% / 0.32;
     --accent-prim:  0 0% 100% / 1;
     --accent-sec:  0 0% 96% / 1;
     --accent-destructive: 0 62.8% 30.6% / 1;

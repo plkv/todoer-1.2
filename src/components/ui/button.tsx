@@ -83,12 +83,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         type={props.type || 'button'}
         disabled={disabled}
         className={cn(
-          'inline-flex items-center justify-center font-medium transition-colors select-none outline-none focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2',
+          'inline-flex items-center justify-center transition-colors select-none outline-none focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2',
           variantClasses[variant],
           sizeStyles.height,
           sizeStyles.rounded,
           sizeStyles.padding,
           isIconOnly ? sizeStyles.gap : hasMultiple ? sizeStyles.gap : '',
+          size === 'm' && 'text-style-p-m-bold',
           disabled && 'cursor-not-allowed opacity-60',
           className
         )}
