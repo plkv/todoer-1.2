@@ -12,9 +12,9 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClasses = {
   primary:
-    'bg-accent-prim text-on-dark-content-prim hover:bg-accent-prim/90 active:bg-accent-prim/80 disabled:bg-accent-prim/40',
+    'bg-accent-prim text-on-dark-content-prim hover:bg-accent-sec active:bg-accent-prim/80 disabled:bg-accent-prim/40',
   secondary:
-    'bg-fill-sec text-content-prim hover:bg-fill-sec/80 active:bg-fill-sec/60 disabled:bg-fill-sec/40',
+    'bg-fill-prim text-content-prim hover:bg-fill-sec active:bg-fill-prim/60 disabled:bg-fill-prim/40',
   'ghost-prim':
     'bg-transparent text-content-prim hover:bg-fill-sec active:bg-fill-prim disabled:text-content-tert',
   'ghost-sec':
@@ -50,6 +50,21 @@ const buttonSizeMap = {
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'primary', size = 'm', icon, label, secondary, children, className, disabled, ...props }, ref) => {
+    // debug outline color map
+    const debugBoxShadowMap: Record<string, string> = {
+      'primary-m': 'inset 0 0 0 2px red',
+      'primary-l': 'inset 0 0 0 2px orange',
+      'secondary-m': 'inset 0 0 0 2px green',
+      'secondary-l': 'inset 0 0 0 2px blue',
+      'ghost-prim-m': 'inset 0 0 0 2px purple',
+      'ghost-prim-l': 'inset 0 0 0 2px pink',
+      'ghost-sec-m': 'inset 0 0 0 2px #7FFF00',
+      'ghost-sec-l': 'inset 0 0 0 2px cyan',
+    };
+    const debugKey = `${variant}-${size}`;
+    const debugBoxShadow = debugBoxShadowMap[debugKey] || 'inset 0 0 0 2px gray';
+    const debugStyle = { boxShadow: debugBoxShadow };
+
     if (children && (!icon && !label && !secondary)) {
       return (
         <button
@@ -57,13 +72,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           type={props.type || 'button'}
           disabled={disabled}
           className={cn(
-            'inline-flex items-center justify-center font-medium transition-colors select-none outline-none focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2',
+            'inline-flex items-center justify-center transition-colors select-none outline-none focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2',
             variantClasses[variant],
             buttonSizeMap[size].height,
             buttonSizeMap[size].rounded,
             buttonSizeMap[size].padding,
             className
           )}
+          style={debugStyle}
           {...props}
         >
           {children}
@@ -89,10 +105,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           sizeStyles.rounded,
           sizeStyles.padding,
           isIconOnly ? sizeStyles.gap : hasMultiple ? sizeStyles.gap : '',
-          size === 'm' && 'text-style-p-m-bold',
+          'text-style-p-l',
           disabled && 'cursor-not-allowed opacity-60',
           className
         )}
+        style={debugStyle}
         {...props}
       >
         {icon && <span className={isIconOnly ? '' : 'flex items-center justify-center'}>{icon}</span>}

@@ -22,6 +22,7 @@ import {
 } from './ui/dropdown-menu';
 import { IconSettings, IconList, IconSun, IconMoon, IconAuto, IconExit } from './ui/icons';
 import { AvatarButton } from './ui/avatar-button';
+import { Button } from './ui/button';
 
 export const PlannerView = () => {
   const { isDark, toggleTheme } = useTheme();
@@ -137,7 +138,13 @@ export const PlannerView = () => {
           <div className="flex flex-col items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <AvatarButton user={user} />
+                <Button
+                  variant="ghost-prim"
+                  size="l"
+                  icon={<AvatarButton user={user} />}
+                  aria-label="User menu"
+                  className="p-0"
+                />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
@@ -152,26 +159,25 @@ export const PlannerView = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <button
-              className="inline-flex items-center justify-center h-9 w-9 min-w-[36px] min-h-[36px] p-2 rounded-[8px] bg-transparent text-content-prim hover:bg-fill-sec active:bg-fill-prim disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2 transition-colors"
-              title="Theme Mode"
+            <Button
+              variant="ghost-prim"
+              size="l"
+              icon={themeMode === 'auto' ? <IconAuto size="l" /> : themeMode === 'light' ? <IconSun size="l" /> : <IconMoon size="l" />}
+              aria-label="Theme Mode"
               onClick={handleThemeModeSwitch}
-            >
-              {themeMode === 'auto' && <IconAuto size="l" />}
-              {themeMode === 'light' && <IconSun size="l" />}
-              {themeMode === 'dark' && <IconMoon size="l" />}
-            </button>
+              className="p-2"
+            />
           </div>
           {/* Exit button at the bottom */}
           <div className="flex flex-col items-center gap-4">
-            <button
-              className="inline-flex items-center justify-center h-9 w-9 min-w-[36px] min-h-[36px] p-2 rounded-[8px] bg-transparent text-content-prim hover:bg-fill-sec active:bg-fill-prim disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2 transition-colors"
-              title="Sign out"
+            <Button
+              variant="ghost-prim"
+              size="l"
+              icon={<IconExit size="l" />}
+              aria-label="Sign out"
               onClick={logout}
-            >
-              <span className="sr-only">Sign out</span>
-              <IconExit size="l" />
-            </button>
+              className="p-2"
+            />
           </div>
         </nav>
         {/* backlog (вторая колонка) */}

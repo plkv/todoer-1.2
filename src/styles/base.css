@@ -125,6 +125,10 @@
     @apply border-[hsl(var(--brd-prim))];
   }
 
+  button {
+    font-size: inherit;
+  }
+
   body {
     @apply bg-[hsl(var(--bg-prim))] text-[hsl(var(--content-prim))];
     font-family: 'Inter var', Inter, sans-serif;
@@ -221,6 +225,79 @@
   .hover\:card-bg-purple-hover:hover { background-color: hsl(var(--bg-card-purple-hover)); }
   .card-bg-gray { background-color: hsl(var(--bg-card-gray)); }
   .hover\:card-bg-gray-hover:hover { background-color: hsl(var(--bg-card-gray-hover)); }
+
+  /* H/XL - Inter Variable Bold, 24/28, 0 */
+  .text-style-h-xl {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 28px;
+    letter-spacing: 0;
+  }
+  /* H/L Bold - Inter Variable SemiBold, 18/24, -3% */
+  .text-style-h-l-bold {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: -0.03em;
+  }
+  /* H/L Reg - Inter Variable Medium, 18/24, -3% */
+  .text-style-h-l {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: -0.03em;
+  }
+  /* H/S - Inter Variable SemiBold, 11/16, 2% */
+  .text-style-h-s {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.02em;
+  }
+  /* P/L Reg - Inter Variable Medium, 13/16, -2% */
+  .text-style-p-l {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -0.02em;
+  }
+  /* P/L Bold - Inter Variable SemiBold, 13/16, -2% */
+  .text-style-p-l-bold {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -0.02em;
+  }
+  /* P/M Reg - Inter Variable Medium, 12/16, -2% */
+  .text-style-p-m {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: -0.02em;
+  }
+  /* P/M Bold - Inter Variable SemiBold, 12/16, -2% */
+  .text-style-p-m-bold {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: -0.02em;
+  }
+  /* P/S Regular - Inter Variable Medium, 10/12, 0% */
+  .text-style-p-s {
+    font-family: 'Inter var', Inter, sans-serif;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0;
+  }
 }
 
 .gap-section-xs {

@@ -102,7 +102,7 @@ const BacklogListSection = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                variant="ghost-sec"
+                variant="ghost-prim"
                 size="m"
                 className="p-1.5 rounded-[6px]"
                 title="Меню списка"

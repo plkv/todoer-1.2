@@ -65,22 +65,19 @@ function usePlannerStateImpl() {
       if (saved) {
         const parsed = JSON.parse(saved);
         return {
-          currentView: parsed.currentView || 'Week',
           selectedDate: parsed.selectedDate ? new Date(parsed.selectedDate) : new Date(),
         };
       }
     } catch {}
-    return { currentView: 'Week', selectedDate: new Date() };
+    return { selectedDate: new Date() };
   };
-  const [currentView, setCurrentViewState] = useState<CalendarView>(getInitialSettings().currentView);
   const [selectedDate, setSelectedDateState] = useState<Date>(getInitialSettings().selectedDate);
 
   // Сохраняем настройки при изменении
   useEffect(() => {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ currentView, selectedDate }));
-  }, [currentView, selectedDate]);
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ selectedDate }));
+  }, [selectedDate]);
 
-  const setCurrentView = (view: CalendarView) => setCurrentViewState(view);
   const setSelectedDate = (date: Date) => setSelectedDateState(date);
 
   // --- HISTORY ---
@@ -112,11 +109,8 @@ function usePlannerStateImpl() {
 
   // --- ПЕРИОД КАЛЕНДАРЯ ---
   const periodDateStrings = useMemo(() => {
-    if (currentView === 'Day') return [getDayDateString(selectedDate)];
-    if (currentView === 'Month') return getMonthDateStrings(selectedDate);
-    // Week по умолчанию
     return getWeekDateStrings(selectedDate);
-  }, [selectedDate, currentView]);
+  }, [selectedDate]);
 
   // --- API ---
   const periodStart = periodDateStrings[0];
@@ -160,25 +154,13 @@ function usePlannerStateImpl() {
 
   // --- Методы перехода ---
   const goToDate = (date: Date) => setSelectedDate(date);
-  const goToWeek = (date: Date) => {
-    setCurrentView('Week');
-    setSelectedDate(date);
-  };
-  const goToMonth = (date: Date) => {
-    setCurrentView('Month');
-    setSelectedDate(date);
-  };
 
   // --- Методы смены периода ---
   const handlePrevPeriod = () => {
-    if (currentView === 'Day') setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() - 1));
-    else if (currentView === 'Week') setSelectedDate(subWeeks(selectedDate, 1));
-    else if (currentView === 'Month') setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1));
+    setSelectedDate(subWeeks(selectedDate, 1));
   };
   const handleNextPeriod = () => {
-    if (currentView === 'Day') setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1));
-    else if (currentView === 'Week') setSelectedDate(addWeeks(selectedDate, 1));
-    else if (currentView === 'Month') setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1));
+    setSelectedDate(addWeeks(selectedDate, 1));
   };
 
   // --- HISTORY HELPERS ---
@@ -407,8 +389,6 @@ function usePlannerStateImpl() {
   };
 
   return {
-    currentView,
-    setCurrentView,
     periodData,
     backlogData,
     isLoadingTasks,
@@ -422,8 +402,6 @@ function usePlannerStateImpl() {
     selectedDate,
     setSelectedDate,
     goToDate,
-    goToWeek,
-    goToMonth,
     handlePrevPeriod,
     handleNextPeriod,
     handleDateChange: setSelectedDate,
