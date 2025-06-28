@@ -36,7 +36,7 @@ export const DayColumn = ({
           <h2 
             className={cn(isToday ? "text-content-prim font-bold" : "text-content-tert")}
           >
-            <span className="text-style-h-s">{dayName}</span>
+            <span className="text-xs font-semibold">{dayName}</span>
             {isToday && (
               <div className="w-1.5 h-1.5 rounded-full bg-accent-prim inline-block ml-1" />
             )}
@@ -45,7 +45,7 @@ export const DayColumn = ({
         <h3 
           className={cn(isToday ? "text-content-prim font-bold" : "text-content-tert")}
         >
-          <span className="text-style-h-l">{date}</span>
+          <span className="text-xl">{date}</span>
         </h3>
       </div>
 

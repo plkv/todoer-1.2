@@ -191,8 +191,8 @@ export const BacklogSection = ({
     <aside className="flex flex-col gap-1.5 items-start align-stretch h-full w-full min-w-0 bg-bg-sec border-r border-brd-prim overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-start gap-1 w-full p-3 [gap:4px] [align-self:stretch]">
-        <span className="text-style-h-l text-content-prim">Backlog</span>
-        <span className="text-style-h-l text-content-sec">{totalTasks}</span>
+        <span className="text-xl text-content-prim">Backlog</span>
+        <span className="text-xl text-content-sec">{totalTasks}</span>
         <Button
           variant="ghost-prim"
           size="m"

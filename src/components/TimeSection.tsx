@@ -51,10 +51,10 @@ export const TimeSection = ({
         "group relative flex flex-col rounded-xl p-1.5 gap-1.5 transition-colors duration-200 ease-out min-h-[140px]"
       )}
     >
-      <h3 className="text-style-h-s px-1.5 text-content-tert transition-colors duration-200 ease-out group-hover:text-content-prim flex items-center gap-2">
+      <h3 className="text-xs font-semibold px-1.5 text-content-tert transition-colors duration-200 ease-out group-hover:text-content-prim flex items-center gap-2">
         {title}
         {periodTimes[title] && (
-          <span className="hidden group-hover:inline text-style-p-s text-content-tert">
+          <span className="hidden group-hover:inline text-xs text-content-tert">
             {periodTimes[title]}
           </span>
         )}
@@ -77,7 +77,7 @@ export const TimeSection = ({
         >
           <div className="flex flex-row items-center gap-1">
             <IconPlus size="m" className="text-content-tert" strokeWidth={2.5} />
-            <p className="text-style-p-m text-content-tert">
+            <p className="text-sm text-content-tert">
               Add task
             </p>
           </div>

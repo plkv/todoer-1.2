@@ -59,7 +59,7 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
         <p
           className={cn(
             task.is_completed ? 'text-content-tert' : 'text-content-prim',
-            'text-style-p-m'
+            'text-sm'
           )}
           style={{
             maxHeight: '32px',
@@ -81,7 +81,7 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
             className={cn(
               'font-medium text-[10px] leading-[12px] text-nowrap',
               task.is_completed ? 'text-content-tert' : 'text-content-sec',
-              'text-style-p-m'
+              'text-sm'
             )}
           >
             {task.time_estimate}

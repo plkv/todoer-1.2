@@ -19,6 +19,13 @@ export default {
 		'card-bg-gray', 'card-bg-gray-hover',
 	],
 	theme: {
+		fontSize: {
+			base: ['13px', '16px'],
+			xs: ['11px', '16px'],
+			sm: ['12px', '16px'],
+			xl: ['18px', '24px'],
+			'3xl': ['24px', '28px'],
+		},
 		container: {
 			center: true,
 			padding: '2rem',
@@ -95,6 +102,7 @@ export default {
 				md: 'var(--radius-md)',
 				lg: 'var(--radius-lg)',
 				full: 'var(--radius-full)',
+				'btn': '6px',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -134,6 +142,12 @@ export default {
 				'card-bg-gray': 'linear-gradient(rgba(160,160,160,0.12), rgba(160,160,160,0.12))',
 				'card-bg-gray-hover': 'linear-gradient(rgba(160,160,160,0.20), rgba(160,160,160,0.20))',
 			}),
+			spacing: {
+				'btn-m': '28px',
+				'btn-l': '36px',
+				'icon-m': '16px',
+				'icon-l': '20px',
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

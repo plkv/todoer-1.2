@@ -149,12 +149,12 @@ export const PlannerView = () => {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
-                    <p className="text-style-p-m-semibold leading-none">{user?.name}</p>
+                    <p className="text-sm font-medium leading-none">{user?.name}</p>
                     <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={logout} className="cursor-pointer text-style-p-m">
+                <DropdownMenuItem onSelect={logout} className="cursor-pointer text-sm">
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>

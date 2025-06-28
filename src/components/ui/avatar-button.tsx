@@ -14,7 +14,7 @@ export const AvatarButton = React.forwardRef<HTMLButtonElement, AvatarButtonProp
         type={props.type || 'button'}
         disabled={disabled}
         className={cn(
-          'inline-flex items-center justify-center p-[6px] h-9 w-9 min-w-[36px] min-h-[36px] rounded-[8px] transition-colors select-none outline-none',
+          'inline-flex items-center justify-center p-1.5 h-btn-l w-btn-l min-w-btn-l min-h-btn-l rounded-btn transition-colors select-none outline-none',
           'bg-transparent text-content-prim',
           'hover:bg-fill-sec active:bg-fill-prim disabled:opacity-60',
           'focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2',
@@ -22,11 +22,11 @@ export const AvatarButton = React.forwardRef<HTMLButtonElement, AvatarButtonProp
         )}
         {...props}
       >
-        <Avatar className="h-full w-full">
+        <Avatar className="h-btn-l w-btn-l min-w-btn-l min-h-btn-l rounded-btn">
           {user?.picture ? (
-            <AvatarImage src={user.picture} alt={user.name || 'User'} className="h-full w-full rounded-full" style={{ borderRadius: 999 }} />
+            <AvatarImage src={user.picture} alt={user.name || 'User'} className="h-full w-full rounded-full" style={{ borderRadius: 'var(--radius-btn)' }} />
           ) : (
-            <AvatarFallback className="h-full w-full rounded-full" style={{ borderRadius: 999 }}>{user?.name?.[0] || '?'}</AvatarFallback>
+            <AvatarFallback className="h-full w-full rounded-full" style={{ borderRadius: 'var(--radius-btn)' }}>{user?.name?.[0] || '?'}</AvatarFallback>
           )}
         </Avatar>
         {children}

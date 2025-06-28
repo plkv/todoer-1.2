@@ -1,9 +1,9 @@
 import React from 'react';
 
-// Централизованный объект размеров иконок
+// Централизованный объект размеров иконок через CSS custom properties (Tailwind токены)
 export const ICON_SIZES = {
-  m: 16,
-  l: 20,
+  m: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--tw-space-icon-m')) || 16,
+  l: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--tw-space-icon-l')) || 20,
 };
 
 type IconProps = React.SVGProps<SVGSVGElement> & {

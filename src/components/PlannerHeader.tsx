@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { IconChevronLeft, IconChevronRight } from './ui/icons';
+import { IconChevronLeft, IconChevronRight, IconChevronUp, IconChevronDown } from './ui/icons';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,11 +30,17 @@ export const PlannerHeader = () => {
         </div>
         <div className="flex flex-row-reverse items-center gap-0.5 min-w-0">
           <Button variant="ghost-prim" size="m" onClick={handleNextPeriod}>
-            <IconChevronRight size="l" strokeWidth={2} />
+            <IconChevronRight />
+          </Button>
+          <Button variant="ghost-prim" size="m">
+            <IconChevronUp />
+          </Button>
+          <Button variant="ghost-prim" size="m">
+            <IconChevronDown />
           </Button>
           <Button variant="ghost-prim" size="m" onClick={handleToday}>Today</Button>
           <Button variant="ghost-prim" size="m" onClick={handlePrevPeriod}>
-            <IconChevronLeft size="l" strokeWidth={2} />
+            <IconChevronLeft />
           </Button>
         </div>
       </div>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 
@@ -32,12 +31,12 @@ const timeOptions = [
 export const TimeSelector = ({ value, onChange }: TimeSelectorProps) => {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-full h-9 text-style-p-m bg-fill-prim border-brd-prim focus:ring-0 focus:ring-offset-0">
+      <SelectTrigger className="w-full h-9 text-sm bg-fill-prim border-brd-prim focus:ring-0 focus:ring-offset-0">
         <SelectValue placeholder="Без оценки" />
       </SelectTrigger>
       <SelectContent>
         {timeOptions.map((option) => (
-          <SelectItem key={option} value={option} className="text-style-p-m">
+          <SelectItem key={option} value={option} className="text-sm">
             {option}
           </SelectItem>
         ))}

@@ -21,31 +21,9 @@ const variantClasses = {
     'bg-transparent text-content-sec hover:bg-fill-sec active:bg-fill-prim disabled:text-content-tert',
 }
 
-const buttonSizeMap = {
-  m: {
-    height: 'min-h-[28px] min-w-[28px]',
-    rounded: 'rounded-[6px]',
-    padding: 'p-1.5', // 6px
-    gap: 'gap-1', // 4px
-    icon: {
-      height: 'min-h-[28px] min-w-[28px]',
-      rounded: 'rounded-[6px]',
-      padding: 'p-1.5',
-      gap: 'gap-0',
-    }
-  },
-  l: {
-    height: 'min-h-[36px] min-w-[36px]',
-    rounded: 'rounded-[6px]',
-    padding: 'p-2', // 8px
-    gap: 'gap-1', // 4px
-    icon: {
-      height: 'min-h-[36px] min-w-[36px]',
-      rounded: 'rounded-[6px]',
-      padding: 'p-2',
-      gap: 'gap-0',
-    }
-  }
+const sizeClasses = {
+  m: 'min-h-btn-m min-w-btn-m rounded-btn p-1.5 gap-1 text-base', // 13px
+  l: 'min-h-btn-l min-w-btn-l rounded-btn p-2 gap-1 text-xl',    // 18px
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -74,9 +52,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           className={cn(
             'inline-flex items-center justify-center transition-colors select-none outline-none focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2',
             variantClasses[variant],
-            buttonSizeMap[size].height,
-            buttonSizeMap[size].rounded,
-            buttonSizeMap[size].padding,
+            sizeClasses[size],
+            disabled && 'cursor-not-allowed opacity-60',
             className
           )}
           style={debugStyle}
@@ -89,9 +66,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const isIconOnly = !!icon && !label && !secondary;
     const hasMultiple = [icon, label, secondary].filter(Boolean).length > 1;
-    const sizeStyles = isIconOnly
-      ? buttonSizeMap[size].icon
-      : buttonSizeMap[size];
 
     return (
       <button
@@ -101,20 +75,21 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           'inline-flex items-center justify-center transition-colors select-none outline-none focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2',
           variantClasses[variant],
-          sizeStyles.height,
-          sizeStyles.rounded,
-          sizeStyles.padding,
-          isIconOnly ? sizeStyles.gap : hasMultiple ? sizeStyles.gap : '',
-          'text-style-p-l',
+          sizeClasses[size],
+          isIconOnly ? 'gap-0' : hasMultiple ? 'gap-1' : '',
           disabled && 'cursor-not-allowed opacity-60',
           className
         )}
         style={debugStyle}
         {...props}
       >
-        {icon && <span className={isIconOnly ? '' : 'flex items-center justify-center'}>{icon}</span>}
+        {icon && <span className={isIconOnly ? '' : 'flex items-center justify-center'}>{
+          React.isValidElement(icon)
+            ? React.cloneElement(icon as React.ReactElement<any>, { size })
+            : icon
+        }</span>}
         {label && <span className="truncate">{label}</span>}
-        {secondary && <span className="text-style-p-s text-content-tert truncate">{secondary}</span>}
+        {secondary && <span className="text-xs text-content-tert truncate">{secondary}</span>}
       </button>
     );
   }
