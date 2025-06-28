@@ -1,9 +1,10 @@
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Settings, Inbox } from 'lucide-react';
 import { TaskCard } from './TaskCard';
 import { cn } from '@/lib/utils';
 import { useDrop } from 'react-dnd';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ITask } from '@/types/Task';
 import { IconPlus, IconSettings, IconList, IconMore } from './ui/icons';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from './ui/dropdown-menu';

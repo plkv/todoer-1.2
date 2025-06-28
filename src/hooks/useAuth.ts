@@ -9,20 +9,26 @@ interface User {
 }
 
 // Получаем адрес backend динамически
-const getBackendUrl = () => {
-  if (import.meta.env.VITE_BACKEND_URL) {
-    return import.meta.env.VITE_BACKEND_URL;
+function getBackendUrl() {
+  if (typeof process !== 'undefined' && process.env && process.env.JEST_WORKER_ID) {
+    // Jest/test среда
+    if (typeof globalThis.importMeta !== 'undefined' && globalThis.importMeta.env) {
+      return globalThis.importMeta.env.VITE_BACKEND_URL;
+    }
+  } else if (typeof window !== 'undefined') {
+    // Браузер/Vite
+    try {
+      // Динамический import для избежания синтаксической ошибки
+      return new Function('return import.meta.env.VITE_BACKEND_URL')();
+    } catch {}
   }
   return 'http://localhost:3001';
-};
+}
 
 export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
   const queryClient = useQueryClient();
   const backendUrl = getBackendUrl();
-
-  // Для отладки:
-  console.log('backendUrl:', backendUrl);
 
   const { data: user, error } = useQuery<User>({
     queryKey: ['user'],

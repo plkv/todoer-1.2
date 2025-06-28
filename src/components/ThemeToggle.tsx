@@ -8,12 +8,12 @@ export const ThemeToggle = () => {
   
   return (
     <div className="flex items-center gap-2">
-      <IconSettings size="xl" className={`${!isDark ? 'text-content-prim' : 'text-content-sec'}`} />
+      <IconSettings size="l" className={`${!isDark ? 'text-content-prim' : 'text-content-sec'}`} />
       <Switch
         checked={isDark}
         onCheckedChange={toggleTheme}
       />
-      <IconSettings size="xl" className={`${isDark ? 'text-content-prim' : 'text-content-sec'}`} />
+      <IconSettings size="l" className={`${isDark ? 'text-content-prim' : 'text-content-sec'}`} />
     </div>
   );
 };

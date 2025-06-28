@@ -1,3 +1,4 @@
+import React from 'react';
 import { useDrag } from 'react-dnd';
 import { cn } from '@/lib/utils';
 import { Task } from '@/types/Task';

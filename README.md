@@ -71,3 +71,31 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Архитектура
+
+- Frontend: React, Vite, TypeScript, TailwindCSS, shadcn/ui
+- Backend: Node.js, Express, PostgreSQL
+- State management: React Context, React Query, localStorage
+- UI: централизованные компоненты, дизайн-система
+
+## Деплой
+
+1. Настройте .env на основе .env.example
+2. Соберите проект: `npm run build`
+3. Запустите backend: `cd backend && npm install && npm run dev`
+4. Для Docker: `docker build -t todoer . && docker run -p 8080:80 todoer`
+
+## Health-check
+
+GET /health (backend)
+
+## Как отправить баг-репорт
+
+1. Скопируйте шаблон из BUG_REPORT_TEMPLATE.md
+2. Заполните и отправьте в Issues или на почту команды
+
+## Как оставить обратную связь
+
+1. Скопируйте шаблон из USER_FEEDBACK_TEMPLATE.md
+2. Заполните и отправьте в Issues или на почту команды

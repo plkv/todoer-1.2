@@ -7,6 +7,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const logger = require('./logger');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -52,7 +53,7 @@ const createTables = async () => {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       )
     `);
-    console.log('Таблица "users" готова.');
+    logger.info('Таблица "users" готова.');
 
     // Создаём таблицу задач с внешним ключом на users
     await client.query(`
@@ -70,9 +71,9 @@ const createTables = async () => {
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       )
     `);
-    console.log('Таблица "tasks" готова.');
+    logger.info('Таблица "tasks" готова.');
   } catch (err) {
-    console.error('Ошибка при создании таблиц:', err.stack);
+    logger.error('Ошибка при создании таблиц:', err.stack);
   } finally {
     client.release();
   }
@@ -103,9 +104,9 @@ passport.use(new GoogleStrategy({
             [id, email, displayName, picture]
           );
           user = userResult.rows[0];
-          console.log('Создан новый пользователь:', user);
+          logger.info('Создан новый пользователь:', user);
         } else {
-          console.log('Пользователь найден:', user);
+          logger.info('Пользователь найден:', user);
         }
         return done(null, user);
       } finally {
@@ -133,11 +134,11 @@ passport.deserializeUser(async (id, done) => {
 // Инициализация БД
 pool.connect()
   .then(client => {
-    console.log('Подключено к PostgreSQL базе данных.');
+    logger.info('Подключено к PostgreSQL базе данных.');
     client.release();
     createTables();
   })
-  .catch(err => console.error('Ошибка подключения к базе:', err.stack));
+  .catch(err => logger.error('Ошибка подключения к базе:', err.stack));
 
 // Middleware для проверки аутентификации
 const ensureAuthenticated = (req, res, next) => {
@@ -236,7 +237,7 @@ app.put('/api/tasks/:id', ensureAuthenticated, async (req, res) => {
     
     res.json(result.rows[0]);
   } catch (err) {
-    console.error('Ошибка обновления задачи:', err);
+    logger.error('Ошибка обновления задачи:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -255,7 +256,11 @@ app.delete('/api/tasks/:id', ensureAuthenticated, async (req, res) => {
   }
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Запуск сервера
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  logger.info(`Server running on http://localhost:${PORT}`);
 }); 

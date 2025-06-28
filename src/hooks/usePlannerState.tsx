@@ -55,7 +55,6 @@ function getDayDate(date: Date) {
 }
 
 function usePlannerStateImpl() {
-  console.log('[toast] usePlannerStateImpl loaded');
   const queryClient = useQueryClient();
 
   // --- SETTINGS ---
@@ -229,7 +228,6 @@ function usePlannerStateImpl() {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       setIsOverlayOpen(false);
       setSelectedTask(null);
-      console.log('[toast] onSuccess create');
       toast('Задача создана', { description: 'Задача успешно создана' });
     },
     onError: (error: any) => {

@@ -49,6 +49,8 @@ export const PlannerHeader = () => {
           <Button variant="ghost-prim" size="m" onClick={handlePrevPeriod}>
             <IconChevronLeft size="l" strokeWidth={2} />
           </Button>
+          <Button variant="ghost-sec" size="m" onClick={() => window.open('/USER_FEEDBACK_TEMPLATE.md', '_blank')}>Обратная связь</Button>
+          <Button variant="ghost-sec" size="m" onClick={() => window.open('/BUG_REPORT_TEMPLATE.md', '_blank')}>Сообщить о баге</Button>
         </div>
       </div>
     </div>

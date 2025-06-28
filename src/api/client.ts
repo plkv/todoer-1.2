@@ -3,8 +3,8 @@ import { Task } from '@/types/Task';
 
 // Получаем адрес backend динамически
 const getBackendUrl = () => {
-  if (import.meta.env.VITE_BACKEND_URL) {
-    return import.meta.env.VITE_BACKEND_URL;
+  if (globalThis.importMeta && globalThis.importMeta.env && globalThis.importMeta.env.VITE_BACKEND_URL) {
+    return globalThis.importMeta.env.VITE_BACKEND_URL;
   }
   return 'http://localhost:3001';
 };
@@ -30,9 +30,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Пользователь не аутентифицирован. 
-      // Хук useAuth обработает этот случай и покажет кнопку входа.
-      console.log('Not authenticated, redirecting will be handled by useAuth hook.');
+      // Пользователь не аутентифицирован. Хук useAuth обработает этот случай и покажет кнопку входа.
     } else if (error.response) {
       console.error('API Error:', error.response.data);
     } else if (error.request) {
