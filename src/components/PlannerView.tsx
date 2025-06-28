@@ -20,7 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from './ui/dropdown-menu';
-import { IconSettings, IconList, IconSun, IconMoon, IconAuto } from './ui/icons';
+import { IconSettings, IconList, IconSun, IconMoon, IconAuto, IconExit } from './ui/icons';
 import { AvatarButton } from './ui/avatar-button';
 
 export const PlannerView = () => {
@@ -133,7 +133,7 @@ export const PlannerView = () => {
     <DndProvider backend={HTML5Backend}>
       <div className="flex flex-row h-screen w-full bg-fill-prim font-sans text-content-prim lg:flex-row flex-col">
         {/* nav-global */}
-        <nav className="flex flex-col items-center justify-between w-16 min-w-16 h-screen max-h-screen py-4 bg-bg-sec border-r border-brd-prim flex-shrink-0 overflow-hidden">
+        <nav className="flex flex-col items-center justify-between w-full max-w-[52px] min-w-0 h-screen max-h-screen py-4 bg-bg-sec border-r border-brd-prim flex-shrink-0 overflow-hidden">
           <div className="flex flex-col items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -160,6 +160,17 @@ export const PlannerView = () => {
               {themeMode === 'auto' && <IconAuto size="l" />}
               {themeMode === 'light' && <IconSun size="l" />}
               {themeMode === 'dark' && <IconMoon size="l" />}
+            </button>
+          </div>
+          {/* Exit button at the bottom */}
+          <div className="flex flex-col items-center gap-4">
+            <button
+              className="inline-flex items-center justify-center h-9 w-9 min-w-[36px] min-h-[36px] p-2 rounded-[8px] bg-transparent text-content-prim hover:bg-fill-sec active:bg-fill-prim disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2 transition-colors"
+              title="Sign out"
+              onClick={logout}
+            >
+              <span className="sr-only">Sign out</span>
+              <IconExit size="l" />
             </button>
           </div>
         </nav>
