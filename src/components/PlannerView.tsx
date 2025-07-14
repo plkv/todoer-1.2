@@ -20,7 +20,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from './ui/dropdown-menu';
-import { IconSettings, IconList, IconSun, IconMoon, IconAuto, IconExit } from './ui/icons';
 import { AvatarButton } from './ui/avatar-button';
 import { Button } from './ui/button';
 
@@ -93,7 +92,7 @@ export const PlannerView = () => {
     return sections.map(section => ({
       id: section.id,
       name: section.name,
-      icon: section.id === 'inbox' ? <IconList className="w-4 h-4" /> : <span>📁</span>,
+      icon: section.id === 'inbox' ? <span className="material-symbols-rounded">inbox</span> : <span>📁</span>,
       tasks: backlogData.filter(task => (task.section || 'inbox') === section.id),
     }));
   }, [sections, backlogData]);
@@ -156,7 +155,7 @@ export const PlannerView = () => {
             <Button
               variant="ghost-prim"
               size="l"
-              icon={themeMode === 'auto' ? <IconAuto size="l" /> : themeMode === 'light' ? <IconSun size="l" /> : <IconMoon size="l" />}
+              icon={themeMode === 'auto' ? <span className="material-symbols-rounded">brightness_auto</span> : themeMode === 'light' ? <span className="material-symbols-rounded">light_mode</span> : <span className="material-symbols-rounded">dark_mode</span>}
               aria-label="Theme Mode"
               onClick={handleThemeModeSwitch}
               className="p-2"
@@ -167,7 +166,7 @@ export const PlannerView = () => {
             <Button
               variant="ghost-prim"
               size="l"
-              icon={<IconExit size="l" />}
+              icon={<span className="material-symbols-rounded">logout</span>}
               aria-label="Sign out"
               onClick={logout}
               className="p-2"

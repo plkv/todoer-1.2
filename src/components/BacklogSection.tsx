@@ -1,12 +1,10 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { MdAdd, MdSettings, MdInbox } from 'react-icons/md';
 import { TaskCard } from './TaskCard';
 import { cn } from '@/lib/utils';
 import { useDrop } from 'react-dnd';
 import { useState, useEffect } from 'react';
 import { ITask } from '@/types/Task';
-import { IconPlus, IconSettings, IconList, IconMore } from './ui/icons';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from './ui/dropdown-menu';
 
 export type List = {
@@ -107,7 +105,7 @@ const BacklogListSection = ({
                 className="p-1.5 rounded-[6px]"
                 title="Меню списка"
               >
-                <IconMore size="m" />
+                <span className="material-symbols-rounded">more_vert</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -129,7 +127,7 @@ const BacklogListSection = ({
             title="Добавить задачу"
             onClick={() => onAddTask(list.id)}
           >
-            <IconPlus size="m" />
+            <span className="material-symbols-rounded">add</span>
           </Button>
         </div>
       </div>
@@ -200,7 +198,7 @@ export const BacklogSection = ({
           onClick={onSettingsClick}
           title="Настройки"
         >
-          <IconSettings size="m" />
+          <span className="material-symbols-rounded">settings</span>
         </Button>
         <Button
           variant="ghost-prim"
@@ -208,7 +206,7 @@ export const BacklogSection = ({
           onClick={onAddList}
           title="Добавить список"
         >
-          <IconPlus size="m" />
+          <span className="material-symbols-rounded">add</span>
         </Button>
       </div>
       {/* Content container */}
