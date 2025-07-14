@@ -88,8 +88,7 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleSaveAndClose()}>
       <DialogContent
-        hideCloseButton={true}
-        className="w-full max-w-[520px] bg-bg-prim text-content-prim border border-brd-prim pt-0 pr-0 pb-4 pl-0 flex flex-col rounded-lg shadow-lg"
+        className="w-full max-w-520 bg-bg-prim text-content-prim border border-brd-prim pt-0 pr-0 pb-4 pl-0 flex flex-col rounded-lg shadow-lg"
         onKeyDown={handleKeyDown}
       >
         <DialogTitle className="sr-only">Task details</DialogTitle>

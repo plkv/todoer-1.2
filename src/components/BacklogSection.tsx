@@ -96,8 +96,8 @@ const BacklogListSection = ({
             ? React.cloneElement(list.icon as React.ReactElement, { size: 'm' })
             : list.icon}
         </span>
-        <span className="font-semibold text-[13px] leading-4 tracking-[-0.26px] text-content-prim truncate">{list.name}</span>
-        <span className="font-semibold text-[13px] leading-4 tracking-[-0.26px] text-content-sec">{list.tasks.length}</span>
+        <span className="font-semibold text-13 leading-4 tracking-[-0.26px] text-content-prim truncate">{list.name}</span>
+        <span className="font-semibold text-13 leading-4 tracking-[-0.26px] text-content-sec">{list.tasks.length}</span>
         <div className="flex flex-row gap-1 ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -134,7 +134,7 @@ const BacklogListSection = ({
         </div>
       </div>
       {/* Tasks */}
-      <div className="flex flex-col flex-1 w-full p-[2px_0] gap-section-xs items-stretch">
+      <div className="flex flex-col flex-1 w-full p-2 gap-2 items-stretch">
         {list.tasks.map((task: ITask) => (
           <TaskCard
             key={task.id}
@@ -212,7 +212,7 @@ export const BacklogSection = ({
         </Button>
       </div>
       {/* Content container */}
-      <div className="flex flex-col flex-1 w-full p-[2px_0] gap-2 items-stretch">
+      <div className="flex flex-col flex-1 w-full p-2 gap-2 items-stretch">
         {lists.map((list) => (
           <BacklogListSection
             key={list.id}

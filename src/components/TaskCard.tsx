@@ -35,7 +35,7 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
       ref={drag}
       onClick={onClick}
       className={cn(
-        'group flex flex-row items-start gap-1 min-h-7 rounded-md p-[6px] transition-colors duration-200 ease-out min-w-0 w-full',
+        'group flex flex-row items-start gap-1 min-h-32 rounded-md p-6 transition-colors duration-200 ease-out min-w-0 w-full',
         'active:cursor-grabbing cursor-grab',
         isDragging && 'opacity-50',
         colorClass,
@@ -55,7 +55,7 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
         )}
       />
 
-      <div className="basis-0 grow max-h-[32px] min-h-px min-w-px relative shrink-0 flex flex-col justify-center overflow-hidden">
+      <div className="basis-0 grow max-h-32 min-h-px min-w-px relative shrink-0 flex flex-col justify-center overflow-hidden">
         <p
           className={cn(
             task.is_completed ? 'text-content-tert' : 'text-content-prim',
@@ -79,7 +79,7 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
         <div className="flex-shrink-0 h-4 flex items-center py-0.5">
           <span
             className={cn(
-              'font-medium text-[10px] leading-[12px] text-nowrap',
+              'font-medium text-10 leading-12 text-nowrap',
               task.is_completed ? 'text-content-tert' : 'text-content-sec',
               'text-sm'
             )}

@@ -134,7 +134,7 @@ export const PlannerView = () => {
     <DndProvider backend={HTML5Backend}>
       <div className="flex flex-row h-screen w-full bg-fill-prim font-sans text-content-prim lg:flex-row flex-col">
         {/* nav-global */}
-        <nav className="flex flex-col items-center justify-between w-full max-w-[52px] min-w-0 h-screen max-h-screen py-4 bg-bg-sec border-r border-brd-prim flex-shrink-0 overflow-hidden">
+        <nav className="flex flex-col items-center justify-between w-full max-w-52 min-w-0 h-screen max-h-screen py-4 bg-bg-sec border-r border-brd-prim flex-shrink-0 overflow-hidden">
           <div className="flex flex-col items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
