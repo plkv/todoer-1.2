@@ -19,6 +19,7 @@ import { Copy, Trash, Check } from '@phosphor-icons/react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { cn } from '@/lib/utils';
 import { IconClose } from './ui/icons';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 interface TaskOverlayProps {
   task: ITask | null;
@@ -88,76 +89,81 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleSaveAndClose()}>
       <DialogContent
         hideCloseButton={true}
-        className="w-full max-w-[520px] bg-bg-prim text-content-prim border border-brd-prim pt-6 pr-[18px] pb-10 pl-[18px] flex flex-col gap-6"
+        className="w-full max-w-[520px] bg-bg-prim text-content-prim border border-brd-prim pt-0 pr-0 pb-4 pl-0 flex flex-col rounded-lg shadow-lg"
         onKeyDown={handleKeyDown}
       >
         <DialogTitle className="sr-only">Task details</DialogTitle>
         <DialogDescription className="sr-only">Edit task details, time estimate, and color.</DialogDescription>
-        {/* Header with Checkbox and Actions */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 ml-2">
+        {/* Header: чекбокс + заголовок */}
+        <div className="flex flex-row-reverse items-start justify-start p-4 w-full gap-4">
+          <div className="flex items-center justify-center h-6 w-6">
             <Checkbox
               checked={editedTask.is_completed}
               onCheckedChange={(checked) => handleFieldChange('is_completed', !!checked)}
-              className="w-4 h-4 rounded border border-brd-prim flex items-center justify-center transition-colors duration-150"
+              className="w-6 h-6 rounded border border-brd-prim flex items-center justify-center transition-colors duration-150"
             />
-            <label className="text-sm text-content-sec select-none">
-              {editedTask.is_completed ? 'Completed' : 'Not completed'}
-            </label>
           </div>
-          <div className="flex flex-1 justify-end">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost-prim" size="l" onClick={handleDelete}>
-                    <IconClose size="l" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Delete</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          <div className="flex-1 flex items-center">
+            <Textarea
+              ref={titleRef}
+              value={editedTask.title || ''}
+              onChange={(e) => handleFieldChange('title', e.target.value)}
+              placeholder="Task Title"
+              autoFocus
+              className="text-lg font-semibold bg-bg-prim border-brd-prim focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-10 px-0 py-0 border-none shadow-none"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={handleDelete}
+              className="inline-flex items-center justify-center rounded-btn p-1.5 cursor-pointer hover:bg-fill-sec focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2"
+            >
+              <IconClose />
+            </span>
           </div>
         </div>
-
-        {/* Main Content */}
-        <div className="flex flex-col gap-4">
-          <div className="text-xs text-content-tert ml-2">
-            {displayDate ? format(displayDate, 'E, d MMM yyyy') : 'Date not set'}
-          </div>
-          <Textarea
-            ref={titleRef}
-            value={editedTask.title || ''}
-            onChange={(e) => handleFieldChange('title', e.target.value)}
-            placeholder="Task Title"
-            autoFocus
-            className="text-lg font-semibold bg-bg-prim border-brd-prim focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[40px] ml-2 placeholder:text-content-tert"
-          />
+        {/* Дата и период */}
+        <div className="flex flex-row items-center gap-2 px-4 pt-2">
+          <span className="text-sm text-content-prim font-semibold">{displayDate ? format(displayDate, 'd MMM yyyy') : 'Date not set'}</span>
+          <span className="text-xs text-content-tert font-medium">Morning</span>
+        </div>
+        {/* Сегментированные табы (таймеры) */}
+        <div className="px-4 pt-6">
+          <Tabs defaultValue="5m" className="w-full">
+            <TabsList className="flex flex-row gap-1 bg-fill-sec rounded-md p-1">
+              {['5m','15m','30m','1h','2h','3h+'].map((label) => (
+                <TabsTrigger key={label} value={label} className="text-xs font-semibold px-2 py-1 rounded-md">
+                  {label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <TabsContent value="5m" />
+            <TabsContent value="15m" />
+            <TabsContent value="30m" />
+            <TabsContent value="1h" />
+            <TabsContent value="2h" />
+            <TabsContent value="3h+" />
+          </Tabs>
+        </div>
+        {/* Описание */}
+        <div className="px-4 pt-6">
           <Textarea
             value={editedTask.description || ''}
             onChange={(e) => handleFieldChange('description', e.target.value)}
             placeholder="Description"
-            className="text-sm bg-bg-prim border-brd-prim focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-[60px] ml-2 placeholder:text-content-tert"
+            className="text-sm bg-bg-prim border-brd-prim focus-visible:ring-0 focus-visible:ring-offset-0 resize-none min-h-16 placeholder:text-content-tert"
           />
         </div>
-
-        {/* Time Selector */}
-        <div className="flex flex-col gap-2 p-1.5 ml-2">
-          <label className="text-xs text-content-sec font-medium uppercase tracking-wide">Time estimate</label>
-          <TimeSelector 
-            value={editedTask.time_estimate || ''}
-            onChange={(value) => handleFieldChange('time_estimate', value)}
-          />
-        </div>
-
-        {/* Color Selector */}
-        <div className="flex flex-col gap-2 p-1.5 ml-2">
-          <label className="text-xs text-content-sec font-medium uppercase tracking-wide">Color</label>
-          <ColorSelector 
-            value={editedTask.color || ''}
-            onChange={(value) => handleFieldChange('color', value)}
-          />
+        {/* Action-кнопки */}
+        <div className="flex flex-row gap-2 justify-end px-4 pt-6">
+          <Button variant="ghost-prim" size="m" onClick={handleDuplicate}>
+            Duplicate
+          </Button>
+          <Button variant="ghost-prim" size="m" onClick={handleDelete}>
+            Delete
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

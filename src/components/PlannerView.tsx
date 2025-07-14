@@ -138,13 +138,7 @@ export const PlannerView = () => {
           <div className="flex flex-col items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost-prim"
-                  size="l"
-                  icon={<AvatarButton user={user} />}
-                  aria-label="User menu"
-                  className="p-0"
-                />
+                <AvatarButton user={user} aria-label="User menu" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>

@@ -103,6 +103,7 @@ export default {
 				lg: 'var(--radius-lg)',
 				full: 'var(--radius-full)',
 				'btn': '6px',
+				'btn-xl': '12px',
 			},
 			keyframes: {
 				'accordion-down': {
