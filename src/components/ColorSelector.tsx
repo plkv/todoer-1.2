@@ -10,7 +10,7 @@ interface ColorSelectorProps {
 
 export const ColorSelector = ({ value, onChange }: ColorSelectorProps) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3">
       <div className="flex bg-fill-prim rounded-full p-1 w-fit">
         <ToggleGroup
           type="single"

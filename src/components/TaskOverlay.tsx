@@ -92,7 +92,7 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
         <DialogTitle className="sr-only">Task details</DialogTitle>
         <DialogDescription className="sr-only">Edit task details, time estimate, and color.</DialogDescription>
         {/* Header: чекбокс + заголовок */}
-        <div className="flex flex-row-reverse items-start justify-start p-4 w-full gap-4">
+        <div className="flex flex-row-reverse items-start justify-start p-4 w-full gap-3">
           <div className="flex items-center justify-center h-6 w-6">
             <Checkbox
               checked={editedTask.is_completed}
@@ -122,9 +122,9 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
           </div>
         </div>
         {/* Дата и период */}
-        <div className="flex flex-row items-center gap-2 px-4 pt-2">
+        <div className="flex flex-row items-center gap-3 px-4 pt-2">
           <span className="text-sm text-content-prim font-semibold">{displayDate ? format(displayDate, 'd MMM yyyy') : 'Date not set'}</span>
-          <span className="text-xs text-content-tert font-medium">Morning</span>
+          <span className="text-xs text-content-tert font-normal">Morning</span>
         </div>
         {/* Сегментированные табы (таймеры) */}
         <div className="px-4 pt-6">
@@ -154,7 +154,7 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
           />
         </div>
         {/* Action-кнопки */}
-        <div className="flex flex-row gap-2 justify-end px-4 pt-6">
+        <div className="flex flex-row gap-3 justify-end px-4 pt-6">
           <Button variant="ghost" size="sm" onClick={handleDuplicate}>
             Duplicate
           </Button>

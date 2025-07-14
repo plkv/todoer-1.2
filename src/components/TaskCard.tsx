@@ -78,9 +78,8 @@ export const TaskCard = ({ task, onClick, onToggleComplete, sourceLocation }: Ta
         <div className="flex-shrink-0 h-4 flex items-center py-0.5">
           <span
             className={cn(
-              'font-medium text-10 leading-12 text-nowrap',
-              task.is_completed ? 'text-content-tert' : 'text-content-sec',
-              'text-sm'
+              'font-normal text-xs leading-4 text-nowrap',
+              task.is_completed ? 'text-content-tert' : 'text-content-sec'
             )}
           >
             {task.time_estimate}

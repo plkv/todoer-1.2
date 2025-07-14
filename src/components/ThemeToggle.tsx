@@ -6,7 +6,7 @@ export const ThemeToggle = () => {
   const { isDark, toggleTheme } = useTheme();
   
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3">
       <span className={`material-symbols-rounded ${!isDark ? 'text-content-prim' : 'text-content-sec'}`}>settings</span>
       <Switch
         checked={isDark}

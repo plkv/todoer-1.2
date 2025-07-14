@@ -59,7 +59,7 @@ export const TimeSection = ({
         )}
       </h3>
       
-      <div className="flex flex-col gap-1 w-full min-w-0">
+      <div className="flex flex-col gap-3 w-full min-w-0">
           {tasks.map((task) => (
             <TaskCard
               key={task.id}
@@ -72,9 +72,9 @@ export const TimeSection = ({
         
         <div 
           onClick={() => onAddTask(title)}
-          className="group/add-task flex flex-row items-center gap-1 min-h-7 rounded-md p-6 cursor-pointer justify-between transition-colors duration-200 ease-out opacity-0 group-hover:opacity-100 w-full min-w-0"
+          className="group/add-task flex flex-row items-center gap-3 min-h-7 rounded-lg p-6 cursor-pointer justify-between transition-colors duration-200 ease-out opacity-0 group-hover:opacity-100 w-full min-w-0"
         >
-          <div className="flex flex-row items-center gap-1">
+          <div className="flex flex-row items-center gap-3">
             <span className="material-symbols-rounded text-base">add</span>
             <p className="text-sm text-content-tert">
               Add task

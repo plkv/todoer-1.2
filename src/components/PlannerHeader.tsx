@@ -24,10 +24,10 @@ export const PlannerHeader = () => {
   return (
     <div className="border-b border-b-brd-prim px-4 py-3">
       <div className="flex items-center justify-between w-full">
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center gap-3 min-w-0">
           <Button variant="ghost" size="sm">Week</Button>
         </div>
-        <div className="flex flex-row-reverse items-center gap-0.5 min-w-0">
+        <div className="flex flex-row-reverse items-center gap-3 min-w-0">
           <Button variant="ghost" size="sm" onClick={handleNextPeriod}>
             <span className="material-symbols-rounded">chevron_right</span>
           </Button>

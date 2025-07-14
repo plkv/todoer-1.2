@@ -88,15 +88,15 @@ const BacklogListSection = ({
       )}
     >
       {/* List Header */}
-      <div className="flex flex-row items-end gap-1 px-1 py-1 w-full">
+      <div className="flex flex-row items-end gap-3 px-1 py-1 w-full">
         <span className="flex items-center justify-center w-4 h-4 mr-1">
           {React.isValidElement(list.icon) && (list.icon.type && (list.icon.type as any).displayName && (list.icon.type as any).displayName.startsWith('Icon'))
             ? React.cloneElement(list.icon as React.ReactElement, { size: 'm' })
             : list.icon}
         </span>
-        <span className="font-semibold text-13 leading-4 tracking-[-0.26px] text-content-prim truncate">{list.name}</span>
-        <span className="font-semibold text-13 leading-4 tracking-[-0.26px] text-content-sec">{list.tasks.length}</span>
-        <div className="flex flex-row gap-1 ml-auto">
+        <span className="font-semibold text-base leading-4 tracking-normal text-content-prim truncate">{list.name}</span>
+        <span className="font-semibold text-base leading-4 tracking-normal text-content-sec">{list.tasks.length}</span>
+        <div className="flex flex-row gap-3 ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -130,7 +130,7 @@ const BacklogListSection = ({
         </div>
       </div>
       {/* Tasks */}
-      <div className="flex flex-col flex-1 w-full p-2 gap-2 items-stretch">
+      <div className="flex flex-col flex-1 w-full p-2 gap-3 items-stretch">
         {list.tasks.map((task: ITask) => (
           <TaskCard
             key={task.id}
@@ -184,7 +184,7 @@ export const BacklogSection = ({
   }, [undoStack, onRestoreTask, onDuplicateList]);
 
   return (
-    <aside className="flex flex-col gap-1.5 items-start align-stretch h-full w-full min-w-0 bg-bg-sec border-r border-brd-prim overflow-y-auto">
+    <aside className="flex flex-col gap-3 items-start align-stretch h-full w-full min-w-0 bg-bg-sec border-r border-brd-prim overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-start gap-1 w-full p-3 [gap:4px] [align-self:stretch]">
         <span className="text-xl text-content-prim">Backlog</span>
@@ -208,7 +208,7 @@ export const BacklogSection = ({
         </Button>
       </div>
       {/* Content container */}
-      <div className="flex flex-col flex-1 w-full p-2 gap-2 items-stretch">
+      <div className="flex flex-col flex-1 w-full p-2 gap-3 items-stretch">
         {lists.map((list) => (
           <BacklogListSection
             key={list.id}

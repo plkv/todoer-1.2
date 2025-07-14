@@ -19,7 +19,7 @@ const PaginationContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ul
     ref={ref}
-    className={cn("flex flex-row items-center gap-1", className)}
+    className={cn("flex flex-row items-center gap-3", className)}
     {...props}
   />
 ))
@@ -41,13 +41,13 @@ type PaginationLinkProps = {
 const PaginationLink = ({
   className,
   isActive,
-  size = "l",
+  size = "lg",
   ...props
 }: PaginationLinkProps) => (
   <a
     aria-current={isActive ? "page" : undefined}
     className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 w-9",
+      "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-normal ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-7 w-7",
       isActive ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800",
       className
     )}
@@ -62,8 +62,8 @@ const PaginationPrevious = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to previous page"
-    size="l"
-    className={cn("gap-1 pl-2.5", className)}
+    size="lg"
+    className={cn("gap-3 pl-2.5", className)}
     {...props}
   >
     <span className="material-symbols-rounded">chevron_left</span>
@@ -78,8 +78,8 @@ const PaginationNext = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to next page"
-    size="l"
-    className={cn("gap-1 pr-2.5", className)}
+    size="lg"
+    className={cn("gap-3 pr-2.5", className)}
     {...props}
   >
     <span>Next</span>
@@ -94,7 +94,7 @@ const PaginationEllipsis = ({
 }: React.ComponentProps<"span">) => (
   <span
     aria-hidden
-    className={cn("flex h-9 w-9 items-center justify-center", className)}
+    className={cn("flex h-7 w-7 items-center justify-center", className)}
     {...props}
   >
     <span className="material-symbols-rounded">more_horiz</span>

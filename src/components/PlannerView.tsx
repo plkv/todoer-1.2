@@ -134,7 +134,7 @@ export const PlannerView = () => {
       <div className="flex flex-row h-screen w-full bg-fill-prim font-sans text-content-prim lg:flex-row flex-col">
         {/* nav-global */}
         <nav className="flex flex-col items-center justify-between w-full max-w-52 min-w-0 h-screen max-h-screen py-4 bg-bg-sec border-r border-brd-prim flex-shrink-0 overflow-hidden">
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <AvatarButton user={user} aria-label="User menu" />
@@ -142,7 +142,7 @@ export const PlannerView = () => {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{user?.name}</p>
+                    <p className="text-sm font-normal leading-none">{user?.name}</p>
                     <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
                   </div>
                 </DropdownMenuLabel>
@@ -162,7 +162,7 @@ export const PlannerView = () => {
             </Button>
           </div>
           {/* Exit button at the bottom */}
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-3">
             <Button
               variant="ghost"
               size="icon"

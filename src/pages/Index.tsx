@@ -21,7 +21,7 @@ const Index = () => {
           <h1 className="text-3xl font-bold text-content-prim">
             Добро пожаловать в Todoer
           </h1>
-          <p className="mt-2 text-base font-medium text-content-sec">
+          <p className="mt-2 text-base font-normal text-content-sec">
             Войдите, чтобы начать планировать свой день.
           </p>
           <Button onClick={login} variant="primary" className="mt-6">

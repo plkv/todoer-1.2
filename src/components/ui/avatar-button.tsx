@@ -21,11 +21,11 @@ export const AvatarButton = React.forwardRef<HTMLButtonElement, AvatarButtonProp
         className={cn("h-btn-l w-btn-l min-w-btn-l min-h-btn-l rounded-btn", className)}
         {...props}
       >
-        <Avatar className="h-btn-l w-btn-l min-w-btn-l min-h-btn-l rounded-btn">
+        <Avatar className="size-7 rounded-lg">
           {user?.picture ? (
-            <AvatarImage src={user.picture} alt={user.name || 'User'} className="h-full w-full rounded-full" style={{ borderRadius: 'var(--radius-btn)' }} />
+            <AvatarImage src={user.picture} alt={user.name || 'User'} className="h-full w-full rounded-lg" />
           ) : (
-            <AvatarFallback className="h-full w-full rounded-full" style={{ borderRadius: 'var(--radius-btn)' }}>{user?.name?.[0] || '?'}</AvatarFallback>
+            <AvatarFallback className="h-full w-full rounded-lg">{user?.name?.[0] || '?'}</AvatarFallback>
           )}
         </Avatar>
         {children}
