@@ -15,7 +15,6 @@ import { TimeSelector } from './TimeSelector';
 import { ColorSelector } from './ColorSelector';
 import { ITask } from '@/types/Task';
 import { format } from 'date-fns';
-import { Copy, Trash, Check } from '@phosphor-icons/react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { cn } from '@/lib/utils';
 import { IconClose } from './ui/icons';

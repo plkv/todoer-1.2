@@ -1,15 +1,14 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
 import { cn } from '@/lib/utils';
-import { Task } from '@/types/Task';
-import { Check } from '@phosphor-icons/react';
+import { ITask } from '@/types/Task';
 import { Checkbox } from '@/components/ui/checkbox';
 import { colorMap } from '@/styles/colors';
 
 interface TaskCardProps {
-  task: Task;
+  task: ITask;
   onClick: () => void;
-  onToggleComplete: (task: Task, completed: boolean) => void;
+  onToggleComplete: (task: ITask, completed: boolean) => void;
   sourceLocation?: { day?: string; section?: string };
 }
 
