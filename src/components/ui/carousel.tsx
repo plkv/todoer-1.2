@@ -2,8 +2,8 @@ import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md"
 import { IconChevronLeft, IconChevronRight, Icon00 } from './icons';
-import { ArrowLeft, ArrowRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"

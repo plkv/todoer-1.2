@@ -1,4 +1,5 @@
 import * as React from "react";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import { IconChevronLeft, IconChevronRight } from './icons';

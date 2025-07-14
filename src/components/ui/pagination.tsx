@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight, MdMoreHoriz } from "react-icons/md"
 import { IconChevronLeft, IconChevronRight, IconDots } from './icons';
 
 import { cn } from "@/lib/utils"

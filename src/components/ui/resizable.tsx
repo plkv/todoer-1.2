@@ -1,4 +1,4 @@
-import { GripVertical } from "lucide-react"
+import { MdDragIndicator } from "react-icons/md"
 import * as ResizablePrimitive from "react-resizable-panels"
 import { IconGripVertical, Icon00 } from './icons';
 

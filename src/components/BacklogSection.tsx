@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus, Settings, Inbox } from 'lucide-react';
+import { MdAdd, MdSettings, MdInbox } from 'react-icons/md';
 import { TaskCard } from './TaskCard';
 import { cn } from '@/lib/utils';
 import { useDrop } from 'react-dnd';
