@@ -1,5 +1,14 @@
 require('@testing-library/jest-dom');
 
+// Mock process.env for tests
+global.process = {
+  ...global.process,
+  env: {
+    ...global.process?.env,
+    JEST_WORKER_ID: '1',
+  },
+};
+
 // mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

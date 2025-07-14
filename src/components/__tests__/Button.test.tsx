@@ -3,12 +3,12 @@ import { render, screen } from '@testing-library/react';
 import { Button } from '../ui/button';
 
 describe('Button', () => {
-  it('renders with label', () => {
-    render(<Button label="Test" />);
+  it('renders with children', () => {
+    render(<Button>Test</Button>);
     expect(screen.getByText('Test')).toBeInTheDocument();
   });
   it('renders with icon', () => {
-    render(<Button icon={<span data-testid="icon">*</span>} />);
+    render(<Button><span data-testid="icon">*</span></Button>);
     expect(screen.getByTestId('icon')).toBeInTheDocument();
   });
 }); 

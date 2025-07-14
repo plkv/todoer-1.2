@@ -1,25 +1,24 @@
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Avatar, AvatarImage, AvatarFallback } from './avatar';
+import * as React from "react"
+import { cn } from "@/lib/utils"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 
-interface AvatarButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  user?: { picture?: string | null; name?: string | null };
+export interface AvatarButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  user?: {
+    name?: string
+    email?: string
+    picture?: string
+  }
 }
 
 export const AvatarButton = React.forwardRef<HTMLButtonElement, AvatarButtonProps>(
-  ({ user, className, children, disabled, ...props }, ref) => {
+  ({ user, className, children, ...props }, ref) => {
     return (
-      <button
+      <Button
         ref={ref}
-        type={props.type || 'button'}
-        disabled={disabled}
-        className={cn(
-          'inline-flex items-center justify-center p-1.5 h-btn-l w-btn-l min-w-btn-l min-h-btn-l rounded-btn transition-colors select-none outline-none',
-          'bg-transparent text-content-prim',
-          'hover:bg-fill-sec active:bg-fill-prim disabled:opacity-60',
-          'focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2',
-          className
-        )}
+        variant="ghost"
+        size="icon"
+        className={cn("h-btn-l w-btn-l min-w-btn-l min-h-btn-l rounded-btn", className)}
         {...props}
       >
         <Avatar className="h-btn-l w-btn-l min-w-btn-l min-h-btn-l rounded-btn">
@@ -30,7 +29,7 @@ export const AvatarButton = React.forwardRef<HTMLButtonElement, AvatarButtonProp
           )}
         </Avatar>
         {children}
-      </button>
+      </Button>
     );
   }
 );

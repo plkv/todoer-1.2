@@ -1,9 +1,7 @@
 import * as React from "react"
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight, MdMoreHoriz } from "react-icons/md"
-import { IconChevronLeft, IconChevronRight, IconDots } from './icons';
 
 import { cn } from "@/lib/utils"
-import { ButtonProps, buttonVariants } from "@/components/ui/button"
+import { ButtonProps } from "@/components/ui/button"
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
@@ -49,10 +47,8 @@ const PaginationLink = ({
   <a
     aria-current={isActive ? "page" : undefined}
     className={cn(
-      buttonVariants({
-        variant: isActive ? "outline" : "ghost",
-        size,
-      }),
+      "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 w-9",
+      isActive ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800",
       className
     )}
     {...props}
@@ -70,7 +66,7 @@ const PaginationPrevious = ({
     className={cn("gap-1 pl-2.5", className)}
     {...props}
   >
-    <IconChevronLeft size="l" />
+    <span className="material-symbols-rounded">chevron_left</span>
     <span>Previous</span>
   </PaginationLink>
 )
@@ -87,7 +83,7 @@ const PaginationNext = ({
     {...props}
   >
     <span>Next</span>
-    <IconChevronRight size="l" />
+    <span className="material-symbols-rounded">chevron_right</span>
   </PaginationLink>
 )
 PaginationNext.displayName = "PaginationNext"
@@ -101,7 +97,7 @@ const PaginationEllipsis = ({
     className={cn("flex h-9 w-9 items-center justify-center", className)}
     {...props}
   >
-    <IconDots size="l" />
+    <span className="material-symbols-rounded">more_horiz</span>
     <span className="sr-only">More pages</span>
   </span>
 )

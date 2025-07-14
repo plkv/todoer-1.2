@@ -17,7 +17,6 @@ import { ITask } from '@/types/Task';
 import { format } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { cn } from '@/lib/utils';
-import { IconClose } from './ui/icons';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 interface TaskOverlayProps {
@@ -118,7 +117,7 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
               onClick={handleDelete}
               className="inline-flex items-center justify-center rounded-btn p-1.5 cursor-pointer hover:bg-fill-sec focus-visible:ring-2 focus-visible:ring-accent-prim focus-visible:ring-offset-2"
             >
-              <IconClose />
+              <span className="material-symbols-rounded">close</span>
             </span>
           </div>
         </div>
@@ -156,10 +155,10 @@ const TaskOverlay = ({ task, displayDate, isOpen, onClose, onSave, onDelete, onD
         </div>
         {/* Action-кнопки */}
         <div className="flex flex-row gap-2 justify-end px-4 pt-6">
-          <Button variant="ghost-prim" size="m" onClick={handleDuplicate}>
+          <Button variant="ghost" size="sm" onClick={handleDuplicate}>
             Duplicate
           </Button>
-          <Button variant="ghost-prim" size="m" onClick={handleDelete}>
+          <Button variant="ghost" size="sm" onClick={handleDelete}>
             Delete
           </Button>
         </div>

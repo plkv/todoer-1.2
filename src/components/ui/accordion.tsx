@@ -1,6 +1,5 @@
 import * as React from "react"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
-import { MdKeyboardArrowDown } from "react-icons/md"
 import { IconChevronDown } from './icons';
 
 import { cn } from "@/lib/utils"
@@ -33,7 +32,7 @@ const AccordionTrigger = React.forwardRef<
       {...props}
     >
       {children}
-      <IconChevronDown size="xl" className="relative top-[1px] ml-1 transition duration-200 group-data-[state=open]:rotate-180" aria-hidden="true" />
+      <span className="material-symbols-rounded text-base">expand_more</span>
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ))

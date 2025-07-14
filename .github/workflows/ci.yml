@@ -22,4 +22,8 @@ jobs:
       - name: Install backend dependencies
         run: cd backend && npm install
       - name: Lint
-        run: npm run lint 
+        run: npm run lint
+      - name: Run frontend & shared tests
+        run: npm test
+      - name: Run backend tests
+        run: cd backend && npm test 

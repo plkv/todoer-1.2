@@ -277,7 +277,6 @@ function usePlannerStateImpl() {
   };
 
   const handleSaveNewTask = (taskData: Partial<Omit<ITask, 'id' | 'user_id' | 'created_at' | 'updated_at'>>) => {
-    console.log('[toast] handleSaveNewTask', taskData);
     let day: string | null = null;
     if (newTaskContext.day) {
       day = newTaskContext.day;
@@ -291,9 +290,7 @@ function usePlannerStateImpl() {
       time_estimate: taskData.time_estimate || null,
       day: day,
     };
-    console.log('[toast] createTaskMutation.mutate payload', payload);
     createTaskMutation.mutate(payload);
-    console.log('[toast] createTaskMutation.mutate called');
     setNewTaskContext({});
   };
 

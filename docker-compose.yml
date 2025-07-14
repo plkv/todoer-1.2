@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: .
+      target: backend
+    working_dir: /app/backend
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      # Добавь остальные переменные из .env
+    ports:
+      - "3001:3001"
+    command: ["node", "index.js"]
+
+  frontend:
+    build:
+      context: .
+      target: frontend
+    working_dir: /app/frontend
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    command: ["nginx", "-g", "daemon off;"] 

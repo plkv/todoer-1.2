@@ -2,7 +2,6 @@ import React from 'react';
 import { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { TaskCard } from './TaskCard';
-import { IconPlus } from './ui/icons';
 import { ITask } from '@/types/Task';
 import { cn } from '@/lib/utils';
 
@@ -76,7 +75,7 @@ export const TimeSection = ({
           className="group/add-task flex flex-row items-center gap-1 min-h-7 rounded-md p-6 cursor-pointer justify-between transition-colors duration-200 ease-out opacity-0 group-hover:opacity-100 w-full min-w-0"
         >
           <div className="flex flex-row items-center gap-1">
-            <IconPlus size="m" className="text-content-tert" strokeWidth={2.5} />
+            <span className="material-symbols-rounded text-base">add</span>
             <p className="text-sm text-content-tert">
               Add task
             </p>

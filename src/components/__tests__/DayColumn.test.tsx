@@ -5,6 +5,16 @@ import { ITask, DayTasks } from '@/types/Task';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
+jest.mock('react-dnd', () => ({
+  useDrag: () => [{}, jest.fn(), jest.fn()],
+  useDrop: () => [{}, jest.fn()],
+  DndProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
+jest.mock('react-dnd-html5-backend', () => ({
+  HTML5Backend: jest.fn(),
+}));
+
 describe('DayColumn', () => {
   const tasks: DayTasks = {
     morning: [

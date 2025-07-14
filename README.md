@@ -4,7 +4,21 @@
 
 **URL**: https://lovable.dev/projects/7c26757b-8388-489c-b5d0-5b2a98daf7c2
 
-## How can I edit this code?
+## Быстрый старт через Docker Compose
+
+```sh
+# 1. Собери и запусти всё локально:
+docker-compose up --build
+# Фронт доступен на http://localhost:8080
+# Бэк — на http://localhost:3001
+```
+
+## Продакшен деплой
+- **Frontend**: подключи репозиторий к Vercel (https://vercel.com/import)
+- **Backend**: подключи репозиторий к Render (https://dashboard.render.com/)
+- Оба сервиса поддерживают zero-config деплой через GitHub интеграцию
+
+## Как можно редактировать этот код?
 
 There are several ways of editing your application.
 

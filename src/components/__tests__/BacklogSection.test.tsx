@@ -5,6 +5,16 @@ import { ITask } from '@/types/Task';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
+jest.mock('react-dnd', () => ({
+  useDrag: () => [{}, jest.fn(), jest.fn()],
+  useDrop: () => [{}, jest.fn()],
+  DndProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
+jest.mock('react-dnd-html5-backend', () => ({
+  HTML5Backend: jest.fn(),
+}));
+
 describe('BacklogSection', () => {
   const tasks: ITask[] = [
     { id: '1', user_id: 'u1', title: 'Task 1', description: null, is_completed: false, time_estimate: null, color: null, day: null, section: 'inbox', created_at: '', updated_at: '' },

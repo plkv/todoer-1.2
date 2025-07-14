@@ -100,9 +100,8 @@ const BacklogListSection = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                variant="ghost-prim"
-                size="m"
-                className="p-1.5 rounded-[6px]"
+                variant="ghost"
+                size="sm"
                 title="Меню списка"
               >
                 <span className="material-symbols-rounded">more_vert</span>
@@ -121,9 +120,8 @@ const BacklogListSection = ({
             </DropdownMenuContent>
           </DropdownMenu>
           <Button
-            variant="ghost-prim"
-            size="m"
-            className="p-1.5 rounded-[6px]"
+            variant="ghost"
+            size="sm"
             title="Добавить задачу"
             onClick={() => onAddTask(list.id)}
           >
@@ -192,8 +190,8 @@ export const BacklogSection = ({
         <span className="text-xl text-content-prim">Backlog</span>
         <span className="text-xl text-content-sec">{totalTasks}</span>
         <Button
-          variant="ghost-prim"
-          size="m"
+          variant="ghost"
+          size="sm"
           className="ml-auto"
           onClick={onSettingsClick}
           title="Настройки"
@@ -201,8 +199,8 @@ export const BacklogSection = ({
           <span className="material-symbols-rounded">settings</span>
         </Button>
         <Button
-          variant="ghost-prim"
-          size="m"
+          variant="ghost"
+          size="sm"
           onClick={onAddList}
           title="Добавить список"
         >

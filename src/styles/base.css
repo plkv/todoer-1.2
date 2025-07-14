@@ -303,3 +303,8 @@
 .gap-section-xs {
   gap: 0.25rem;
 }
+
+.material-symbols-rounded {
+  line-height: 1;
+  vertical-align: middle;
+}

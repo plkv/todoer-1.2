@@ -1,6 +1,5 @@
 import React from 'react';
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { IconPlus } from './ui/icons';
 import { cn } from "@/lib/utils";
 import { colorOptions } from "@/styles/colors";
 

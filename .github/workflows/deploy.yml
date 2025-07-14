@@ -19,5 +19,8 @@ jobs:
         run: npm run build
       - name: Install backend dependencies
         run: cd backend && npm install
-      # - name: Deploy step (заменить на свой)
-      #   run: echo "Deploying..." 
+      # ---
+      # Для автодеплоя фронта подключи репозиторий к Vercel (https://vercel.com/import)
+      # Для автодеплоя backend подключи репозиторий к Render (https://dashboard.render.com/)
+      # Оба сервиса поддерживают zero-config деплой через GitHub интеграцию
+      # --- 

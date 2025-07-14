@@ -153,24 +153,24 @@ export const PlannerView = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             <Button
-              variant="ghost-prim"
-              size="l"
-              icon={themeMode === 'auto' ? <span className="material-symbols-rounded">brightness_auto</span> : themeMode === 'light' ? <span className="material-symbols-rounded">light_mode</span> : <span className="material-symbols-rounded">dark_mode</span>}
+              variant="ghost"
+              size="icon"
               aria-label="Theme Mode"
               onClick={handleThemeModeSwitch}
-              className="p-2"
-            />
+            >
+              {themeMode === 'auto' ? <span className="material-symbols-rounded text-icon-md">brightness_auto</span> : themeMode === 'light' ? <span className="material-symbols-rounded text-icon-md">light_mode</span> : <span className="material-symbols-rounded text-icon-md">dark_mode</span>}
+            </Button>
           </div>
           {/* Exit button at the bottom */}
           <div className="flex flex-col items-center gap-4">
             <Button
-              variant="ghost-prim"
-              size="l"
-              icon={<span className="material-symbols-rounded">logout</span>}
+              variant="ghost"
+              size="icon"
               aria-label="Sign out"
               onClick={logout}
-              className="p-2"
-            />
+            >
+              <span className="material-symbols-rounded text-icon-md">logout</span>
+            </Button>
           </div>
         </nav>
         {/* backlog (вторая колонка) */}
